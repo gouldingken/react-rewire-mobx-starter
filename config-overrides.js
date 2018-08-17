@@ -6,9 +6,11 @@ module.exports = function override(config, env) {
     config = injectBabelPlugin("babel-plugin-styled-components", config);
     config = rewireMobX(config, env);
 
-    config = rewireWebpackOutput(config, env, {
-        publicPath: './',
-    });
+    if (env !== 'development') {
+        config = rewireWebpackOutput(config, env, {
+            publicPath: './',
+        });
+    }
 
     return config;
 };
