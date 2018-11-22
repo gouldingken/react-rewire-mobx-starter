@@ -1,24 +1,9 @@
 {
-  "name": "react-continuity",
-  "version": "0.1.0",
   "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
   "dependencies": {
-    "mobx": "^3.5.1",
-    "mobx-react": "^4.4.1",
-    "react": "^16.4.2",
-    "react-app-rewire-output": "^1.0.0",
-    "react-dom": "^16.4.2",
-    "react-scripts": "1.1.4"
-  },
-  "scripts": {
-    "start": "react-app-rewired start",
-    "build": "react-app-rewired build",
-    "test": "react-app-rewired test --env=jsdom",
-    "eject": "react-app-rewired eject"
-  },
-  "devDependencies": {
-    "babel-plugin-styled-components": "^1.5.1",
-    "react-app-rewire-mobx": "^1.0.8",
-    "react-app-rewired": "^1.5.2"
+    "yarn": "^1.10.1"
   }
 }
