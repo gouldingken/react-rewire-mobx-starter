@@ -114,9 +114,19 @@ export default class ThreeApp {
                     });
                     meshTween.group.translateZ(extrude.z);
 
+                    let dir = 1;
+                    setInterval(() => {
+                        dir *= -1;
+                    }, 2000);
+
                     setInterval(() => {//TEMP for testing
-                        meshTween.next(false);
+                        if (dir > 0) {
+                            meshTween.next(false);
+                        } else {
+                            meshTween.prev(false);
+                        }
                     }, 30);
+
                 } else if (extrude.path) {
                     let shapeExtrude = new ShapeExtrude(extrude.path, extrude.depth, extrude.color);
                     shapeExtrude.mesh.translateZ(extrude.z);

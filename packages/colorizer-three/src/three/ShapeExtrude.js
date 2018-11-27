@@ -30,7 +30,7 @@ export default class ShapeExtrude {
         const mesh = new Mesh(geometry, material);
 
         //Note shapes are 2D and are extruded in the "Z" direction
-        mesh.rotateX( Math.PI / 2 );
+        mesh.rotateX( -Math.PI / 2 );
         this.mesh = mesh;
     };
 }

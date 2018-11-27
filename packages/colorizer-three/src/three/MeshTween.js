@@ -16,6 +16,7 @@ export default class MeshTween {
     };
 
     add(mesh) {
+        mesh.visible = this.group.children.length === this.displayIndex;
         this.group.add(mesh);
     }
 
