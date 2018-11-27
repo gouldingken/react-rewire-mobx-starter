@@ -18,4 +18,13 @@ export default class ADataHandler {
     setTime(time) {
         return false;
     }
+
+    get useObjLoader() {
+        return false;
+    }
+
+    get useExtrudes() {
+        return false;
+    }
+
 }

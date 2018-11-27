@@ -63,4 +63,12 @@ export default class PrattDataHandler extends ADataHandler {
             this.colorLookup[room.RoomId] = activeMeeting ? colorPalette[activeMeeting.School] : '#333333';
         });
     }
+
+    get useObjLoader() {
+        return true;
+    }
+
+    get objFile() {
+        return '/assets/180905_3D_Pratt_Colorizer.obj';
+    }
 }

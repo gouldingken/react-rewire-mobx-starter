@@ -7,12 +7,12 @@ import {
     Mesh,
     LoadingManager,
     MeshLambertMaterial,
-    DoubleSide, FrontSide, HemisphereLight, DirectionalLight, Box3
+    DoubleSide, FrontSide, HemisphereLight, DirectionalLight, Box3, ExtrudeBufferGeometry, Shape
 } from 'three';
-
-// import {OBJLoader} from 'three-addons';
 import OrbitControls from 'orbit-controls-es6';
 import OBJLoader from "./core/OBJLoader";
+import ShapeExtrude from "./ShapeExtrude";
+import MeshTween from "./MeshTween";
 
 /**
  * Creates a new instance of ThreeApp.
@@ -38,10 +38,12 @@ export default class ThreeApp {
             0.01,
             10000
         );
-        this.camera.position.z = 4;
+        this.camera.position.z = 10;
+        this.camera.position.x = 10;
+        this.camera.position.y = 10;
 
         this.renderer = new WebGLRenderer({antialias: true});
-        this.renderer.setClearColor('#000000');
+        this.renderer.setClearColor('#ffffff');
         this.renderer.setSize(width, height);
         holder.appendChild(this.renderer.domElement);
 
@@ -100,24 +102,50 @@ export default class ThreeApp {
             });
         };
 
-        const loader = new OBJLoader(manager);
-        loader.load('/assets/180905_3D_Pratt_Colorizer.obj', (object) => {
-            object.position.y = 0;
-            this.scene.add(object);
-            traverseAndId(object);
-            setMaterials(object, defaultMaterial, false, false);
+        if (this.dataHandler.useExtrudes) {
+            const extrudes = this.dataHandler.getExtrudeObjects();
 
-            let scale = 0.01;
-            object.scale.set(scale, scale, scale);
-            const bbox = new Box3().setFromObject(object);
-            object.position.x = -bbox.max.x / 2;
-            object.position.y = -bbox.max.y / 2;
-            object.position.z = -bbox.max.z / 2;
+            extrudes.forEach((extrude, i) => {
+                if (extrude.tweenPaths) {
+                    const meshTween = new MeshTween(this.scene);
+                    extrude.tweenPaths.forEach((path, i) => {
+                        let shapeExtrude = new ShapeExtrude(path, extrude.depth, extrude.color);
+                        meshTween.add(shapeExtrude.mesh);
+                    });
+                    meshTween.group.translateZ(extrude.z);
 
-            Object.keys(this.objectsById).forEach((id) => {
-                this.setMaterial(id, this.dataHandler.getColor(id))
+                    setInterval(() => {//TEMP for testing
+                        meshTween.next(false);
+                    }, 30);
+                } else if (extrude.path) {
+                    let shapeExtrude = new ShapeExtrude(extrude.path, extrude.depth, extrude.color);
+                    shapeExtrude.mesh.translateZ(extrude.z);
+                    this.scene.add(shapeExtrude.mesh);
+                }
             });
-        });
+        }
+
+        if (this.dataHandler.useObjLoader) {
+            const loader = new OBJLoader(manager);
+            loader.load(this.dataHandler.objFile, (object) => {
+                object.position.y = 0;
+                this.scene.add(object);
+                traverseAndId(object);
+                setMaterials(object, defaultMaterial, false, false);
+
+                let scale = 0.01;
+                object.scale.set(scale, scale, scale);
+                const bbox = new Box3().setFromObject(object);
+                object.position.x = -bbox.max.x / 2;
+                object.position.y = -bbox.max.y / 2;
+                object.position.z = -bbox.max.z / 2;
+
+                Object.keys(this.objectsById).forEach((id) => {
+                    this.setMaterial(id, this.dataHandler.getColor(id))
+                });
+            });
+        }
+
 
         // this.cube = new Mesh(geometry, materialA);
         // this.cube.position.y = 2;
