@@ -1,5 +1,6 @@
 import {ADataHandler} from "colorizer-three";
 import ShapeInterpolator from "./ShapeInterpolator";
+import SpeckleData from "./SpeckleData";
 
 /**
  * Creates a new instance of ProgramTimelineDataHandler.
@@ -31,10 +32,11 @@ export default class ProgramTimelineDataHandler extends ADataHandler {
         return true;
     }
 
-    getTweenPathObject(path1, path2, color, depth) {
-        const obj4 = {
+    getTweenPathObject(path1, path2, color, depth, offset, z = 0) {
+        const tweenPathObj = {
             tweenPaths: [],
-            z: 10,
+            offset: offset,
+            z: z,
             depth: depth,
             color: color
         };
@@ -43,59 +45,68 @@ export default class ProgramTimelineDataHandler extends ADataHandler {
 
         let steps = 20;
         for (let i = 0; i <= steps; i++) {
-            obj4.tweenPaths.push(interpolator.getPath(i / steps));
+            tweenPathObj.tweenPaths.push(interpolator.getPath(i / steps));
         }
 
-        return obj4;
+        return tweenPathObj;
 
     }
 
-    getExtrudeObjects() {
-        const path1 = [{x: 0, y: 0}, {x: 10, y: 0}, {x: 10, y: 10}, {x: 0, y: 10}];
-        const path2 = [{x: 20, y: 20}, {x: 15, y: 20}, {x: 15, y: 15}, {x: 10, y: 15}, {x: 10, y: 10}, {x: 20, y: 10}];
-        const path3 = [{x: 20, y: 20}, {x: 10, y: 20}, {x: 10, y: 10}, {x: 20, y: 10}];
-        const path4 = [{x: 22.071068, y: 15}, {x: 18.535534, y: 18.535534}, {x: 15, y: 15}, {
-            x: 11.464466,
-            y: 18.535534
-        }, {x: 7.9289322, y: 15}, {x: 15, y: 7.9289322}];
-        const path5 = [{x: 11.25, y: 6.9822331}, {x: 16.25, y: 6.9822331}, {x: 16.25, y: 11.982233}, {
-            x: 21.25,
-            y: 11.982233
-        }, {x: 21.25, y: 16.982233}, {x: 11.25, y: 16.982233}];
+    getPathObject(path, color, depth, offset, z = 0) {
+        return {
+            path: path,
+            offset: offset,
+            z: z,
+            depth: depth,
+            color: color
+        };
+    }
 
-        const paths = [path1, path2, path3, path4, path5];
 
-        const colors = ["#cec77a",
-            "#9e44d6",
-            "#71d54f",
-            "#d549c8",
-            "#cad544",
-            "#5b60e1",
-            "#d89836",
-            "#b070d3",
-            "#7ad898",
-            "#d64993",
-            "#538942",
-            "#d84058",
-            "#50cdcd",
-            "#d24f26",
-            "#6790d3",
-            "#8b7230",
-            "#7756a1",
-            "#d07960",
-            "#d992cc",
-            "#a54c66"];
-
+    getExtrudeObjects(callback) {
+        let speckleData = new SpeckleData({scale: 0.1});
         const ans = [];
-        for (let j = 0; j < 2; j++) {
-            for (let i = 0; i < colors.length; i++) {
-                const a = Math.floor(Math.random() * (paths.length));
-                const b = Math.floor(Math.random() * (paths.length));
-                ans.push(this.getTweenPathObject(paths[a], paths[b], colors[i], i / 2));
-            }
 
-        }
+        speckleData.getObjects().then((layers) => {
 
-        return ans;
+            const objectPairs = {};
+            const colors = {};
+            layers.forEach((layer, i) => {
+                const bits = layer.name.split('::');
+                const optionName = bits[0];
+                const programName = bits[1];
+                if (programName === 'other') {
+                    if (optionName === 'option1') {
+                        layer.objects.forEach((obj, i) => {
+                            const extrusion = speckleData.getExtrusion(obj);
+                            if (extrusion) {
+                                ans.push(this.getPathObject(extrusion.polyline, layer.color, extrusion.height, 0, extrusion.z));
+                            }
+                        });
+                    }
+                } else {
+                    if (!objectPairs[programName]) {
+                        objectPairs[programName] = {};
+                    }
+                    colors[programName] = layer.color;
+                    objectPairs[programName][optionName] = layer.objects[0];
+                }
+            });
+
+            Object.keys(objectPairs).forEach((name) => {
+                const pair = objectPairs[name];
+
+                const extrusion1 = speckleData.getExtrusion(pair.option1);
+                const extrusion2 = speckleData.getExtrusion(pair.option2);
+                ans.push(this.getTweenPathObject(extrusion1.polyline, extrusion2.polyline, colors[name], extrusion1.height, 0, extrusion1.z));
+            });
+
+            let offset = 0;//used to minimize z-fighting
+            ans.sort((a, b) => a.depth - b.depth);
+            ans.forEach((tweenObj, i) => {
+                tweenObj.offset = i * 0.25;
+            });
+            callback(ans);
+        });
     }
 }

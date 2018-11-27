@@ -103,36 +103,39 @@ export default class ThreeApp {
         };
 
         if (this.dataHandler.useExtrudes) {
-            const extrudes = this.dataHandler.getExtrudeObjects();
+            this.dataHandler.getExtrudeObjects((extrudes)=> {
 
-            extrudes.forEach((extrude, i) => {
-                if (extrude.tweenPaths) {
-                    const meshTween = new MeshTween(this.scene);
-                    extrude.tweenPaths.forEach((path, i) => {
-                        let shapeExtrude = new ShapeExtrude(path, extrude.depth, extrude.color);
-                        meshTween.add(shapeExtrude.mesh);
-                    });
-                    meshTween.group.translateZ(extrude.z);
+                extrudes.forEach((extrude, i) => {
+                    if (extrude.tweenPaths) {
+                        const meshTween = new MeshTween(this.scene);
+                        extrude.tweenPaths.forEach((path, i) => {
+                            let useOffset = extrude.offset && i > 0 && i < extrude.tweenPaths.length - 1;
+                            let shapeExtrude = new ShapeExtrude(path, extrude.depth + ((useOffset) ? extrude.offset : 0), extrude.color);
+                            meshTween.add(shapeExtrude.mesh);
+                        });
+                        meshTween.group.translateZ(extrude.z);
 
-                    let dir = 1;
-                    setInterval(() => {
-                        dir *= -1;
-                    }, 2000);
+                        let dir = 1;
+                        setInterval(() => {
+                            dir *= -1;
+                        }, 2000);
 
-                    setInterval(() => {//TEMP for testing
-                        if (dir > 0) {
-                            meshTween.next(false);
-                        } else {
-                            meshTween.prev(false);
-                        }
-                    }, 30);
+                        setInterval(() => {//TEMP for testing
+                            if (dir > 0) {
+                                meshTween.next(false);
+                            } else {
+                                meshTween.prev(false);
+                            }
+                        }, 30);
 
-                } else if (extrude.path) {
-                    let shapeExtrude = new ShapeExtrude(extrude.path, extrude.depth, extrude.color);
-                    shapeExtrude.mesh.translateZ(extrude.z);
-                    this.scene.add(shapeExtrude.mesh);
-                }
+                    } else if (extrude.path) {
+                        let shapeExtrude = new ShapeExtrude(extrude.path, extrude.depth, extrude.color);
+                        shapeExtrude.mesh.translateZ(extrude.z);
+                        this.scene.add(shapeExtrude.mesh);
+                    }
+                });
             });
+
         }
 
         if (this.dataHandler.useObjLoader) {
