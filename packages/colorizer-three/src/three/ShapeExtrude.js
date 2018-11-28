@@ -1,4 +1,5 @@
 import {ExtrudeBufferGeometry, Mesh, MeshLambertMaterial, Shape} from "three";
+import HatchShader from "./shaders/HatchShader";
 
 /**
  * Creates a new instance of ShapeExtrude.
@@ -26,7 +27,8 @@ export default class ShapeExtrude {
         };
 
         const geometry = new ExtrudeBufferGeometry(shape, extrudeSettings);
-        const material = new MeshLambertMaterial({color: color});
+        // const material = new MeshLambertMaterial({color: color});
+        const material = new HatchShader({color: color}).getMaterial();
         const mesh = new Mesh(geometry, material);
 
         //Note shapes are 2D and are extruded in the "Z" direction

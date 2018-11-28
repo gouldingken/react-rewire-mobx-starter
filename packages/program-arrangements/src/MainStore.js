@@ -1,4 +1,5 @@
 import {observable, action, decorate} from "mobx";
+import {InteractionStore} from "react-timeline-gantt";
 
 /**
  * Creates a new instance of MainStore.
@@ -10,8 +11,9 @@ import {observable, action, decorate} from "mobx";
 export default class MainStore {
     activeOption = 'Option 1';
 
-    constructor() {
 
+    constructor() {
+        this.timelineInteractionStore = new InteractionStore();
     };
 
     setActiveOption(val) {

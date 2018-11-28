@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "colorizer-three": "0.1.0",
+    "react-timeline-gantt": "0.1.0",
     "d3-interpolate-path": "^2.0.1",
     "flubber": "^0.4.2",
     "react": "^16.6.3",

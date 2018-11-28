@@ -1,0 +1,13 @@
+
+Options for representing under-construction, demolition etc...
+
+Shader texture for hatches (applied to faces)
+https://shaderfrog.com/app/view/1959
+
+Shader texture in screen-space
+https://shaderfrog.com/app/view/2750
+
+
+Outline shader (requires multiple passes):
+http://jsfiddle.net/Eskel/g593q/9/
+http://jsfiddle.net/Tcb3z/ (outlines using a cloned object with scale...)
