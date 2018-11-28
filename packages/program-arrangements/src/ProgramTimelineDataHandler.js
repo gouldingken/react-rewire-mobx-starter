@@ -38,7 +38,9 @@ export default class ProgramTimelineDataHandler extends ADataHandler {
             offset: offset,
             z: z,
             depth: depth,
-            color: color
+            color: color,
+            fromKey: 'Option 1',
+            toKey: 'Option 2',
         };
 
         const interpolator = new ShapeInterpolator(path1, path2, true);

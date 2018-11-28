@@ -10,6 +10,7 @@ import {ExtrudeBufferGeometry, Group, Mesh, MeshLambertMaterial, Shape} from "th
 export default class MeshTween {
 
     constructor(scene) {
+        this.tweenDir = 0;
         this.displayIndex = 0;
         this.group = new Group();
         scene.add(this.group);
@@ -55,5 +56,22 @@ export default class MeshTween {
         this.updateVisibility();
     }
 
+    setActiveKey(key) {
+        if (key === this.fromKey) {
+            this.tweenDir = -1;
+        }
+        if (key === this.toKey) {
+            this.tweenDir = 1;
+        }
+    }
+
+    tick() {
+        if (this.tweenDir > 0) {
+            this.next(false);
+        }
+        if (this.tweenDir < 0) {
+            this.prev(false);
+        }
+    }
 
 }

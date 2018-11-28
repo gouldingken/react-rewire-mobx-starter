@@ -23,6 +23,7 @@ import MeshTween from "./MeshTween";
  */
 export default class ThreeApp {
     constructor(holder, dataHandler) {
+        this.tweenObjects = [];
         this.holder = holder;
 
         /** @type ADataHandler */
@@ -103,11 +104,13 @@ export default class ThreeApp {
         };
 
         if (this.dataHandler.useExtrudes) {
-            this.dataHandler.getExtrudeObjects((extrudes)=> {
+            this.dataHandler.getExtrudeObjects((extrudes) => {
 
                 extrudes.forEach((extrude, i) => {
                     if (extrude.tweenPaths) {
                         const meshTween = new MeshTween(this.scene);
+                        meshTween.fromKey = extrude.fromKey;
+                        meshTween.toKey = extrude.toKey;
                         extrude.tweenPaths.forEach((path, i) => {
                             let useOffset = extrude.offset && i > 0 && i < extrude.tweenPaths.length - 1;
                             let shapeExtrude = new ShapeExtrude(path, extrude.depth + ((useOffset) ? extrude.offset : 0), extrude.color);
@@ -115,19 +118,7 @@ export default class ThreeApp {
                         });
                         meshTween.group.translateZ(extrude.z);
 
-                        let dir = 1;
-                        setInterval(() => {
-                            dir *= -1;
-                        }, 2000);
-
-                        setInterval(() => {//TEMP for testing
-                            if (dir > 0) {
-                                meshTween.next(false);
-                            } else {
-                                meshTween.prev(false);
-                            }
-                        }, 30);
-
+                        this.tweenObjects.push(meshTween);
                     } else if (extrude.path) {
                         let shapeExtrude = new ShapeExtrude(extrude.path, extrude.depth, extrude.color);
                         shapeExtrude.mesh.translateZ(extrude.z);
@@ -282,6 +273,11 @@ export default class ThreeApp {
         if (!this.time) this.time = 0.1;
         this.time += 0.002;
         this.dataHandler.setTime(this.time);
+        this.tweenObjects.forEach((tweenObj, i) => {
+            if (tweenObj.tick) {
+                tweenObj.tick();
+            }
+        });
         Object.keys(this.objectsById).forEach((id) => {
             this.setMaterial(id, this.dataHandler.getColor(id))
         });

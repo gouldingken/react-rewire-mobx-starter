@@ -21,6 +21,12 @@ export default class ThreeContainer extends React.Component {
     }
 
     render() {
+        const {store, activeOption, dataHandler} = this.props;
+        if (this.threeApp) {
+            this.threeApp.tweenObjects.forEach((tweenObj, i) => {
+                tweenObj.setActiveKey(activeOption);
+            });
+        }
         return (
             <div ref={(mount) => {
                 this.mount = mount
