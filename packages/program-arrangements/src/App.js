@@ -11,7 +11,7 @@ class App extends Component {
         return (
             <div className="App">
                 <ThreeContainer dataHandler={new ProgramTimelineDataHandler()} store={store}
-                                activeOption={store.activeOption}/>
+                                previousOption={store.previousOption} activeOption={store.activeOption}/>
                 <GanttSvg interactions={store.timelineInteractionStore}/>
                 <OptionPicker store={store} activeOption={store.activeOption}/>
 

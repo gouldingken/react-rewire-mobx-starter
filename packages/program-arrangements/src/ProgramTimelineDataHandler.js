@@ -38,9 +38,7 @@ export default class ProgramTimelineDataHandler extends ADataHandler {
             offset: offset,
             z: z,
             depth: depth,
-            color: color,
-            fromKey: 'Option 1',
-            toKey: 'Option 2',
+            color: color
         };
 
         const interpolator = new ShapeInterpolator(path1, path2, true);
@@ -60,7 +58,8 @@ export default class ProgramTimelineDataHandler extends ADataHandler {
             offset: offset,
             z: z,
             depth: depth,
-            color: color
+            color: color,
+            hatch: true
         };
     }
 
@@ -95,12 +94,33 @@ export default class ProgramTimelineDataHandler extends ADataHandler {
                 }
             });
 
+            const options = {
+                'option1': 'Option 1',
+                'option2': 'Option 2',
+                'option3': 'Option 3',
+                'option4': 'Option 4',
+            };
+
             Object.keys(objectPairs).forEach((name) => {
+                // console.log('---' + name);
+
                 const pair = objectPairs[name];
 
-                const extrusion1 = speckleData.getExtrusion(pair.option1);
-                const extrusion2 = speckleData.getExtrusion(pair.option2);
-                ans.push(this.getTweenPathObject(extrusion1.polyline, extrusion2.polyline, colors[name], extrusion1.height, 0, extrusion1.z));
+                let optionKeys = Object.keys(options);
+                for (let i = 0; i < optionKeys.length; i++) {
+                    for (let j = i + 1; j < optionKeys.length; j++) {
+                        // console.log(optionKeys[i] + ' -> ' + optionKeys[j]);
+                        const aKey = optionKeys[i % 2];//TEMP repeating first 2 for testing
+                        const bKey = optionKeys[j % 2];
+                        const extrusion1 = speckleData.getExtrusion(pair[aKey]);
+                        const extrusion2 = speckleData.getExtrusion(pair[bKey]);
+                        let tweenPathObject = this.getTweenPathObject(extrusion1.polyline, extrusion2.polyline, colors[name], extrusion1.height, 0, extrusion1.z);
+                        tweenPathObject.group = name;
+                        tweenPathObject.fromKey = options[optionKeys[i]];
+                        tweenPathObject.toKey = options[optionKeys[j]];
+                        ans.push(tweenPathObject);
+                    }
+                }
             });
 
             let offset = 0;//used to minimize z-fighting

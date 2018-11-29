@@ -10,13 +10,13 @@ import HatchShader from "./shaders/HatchShader";
  */
 export default class ShapeExtrude {
 
-    constructor(path, depth, color) {
+    constructor(path, depth, color, hatch) {
         const shape = new Shape();
         path.forEach((pos, i) => {
             if (i === 0) {
-                shape.moveTo( pos.x, pos.y );
+                shape.moveTo(pos.x, pos.y);
             } else {
-                shape.lineTo( pos.x, pos.y );
+                shape.lineTo(pos.x, pos.y);
             }
         });
 
@@ -27,12 +27,16 @@ export default class ShapeExtrude {
         };
 
         const geometry = new ExtrudeBufferGeometry(shape, extrudeSettings);
-        // const material = new MeshLambertMaterial({color: color});
-        const material = new HatchShader({color: color}).getMaterial();
+        let material;
+        if (hatch) {
+            material = new HatchShader({color: color}).getMaterial();
+        } else {
+            material = new MeshLambertMaterial({color: color});
+        }
         const mesh = new Mesh(geometry, material);
 
         //Note shapes are 2D and are extruded in the "Z" direction
-        mesh.rotateX( -Math.PI / 2 );
+        mesh.rotateX(-Math.PI / 2);
         this.mesh = mesh;
     };
 }

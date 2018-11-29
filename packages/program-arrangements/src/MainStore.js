@@ -10,6 +10,7 @@ import {InteractionStore} from "react-timeline-gantt";
  */
 export default class MainStore {
     activeOption = 'Option 1';
+    previousOption = 'Option 1';
 
 
     constructor() {
@@ -17,12 +18,15 @@ export default class MainStore {
     };
 
     setActiveOption(val) {
+        if (this.activeOption === val) return;
+        this.previousOption = this.activeOption;
         this.activeOption = val;
     }
 }
 
 
 decorate(MainStore, {
+    previousOption: observable,
     activeOption: observable,
 
     setActiveOption: action,

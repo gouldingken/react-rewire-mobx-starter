@@ -21,10 +21,10 @@ export default class ThreeContainer extends React.Component {
     }
 
     render() {
-        const {store, activeOption, dataHandler} = this.props;
+        const {store, previousOption, activeOption, dataHandler} = this.props;
         if (this.threeApp) {
             this.threeApp.tweenObjects.forEach((tweenObj, i) => {
-                tweenObj.setActiveKey(activeOption);
+                tweenObj.setTweenSet(previousOption, activeOption);
             });
         }
         return (

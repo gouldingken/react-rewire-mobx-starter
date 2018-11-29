@@ -1,4 +1,5 @@
-import {ExtrudeBufferGeometry, Group, Mesh, MeshLambertMaterial, Shape} from "three";
+import {Group} from "three";
+import TweenSet from "./TweenSet";
 
 /**
  * Creates a new instance of MeshTween.
@@ -9,68 +10,46 @@ import {ExtrudeBufferGeometry, Group, Mesh, MeshLambertMaterial, Shape} from "th
  */
 export default class MeshTween {
 
-    constructor(scene) {
-        this.tweenDir = 0;
-        this.displayIndex = 0;
+    constructor(scene, name) {
+        this.tickCount = 0;
+        this.tickFrequency = 2;
         this.group = new Group();
+        this.tweenSets = {};
+        this.activeTweenSet = null;
+        this.name = name;
         scene.add(this.group);
     };
 
-    add(mesh) {
-        mesh.visible = this.group.children.length === this.displayIndex;
+    static orderedId(a, b) {
+        if (a > b) return b + '_' + a;
+        return a + '_' + b;
+    }
+
+    add(mesh, fromKey, toKey) {
+        //TODO start/end meshes are currently duplicated across tweens - consider storing only once
+        const tweenSetId = MeshTween.orderedId(fromKey, toKey);
+        if (!this.tweenSets[tweenSetId]) {
+            this.tweenSets[tweenSetId] = new TweenSet(fromKey, toKey);
+        }
+        this.tweenSets[tweenSetId].add(mesh);
         this.group.add(mesh);
     }
 
-    updateVisibility() {
-        this.group.children.forEach((mesh, i) => {
-            mesh.visible = i === this.displayIndex;
+    setTweenSet(fromKey, toKey) {
+        const tweenSetId = MeshTween.orderedId(fromKey, toKey);
+        this.activeTweenSet = this.tweenSets[tweenSetId];
+        this.activeTweenSet.setActiveKey(toKey);
+        Object.keys(this.tweenSets).forEach((k) => {
+            const tweenSet = this.tweenSets[k];
+            tweenSet.setVisible(tweenSet === this.activeTweenSet);
         });
     }
 
-    display(index) {
-        this.displayIndex = index;
-        this.updateVisibility();
-    }
-
-    next(wrap) {
-        this.displayIndex++;
-        if (this.displayIndex >= this.group.children.length) {
-            if (wrap) {
-                this.displayIndex = 0;
-            } else {
-                this.displayIndex = this.group.children.length - 1;
-            }
-        }
-        this.updateVisibility();
-    }
-
-    prev(wrap) {
-        this.displayIndex--;
-        if (this.displayIndex < 0) {
-            if (wrap) {
-                this.displayIndex = this.group.children.length - 1;
-            } else {
-                this.displayIndex = 0;
-            }
-        }
-        this.updateVisibility();
-    }
-
-    setActiveKey(key) {
-        if (key === this.fromKey) {
-            this.tweenDir = -1;
-        }
-        if (key === this.toKey) {
-            this.tweenDir = 1;
-        }
-    }
-
     tick() {
-        if (this.tweenDir > 0) {
-            this.next(false);
-        }
-        if (this.tweenDir < 0) {
-            this.prev(false);
+        if (!this.activeTweenSet) return;
+        this.tickCount++;
+        if (this.tickCount % this.tickFrequency === 0) {
+            this.activeTweenSet.tick();
         }
     }
 

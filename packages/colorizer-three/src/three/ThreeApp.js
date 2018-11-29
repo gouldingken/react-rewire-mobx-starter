@@ -106,21 +106,26 @@ export default class ThreeApp {
         if (this.dataHandler.useExtrudes) {
             this.dataHandler.getExtrudeObjects((extrudes) => {
 
+                const meshTweens = {};
                 extrudes.forEach((extrude, i) => {
                     if (extrude.tweenPaths) {
-                        const meshTween = new MeshTween(this.scene);
-                        meshTween.fromKey = extrude.fromKey;
-                        meshTween.toKey = extrude.toKey;
+                        console.log('tween extrude: ' + extrude.fromKey + ' -> ' + extrude.toKey);
+
+                        if (!meshTweens[extrude.group]) {
+                            meshTweens[extrude.group] = new MeshTween(this.scene, extrude.group);
+                            this.tweenObjects.push(meshTweens[extrude.group]);
+                        }
+                        const meshTween = meshTweens[extrude.group];
+
                         extrude.tweenPaths.forEach((path, i) => {
                             let useOffset = extrude.offset && i > 0 && i < extrude.tweenPaths.length - 1;
-                            let shapeExtrude = new ShapeExtrude(path, extrude.depth + ((useOffset) ? extrude.offset : 0), extrude.color);
-                            meshTween.add(shapeExtrude.mesh);
+                            let shapeExtrude = new ShapeExtrude(path, extrude.depth + ((useOffset) ? extrude.offset : 0), extrude.color, extrude.hatch);
+                            meshTween.add(shapeExtrude.mesh, extrude.fromKey, extrude.toKey);
                         });
-                        meshTween.group.translateZ(extrude.z);
+                        // meshTween.group.translateZ(extrude.z);
 
-                        this.tweenObjects.push(meshTween);
                     } else if (extrude.path) {
-                        let shapeExtrude = new ShapeExtrude(extrude.path, extrude.depth, extrude.color);
+                        let shapeExtrude = new ShapeExtrude(extrude.path, extrude.depth, extrude.color, extrude.hatch);
                         shapeExtrude.mesh.translateZ(extrude.z);
                         this.scene.add(shapeExtrude.mesh);
                     }
@@ -273,6 +278,7 @@ export default class ThreeApp {
         if (!this.time) this.time = 0.1;
         this.time += 0.002;
         this.dataHandler.setTime(this.time);
+        console.log('UPDATE SCENE');
         this.tweenObjects.forEach((tweenObj, i) => {
             if (tweenObj.tick) {
                 tweenObj.tick();
