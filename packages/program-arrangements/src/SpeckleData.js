@@ -205,6 +205,14 @@ export default class SpeckleData {
         }
     }
 
+    getMesh(obj) {
+        if (obj.type === 'Mesh') {
+            if (obj.faces && obj.vertices) {
+                return {type:'mesh', faces: obj.faces, vertices: obj.vertices.map((v) => v * this.settings.scale)};
+            }
+        }
+    }
+
     objectInfo() {
         return fetch(`http://142.93.245.213:3000/api/v1/streams/${this.streamId}/objects/`).then((response) => {
             return response.json();

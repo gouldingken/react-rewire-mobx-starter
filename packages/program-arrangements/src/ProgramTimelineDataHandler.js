@@ -65,7 +65,8 @@ export default class ProgramTimelineDataHandler extends ADataHandler {
 
 
     getExtrudeObjects(callback) {
-        let speckleData = new SpeckleData({scale: 0.1});
+        // let speckleData = new SpeckleData({scale: 0.1});
+        let speckleData = new SpeckleData({scale: 0.1}, 'H1QCB-myV');//'r16RQMMJE'
         const ans = [];
 
         speckleData.getObjects().then((layers) => {
@@ -76,12 +77,18 @@ export default class ProgramTimelineDataHandler extends ADataHandler {
                 const bits = layer.name.split('::');
                 const optionName = bits[0];
                 const programName = bits[1];
-                if (programName === 'other') {
-                    if (optionName === 'option1') {
+                const partName = bits[2] || '1';
+                if (!programName) {
+                    if (optionName === 'Exisiting Arch') {//typo matches Rhino
                         layer.objects.forEach((obj, i) => {
                             const extrusion = speckleData.getExtrusion(obj);
                             if (extrusion) {
                                 ans.push(this.getPathObject(extrusion.polyline, layer.color, extrusion.height, 0, extrusion.z));
+                            }
+                            const mesh = speckleData.getMesh(obj);
+                            if (mesh) {
+                                mesh.color = layer.color;
+                                ans.push(mesh);
                             }
                         });
                     }
@@ -89,16 +96,20 @@ export default class ProgramTimelineDataHandler extends ADataHandler {
                     if (!objectPairs[programName]) {
                         objectPairs[programName] = {};
                     }
+                    if (!objectPairs[programName][optionName]) {
+                        objectPairs[programName][optionName] = {};
+                    }
                     colors[programName] = layer.color;
-                    objectPairs[programName][optionName] = layer.objects[0];
+
+                    objectPairs[programName][optionName][partName] = layer.objects[0];
                 }
             });
 
             const options = {
-                'option1': 'Option 1',
-                'option2': 'Option 2',
-                'option3': 'Option 3',
-                'option4': 'Option 4',
+                'Option 1': 'Option 1',
+                'Option 2': 'Option 2',
+                'Option 3': 'Option 3',
+                'Option 4': 'Option 4',
             };
 
             Object.keys(objectPairs).forEach((name) => {
@@ -110,15 +121,23 @@ export default class ProgramTimelineDataHandler extends ADataHandler {
                 for (let i = 0; i < optionKeys.length; i++) {
                     for (let j = i + 1; j < optionKeys.length; j++) {
                         // console.log(optionKeys[i] + ' -> ' + optionKeys[j]);
-                        const aKey = optionKeys[i % 2];//TEMP repeating first 2 for testing
-                        const bKey = optionKeys[j % 2];
-                        const extrusion1 = speckleData.getExtrusion(pair[aKey]);
-                        const extrusion2 = speckleData.getExtrusion(pair[bKey]);
-                        let tweenPathObject = this.getTweenPathObject(extrusion1.polyline, extrusion2.polyline, colors[name], extrusion1.height, 0, extrusion1.z);
-                        tweenPathObject.group = name;
-                        tweenPathObject.fromKey = options[optionKeys[i]];
-                        tweenPathObject.toKey = options[optionKeys[j]];
-                        ans.push(tweenPathObject);
+                        const aKey = optionKeys[1 + i % 2];//TEMP repeating first 2 for testing
+                        const bKey = optionKeys[1 + j % 2];
+                        if (pair[aKey] && pair[bKey]) {
+                            Object.keys(pair[aKey]).forEach((partId) => {
+                                const extrusion1 = speckleData.getExtrusion(pair[aKey][partId]);
+                                const extrusion2 = speckleData.getExtrusion(pair[bKey][partId]);//assumes matching objects
+                                if (extrusion1 && extrusion2) {
+                                    let tweenPathObject = this.getTweenPathObject(extrusion1.polyline, extrusion2.polyline, colors[name], extrusion1.height, 0, extrusion1.z);
+                                    tweenPathObject.group = name + '_' + partId;
+                                    tweenPathObject.fromKey = options[optionKeys[i]];
+                                    tweenPathObject.toKey = options[optionKeys[j]];
+                                    ans.push(tweenPathObject);
+                                }
+                            });
+
+                        }
+
                     }
                 }
             });
@@ -126,7 +145,7 @@ export default class ProgramTimelineDataHandler extends ADataHandler {
             let offset = 0;//used to minimize z-fighting
             ans.sort((a, b) => a.depth - b.depth);
             ans.forEach((tweenObj, i) => {
-                tweenObj.offset = i * 0.25;
+                tweenObj.offset = i * 0.01;
             });
             callback(ans);
         });

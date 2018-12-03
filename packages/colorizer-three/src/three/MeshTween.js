@@ -38,7 +38,10 @@ export default class MeshTween {
     setTweenSet(fromKey, toKey) {
         const tweenSetId = MeshTween.orderedId(fromKey, toKey);
         this.activeTweenSet = this.tweenSets[tweenSetId];
-        this.activeTweenSet.setActiveKey(toKey);
+        if (this.activeTweenSet) {
+            this.activeTweenSet.setActiveKey(toKey);
+
+        }
         Object.keys(this.tweenSets).forEach((k) => {
             const tweenSet = this.tweenSets[k];
             tweenSet.setVisible(tweenSet === this.activeTweenSet);

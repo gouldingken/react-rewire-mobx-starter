@@ -13,6 +13,7 @@ import OrbitControls from 'orbit-controls-es6';
 import OBJLoader from "./core/OBJLoader";
 import ShapeExtrude from "./ShapeExtrude";
 import MeshTween from "./MeshTween";
+import Converter from "./Converter";
 
 /**
  * Creates a new instance of ThreeApp.
@@ -128,6 +129,8 @@ export default class ThreeApp {
                         let shapeExtrude = new ShapeExtrude(extrude.path, extrude.depth, extrude.color, extrude.hatch);
                         shapeExtrude.mesh.translateZ(extrude.z);
                         this.scene.add(shapeExtrude.mesh);
+                    } else if (extrude.type === 'mesh') {//TODO rename 'extrude' to something more generic
+                        this.scene.add(Converter.getMesh(extrude, new MeshLambertMaterial({color: extrude.color})));
                     }
                 });
             });
@@ -278,7 +281,7 @@ export default class ThreeApp {
         if (!this.time) this.time = 0.1;
         this.time += 0.002;
         this.dataHandler.setTime(this.time);
-        console.log('UPDATE SCENE');
+        // console.log('UPDATE SCENE');
         this.tweenObjects.forEach((tweenObj, i) => {
             if (tweenObj.tick) {
                 tweenObj.tick();
