@@ -6,25 +6,34 @@ export default class OptionPicker extends React.Component {
         super(props);
     }
 
+    setActiveOption(option, e) {
+        const {store} = this.props;
+        store.setActiveOption(option);
+        if (e.ctrlKey) {
+            store.setInclusionList(null);
+        }
+
+    }
+
     render() {
-        const {store, activeOption} = this.props;
+        const {activeOption} = this.props;
         return (
             <div className="OptionPicker">
                 <div>{activeOption}</div>
-                <button onClick={() => {
-                    store.setActiveOption('Existing');
+                <button onClick={(e) => {
+                    this.setActiveOption('Existing', e);
                 }}>Existing
                 </button>
-                <button onClick={() => {
-                    store.setActiveOption('Option 2');
+                <button onClick={(e) => {
+                    this.setActiveOption('Option 2', e);
                 }}>Option 2
                 </button>
-                <button onClick={() => {
-                    store.setActiveOption('Option 3');
+                <button onClick={(e) => {
+                    this.setActiveOption('Option 3', e);
                 }}>Option 3
                 </button>
-                <button onClick={() => {
-                    store.setActiveOption('Option 4');
+                <button onClick={(e) => {
+                    this.setActiveOption('Option 4', e);
                 }}>Option 4
                 </button>
             </div>

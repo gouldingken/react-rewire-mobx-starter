@@ -8,15 +8,26 @@ export default class MoveSets extends React.Component {
     }
 
     render() {
-        const {moveSets} = this.props;
+        const {moveSets, store} = this.props;
         if (!moveSets || moveSets.length ===  0) return null;
         return (
             <div className="MoveSets">
+                <div>
                 {moveSets.map((moveSet, i) =>
-                    <MoveSet key={i} moveSet={moveSet}/>
+                    <MoveSet store={store} key={i} moveSet={moveSet}/>
                 )}
+                </div>
+                <div>
+                    <button onClick={event => this.moveAll()}>Move ALL</button>
+                </div>
             </div>
+
         );
+    }
+
+    moveAll() {
+        const {store} = this.props;
+        store.setInclusionList(null);
     }
 }
 

@@ -7,9 +7,11 @@ export default class Move extends React.Component {
     }
 
     render() {
-        const {move} = this.props;
+        const {move, store, includeMove} = this.props;
         return (
-            <div className="Move">
+            <div className="Move" onClick={() => {
+                includeMove(move, store);
+            }}>
                 {move.name}
             </div>
         );

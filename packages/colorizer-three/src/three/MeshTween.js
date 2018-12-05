@@ -35,16 +35,18 @@ export default class MeshTween {
         this.group.add(mesh);
     }
 
-    setTweenSet(fromKey, toKey) {
+    setTweenSet(fromKey, toKey, activate) {
         const tweenSetId = MeshTween.orderedId(fromKey, toKey);
-        this.activeTweenSet = this.tweenSets[tweenSetId];
-        if (this.activeTweenSet) {
-            this.activeTweenSet.setActiveKey(toKey);
-
+        let activeTweenSet = this.tweenSets[tweenSetId];
+        if (activate) {
+            this.activeTweenSet = activeTweenSet;
+            if (this.activeTweenSet) {
+                this.activeTweenSet.setActiveKey(toKey);
+            }
         }
         Object.keys(this.tweenSets).forEach((k) => {
             const tweenSet = this.tweenSets[k];
-            tweenSet.setVisible(tweenSet === this.activeTweenSet);
+            tweenSet.setVisible(tweenSet === activeTweenSet);
         });
     }
 

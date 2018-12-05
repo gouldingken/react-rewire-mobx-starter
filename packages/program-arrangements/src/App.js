@@ -12,7 +12,7 @@ class App extends Component {
         return (
             <div className="App">
                 <ThreeContainer dataHandler={new ProgramTimelineDataHandler()} store={store}
-                                previousOption={store.previousOption} activeOption={store.activeOption}/>
+                                previousOption={store.previousOption} activeOption={store.activeOption} inclusionList={store.inclusionList}/>
                 {/*<GanttSvg interactions={store.timelineInteractionStore}/>*/}
                 <OptionPicker store={store} activeOption={store.activeOption}/>
                 <MoveSets store={store} moveSets={store.moveSets}/>

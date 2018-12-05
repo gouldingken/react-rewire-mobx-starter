@@ -15,6 +15,7 @@ import OBJLoader from "./core/OBJLoader";
 import ShapeExtrude from "./ShapeExtrude";
 import MeshTween from "./MeshTween";
 import Converter from "./Converter";
+import {Emitter} from "sasaki-core";
 
 /**
  * Creates a new instance of ThreeApp.
@@ -23,8 +24,9 @@ import Converter from "./Converter";
  * @example
  * var instance = new ThreeApp();
  */
-export default class ThreeApp {
+export default class ThreeApp extends Emitter {
     constructor(holder, dataHandler) {
+        super();
         this.tweenObjects = [];
         this.holder = holder;
 
@@ -58,8 +60,8 @@ export default class ThreeApp {
         const directionalLight = new DirectionalLight(0xffffff, 0.5);
         this.scene.add(directionalLight);
 
-        const ambient = new AmbientLight( 0x404040, 0.7 ); // soft white light
-        this.scene.add( ambient );
+        const ambient = new AmbientLight(0x404040, 0.7); // soft white light
+        this.scene.add(ambient);
 
         const manager = this.getLoadingManager();
 
@@ -139,6 +141,8 @@ export default class ThreeApp {
                         this.scene.add(Converter.getMesh(extrude, new MeshLambertMaterial({color: extrude.color})));
                     }
                 });
+
+                this.emit('objects-ready');
             });
         }
 

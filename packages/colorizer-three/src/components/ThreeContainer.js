@@ -13,6 +13,10 @@ export default class ThreeContainer extends React.Component {
         const height = this.mount.clientHeight;
 
         this.threeApp = new ThreeApp(this.mount, dataHandler);
+        this.threeApp.on('objects-ready', () => {
+            const {previousOption, activeOption, inclusionList} = this.props;
+            this.updateTweenObjects(inclusionList, previousOption, activeOption);
+        });
     }
 
     componentWillUnmount() {
@@ -21,11 +25,9 @@ export default class ThreeContainer extends React.Component {
     }
 
     render() {
-        const {store, previousOption, activeOption, dataHandler} = this.props;
+        const {store, previousOption, activeOption, inclusionList, dataHandler} = this.props;
         if (this.threeApp) {
-            this.threeApp.tweenObjects.forEach((tweenObj, i) => {
-                tweenObj.setTweenSet(previousOption, activeOption);
-            });
+            this.updateTweenObjects(inclusionList, previousOption, activeOption);
         }
         return (
             <div ref={(mount) => {
@@ -34,6 +36,13 @@ export default class ThreeContainer extends React.Component {
 
             </div>
         );
+    }
+
+    updateTweenObjects(inclusionList, previousOption, activeOption) {
+        this.threeApp.tweenObjects.forEach((tweenObj, i) => {
+            const include = !inclusionList || inclusionList.indexOf(tweenObj.name) >= 0;
+            tweenObj.setTweenSet(previousOption, activeOption, include);
+        });
     }
 }
 observer(ThreeContainer);
