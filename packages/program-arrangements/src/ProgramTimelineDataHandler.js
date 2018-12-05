@@ -32,12 +32,14 @@ export default class ProgramTimelineDataHandler extends ADataHandler {
         return true;
     }
 
-    getTweenPathObject(path1, path2, color, depth, offset, z = 0) {
+    getTweenPathObject(path1, path2, color, offset, fromZ, toZ, fromDepth, toDepth) {
         const tweenPathObj = {
             tweenPaths: [],
             offset: offset,
-            z: z,
-            depth: depth,
+            fromZ: fromZ,
+            toZ: toZ,
+            fromDepth: fromDepth,
+            toDepth: toDepth,
             color: color
         };
 
@@ -66,7 +68,9 @@ export default class ProgramTimelineDataHandler extends ADataHandler {
 
     getExtrudeObjects(callback) {
         // let speckleData = new SpeckleData({scale: 0.1});
-        let speckleData = new SpeckleData({scale: 0.1}, 'H1QCB-myV');//'r16RQMMJE'
+        const testObjectStream = 'SkSB07V14';
+        const optionsStream = 'rysHaUmJE';
+        let speckleData = new SpeckleData({scale: 0.1}, optionsStream);//'r16RQMMJE'
         const ans = [];
 
         speckleData.getObjects().then((layers) => {
@@ -74,6 +78,7 @@ export default class ProgramTimelineDataHandler extends ADataHandler {
             const objectPairs = {};
             const colors = {};
             layers.forEach((layer, i) => {
+                console.log('LAYER: ' + layer.name);
                 const bits = layer.name.split('::');
                 const optionName = bits[0];
                 const programName = bits[1];
@@ -106,14 +111,14 @@ export default class ProgramTimelineDataHandler extends ADataHandler {
             });
 
             const options = {
-                'Option 1': 'Option 1',
+                'Existing': 'Existing',
                 'Option 2': 'Option 2',
                 'Option 3': 'Option 3',
                 'Option 4': 'Option 4',
             };
 
             Object.keys(objectPairs).forEach((name) => {
-                // console.log('---' + name);
+                console.log('---' + name);
 
                 const pair = objectPairs[name];
 
@@ -121,24 +126,45 @@ export default class ProgramTimelineDataHandler extends ADataHandler {
                 for (let i = 0; i < optionKeys.length; i++) {
                     for (let j = i + 1; j < optionKeys.length; j++) {
                         // console.log(optionKeys[i] + ' -> ' + optionKeys[j]);
-                        const aKey = optionKeys[1 + i % 2];//TEMP repeating first 2 for testing
-                        const bKey = optionKeys[1 + j % 2];
+                        const aKey = optionKeys[i];
+                        const bKey = optionKeys[j];
                         if (pair[aKey] && pair[bKey]) {
                             Object.keys(pair[aKey]).forEach((partId) => {
-                                const extrusion1 = speckleData.getExtrusion(pair[aKey][partId]);
-                                const extrusion2 = speckleData.getExtrusion(pair[bKey][partId]);//assumes matching objects
+                                const logVerbose = false;//name + '_' + partId === 'Strength&Conditioning_2';
+                                const extrusion1 = speckleData.getExtrusion(pair[aKey][partId], logVerbose);
+                                const extrusion2 = speckleData.getExtrusion(pair[bKey][partId], logVerbose);//assumes matching objects
                                 if (extrusion1 && extrusion2) {
-                                    let tweenPathObject = this.getTweenPathObject(extrusion1.polyline, extrusion2.polyline, colors[name], extrusion1.height, 0, extrusion1.z);
+                                    let tweenPathObject = this.getTweenPathObject(extrusion1.polyline, extrusion2.polyline, colors[name], 0, extrusion1.z, extrusion2.z, extrusion1.height, extrusion2.height);
                                     tweenPathObject.group = name + '_' + partId;
+                                    if (logVerbose) {
+                                        console.log(aKey + '->' + bKey + ' -- zPos: ' + tweenPathObject.fromZ + ' -> ' + tweenPathObject.toZ);
+                                    }
                                     tweenPathObject.fromKey = options[optionKeys[i]];
                                     tweenPathObject.toKey = options[optionKeys[j]];
                                     ans.push(tweenPathObject);
+                                } else {
+                                    console.log('Missing Extrusion! ' + extrusion1 + ' - ' + extrusion2);
                                 }
                             });
 
                         }
 
                     }
+                }
+            });
+
+            const groupLists = {};
+            ans.forEach((tweenObj, i) => {
+                if (!tweenObj.group) return;
+                if (!groupLists[tweenObj.group]) groupLists[tweenObj.group] = [];
+                groupLists[tweenObj.group].push(tweenObj.fromKey + ' -> ' + tweenObj.toKey);
+            });
+
+            const targetGroupLength = 6;
+            Object.keys(groupLists).forEach((k) => {
+                const groupList = groupLists[k];
+                if (groupList.length !== targetGroupLength) {
+                    console.log('Length mismatch: ' + JSON.stringify(groupList, null, 2));
                 }
             });
 

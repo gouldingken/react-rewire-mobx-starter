@@ -11,7 +11,7 @@ import {InteractionStore} from "react-timeline-gantt";
 export default class MainStore {
     activeOption = 'Option 1';
     previousOption = 'Option 1';
-
+    moveSets = [];
 
     constructor() {
         this.timelineInteractionStore = new InteractionStore();
@@ -22,12 +22,16 @@ export default class MainStore {
         this.previousOption = this.activeOption;
         this.activeOption = val;
     }
+    setMoveSets(val) {
+        this.moveSets = val;
+    }
 }
-
 
 decorate(MainStore, {
     previousOption: observable,
     activeOption: observable,
+    moveSets: observable,
 
     setActiveOption: action,
+    setMoveSets: action,
 });

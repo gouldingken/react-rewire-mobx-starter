@@ -12,8 +12,8 @@ export default class OptionPicker extends React.Component {
             <div className="OptionPicker">
                 <div>{activeOption}</div>
                 <button onClick={() => {
-                    store.setActiveOption('Option 1');
-                }}>Option 1
+                    store.setActiveOption('Existing');
+                }}>Existing
                 </button>
                 <button onClick={() => {
                     store.setActiveOption('Option 2');

@@ -1,0 +1,17 @@
+.MoveSets {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom:0;
+  width: 200px;
+  background: #dcff94;
+  .MoveSet {
+    padding: 8px 6px;
+    background: #ffee66;
+    .Move {
+      padding: 8px 6px;
+      background: #ffc2fc;
+
+    }
+  }
+}

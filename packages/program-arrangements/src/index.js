@@ -6,7 +6,13 @@ import * as serviceWorker from './serviceWorker';
 import MainStore from "./MainStore";
 
 const store = new MainStore();
-ReactDOM.render(<App store={store} />, document.getElementById('root'));
+ReactDOM.render(<App store={store}/>, document.getElementById('root'));
+//
+fetch('./assets/data/moveSets.json').then(function (response) {
+    return response.json();
+}).then((data) => {
+    store.setMoveSets(data["option  2"]);//TODO use active option and normalize option names
+});
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

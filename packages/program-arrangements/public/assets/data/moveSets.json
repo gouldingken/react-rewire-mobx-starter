@@ -1,0 +1,382 @@
+{
+  "option 1": [
+    {
+      "date": {
+        "year": 2019,
+        "month": 9
+      },
+      "moves": [
+        {
+          "name": "Basketball Course",
+          "startDate": {
+            "year": 2019,
+            "month": 9
+          },
+          "endDate": {
+            "year": 2020,
+            "month": 2
+          }
+        },
+        {
+          "name": "Locker",
+          "startDate": {
+            "year": 2019,
+            "month": 9
+          },
+          "endDate": {
+            "year": 2020,
+            "month": 2
+          }
+        },
+        {
+          "name": "Sport Medicine",
+          "startDate": {
+            "year": 2019,
+            "month": 9
+          },
+          "endDate": {
+            "year": 2020,
+            "month": 2
+          }
+        }
+      ]
+    },
+    {
+      "date": {
+        "year": 2020,
+        "month": 3
+      },
+      "moves": [
+        {
+          "name": "Office",
+          "startDate": {
+            "year": 2020,
+            "month": 3
+          },
+          "endDate": {
+            "year": 2021,
+            "month": 9
+          }
+        },
+        {
+          "name": "acdemics support",
+          "startDate": {
+            "year": 2020,
+            "month": 3
+          },
+          "endDate": {
+            "year": 2021,
+            "month": 9
+          }
+        },
+        {
+          "name": "VIP/Meeting",
+          "startDate": {
+            "year": 2020,
+            "month": 3
+          },
+          "endDate": {
+            "year": 2021,
+            "month": 9
+          }
+        }
+      ]
+    },
+    {
+      "date": {
+        "year": 2020,
+        "month": 4
+      },
+      "moves": [
+        {
+          "name": "Strength&Conditioning",
+          "startDate": {
+            "year": 2020,
+            "month": 4
+          },
+          "endDate": {
+            "year": 2020,
+            "month": 7
+          }
+        }
+      ]
+    },
+    {
+      "date": {
+        "year": 2021,
+        "month": 6
+      },
+      "moves": [
+        {
+          "name": "sports arena",
+          "startDate": {
+            "year": 2021,
+            "month": 6
+          },
+          "endDate": {
+            "year": 2021,
+            "month": 9
+          }
+        }
+      ]
+    }
+  ],
+  "option  2": [
+    {
+      "date": {
+        "year": 2019,
+        "month": 9
+      },
+      "moves": [
+        {
+          "name": "Basketball Course",
+          "startDate": {
+            "year": 2019,
+            "month": 9
+          },
+          "endDate": {
+            "year": 2020,
+            "month": 2
+          }
+        },
+        {
+          "name": "Locker",
+          "startDate": {
+            "year": 2019,
+            "month": 9
+          },
+          "endDate": {
+            "year": 2020,
+            "month": 2
+          }
+        },
+        {
+          "name": "Sport Medicine",
+          "startDate": {
+            "year": 2019,
+            "month": 9
+          },
+          "endDate": {
+            "year": 2020,
+            "month": 2
+          }
+        }
+      ]
+    },
+    {
+      "date": {
+        "year": 2020,
+        "month": 3
+      },
+      "moves": [
+        {
+          "name": "VIP/Meeting",
+          "startDate": {
+            "year": 2020,
+            "month": 3
+          },
+          "endDate": {
+            "year": 2021,
+            "month": 9
+          }
+        },
+        {
+          "name": "Office",
+          "startDate": {
+            "year": 2020,
+            "month": 3
+          },
+          "endDate": {
+            "year": 2021,
+            "month": 9
+          }
+        },
+        {
+          "name": "acdemics support",
+          "startDate": {
+            "year": 2020,
+            "month": 3
+          },
+          "endDate": {
+            "year": 2021,
+            "month": 9
+          }
+        },
+        {
+          "name": "offices 50%",
+          "startDate": {
+            "year": 2020,
+            "month": 3
+          },
+          "endDate": {
+            "year": 2021,
+            "month": 9
+          }
+        }
+      ]
+    },
+    {
+      "date": {
+        "year": 2020,
+        "month": 4
+      },
+      "moves": [
+        {
+          "name": "Strength&Conditioning",
+          "startDate": {
+            "year": 2020,
+            "month": 4
+          },
+          "endDate": {
+            "year": 2020,
+            "month": 7
+          }
+        }
+      ]
+    },
+    {
+      "date": {
+        "year": 2021,
+        "month": 6
+      },
+      "moves": [
+        {
+          "name": "sports arena",
+          "startDate": {
+            "year": 2021,
+            "month": 6
+          },
+          "endDate": {
+            "year": 2021,
+            "month": 9
+          }
+        }
+      ]
+    }
+  ],
+  "option  3": [
+    {
+      "date": {
+        "year": 2019,
+        "month": 9
+      },
+      "moves": [
+        {
+          "name": "Basketball Course",
+          "startDate": {
+            "year": 2019,
+            "month": 9
+          },
+          "endDate": {
+            "year": 2020,
+            "month": 2
+          }
+        },
+        {
+          "name": "Sport Medicine",
+          "startDate": {
+            "year": 2019,
+            "month": 9
+          },
+          "endDate": {
+            "year": 2020,
+            "month": 2
+          }
+        },
+        {
+          "name": "Locker",
+          "startDate": {
+            "year": 2019,
+            "month": 9
+          },
+          "endDate": {
+            "year": 2020,
+            "month": 2
+          }
+        }
+      ]
+    },
+    {
+      "date": {
+        "year": 2020,
+        "month": 3
+      },
+      "moves": [
+        {
+          "name": "Office",
+          "startDate": {
+            "year": 2020,
+            "month": 3
+          },
+          "endDate": {
+            "year": 2021,
+            "month": 9
+          }
+        },
+        {
+          "name": "acdemics support",
+          "startDate": {
+            "year": 2020,
+            "month": 3
+          },
+          "endDate": {
+            "year": 2021,
+            "month": 9
+          }
+        },
+        {
+          "name": "Hall of Fame/Visitor",
+          "startDate": {
+            "year": 2020,
+            "month": 3
+          },
+          "endDate": {
+            "year": 2021,
+            "month": 9
+          }
+        }
+      ]
+    },
+    {
+      "date": {
+        "year": 2021,
+        "month": 6
+      },
+      "moves": [
+        {
+          "name": "Strength&Conditioning",
+          "startDate": {
+            "year": 2021,
+            "month": 6
+          },
+          "endDate": {
+            "year": 2021,
+            "month": 9
+          }
+        },
+        {
+          "name": "sports arena",
+          "startDate": {
+            "year": 2021,
+            "month": 6
+          },
+          "endDate": {
+            "year": 2021,
+            "month": 9
+          }
+        },
+        {
+          "name": "student lounge",
+          "startDate": {
+            "year": 2021,
+            "month": 6
+          },
+          "endDate": {
+            "year": 2022,
+            "month": 9
+          }
+        }
+      ]
+    }
+  ]
+}

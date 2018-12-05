@@ -7,7 +7,8 @@ import {
     Mesh,
     LoadingManager,
     MeshLambertMaterial,
-    DoubleSide, FrontSide, HemisphereLight, DirectionalLight, Box3, ExtrudeBufferGeometry, Shape
+    Math,
+    DoubleSide, FrontSide, HemisphereLight, DirectionalLight, Box3, ExtrudeBufferGeometry, Shape, AmbientLight
 } from 'three';
 import OrbitControls from 'orbit-controls-es6';
 import OBJLoader from "./core/OBJLoader";
@@ -40,23 +41,25 @@ export default class ThreeApp {
             0.01,
             10000
         );
-        this.camera.position.z = 10;
         this.camera.position.x = 10;
+        this.camera.position.z = 10;
         this.camera.position.y = 10;
 
         this.renderer = new WebGLRenderer({antialias: true});
-        this.renderer.setClearColor('#ffffff');
+        this.renderer.setClearColor('#eeeeee');
         this.renderer.setSize(width, height);
         holder.appendChild(this.renderer.domElement);
 
-        const geometry = new BoxGeometry(1, 1, 1);
         const material = new MeshBasicMaterial({color: '#433F81'});
 
-        const light = new HemisphereLight(0xffffbb, 0x080820, 0.6);
+        const light = new HemisphereLight(0xffffbb, 0x080820, 0.4);
         this.scene.add(light);
 
-        const directionalLight = new DirectionalLight(0xffffff, 0.6);
+        const directionalLight = new DirectionalLight(0xffffff, 0.5);
         this.scene.add(directionalLight);
+
+        const ambient = new AmbientLight( 0x404040, 0.7 ); // soft white light
+        this.scene.add( ambient );
 
         const manager = this.getLoadingManager();
 
@@ -110,7 +113,7 @@ export default class ThreeApp {
                 const meshTweens = {};
                 extrudes.forEach((extrude, i) => {
                     if (extrude.tweenPaths) {
-                        console.log('tween extrude: ' + extrude.fromKey + ' -> ' + extrude.toKey);
+                        // console.log(extrude.group + ' -- tween extrude: ' + extrude.fromKey + ' -> ' + extrude.toKey);
 
                         if (!meshTweens[extrude.group]) {
                             meshTweens[extrude.group] = new MeshTween(this.scene, extrude.group);
@@ -120,11 +123,14 @@ export default class ThreeApp {
 
                         extrude.tweenPaths.forEach((path, i) => {
                             let useOffset = extrude.offset && i > 0 && i < extrude.tweenPaths.length - 1;
-                            let shapeExtrude = new ShapeExtrude(path, extrude.depth + ((useOffset) ? extrude.offset : 0), extrude.color, extrude.hatch);
+                            let along = i / (extrude.tweenPaths.length - 1);
+                            let depth = Math.lerp(extrude.fromDepth, extrude.toDepth, along);
+                            let zPos = Math.lerp(extrude.fromZ, extrude.toZ, along);
+                            let shapeExtrude = new ShapeExtrude(path, depth + ((useOffset) ? extrude.offset : 0), extrude.color, extrude.hatch);
+
+                            shapeExtrude.mesh.translateZ(zPos);
                             meshTween.add(shapeExtrude.mesh, extrude.fromKey, extrude.toKey);
                         });
-                        // meshTween.group.translateZ(extrude.z);
-
                     } else if (extrude.path) {
                         let shapeExtrude = new ShapeExtrude(extrude.path, extrude.depth, extrude.color, extrude.hatch);
                         shapeExtrude.mesh.translateZ(extrude.z);
@@ -134,7 +140,6 @@ export default class ThreeApp {
                     }
                 });
             });
-
         }
 
         if (this.dataHandler.useObjLoader) {

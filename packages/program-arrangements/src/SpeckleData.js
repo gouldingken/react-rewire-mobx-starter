@@ -188,27 +188,51 @@ export default class SpeckleData {
 
     }
 
-    getExtrusion(obj) {
-        if (obj.type === 'Extrusion') {
-            if (obj.profile && obj.profile.type === 'Polyline') {
-                const polyline = [];
-                let z = 0;
-                for (let i = 2; i < obj.profile.value.length; i += 3) {
-                    let x = obj.profile.value[i - 2] * this.settings.scale;
-                    let y = obj.profile.value[i - 1] * this.settings.scale;
-                    polyline.push({x: x, y: y});
-                    z = obj.profile.value[i] * this.settings.scale;
-                }
-                return {polyline: polyline, z: z, height: obj.length * this.settings.scale};
+    getPolyline(profile) {
+        if (profile.type === 'Polyline') {
+            const polyline = [];
+            //path line can be in either direction, so we normalize to always extruding UP
+            for (let i = 2; i < profile.value.length; i += 3) {
+                let x = profile.value[i - 2] * this.settings.scale;
+                let y = profile.value[i - 1] * this.settings.scale;
+                polyline.push({x: x, y: y});
+                // z = profile.value[i] * this.settings.scale;
             }
+            return polyline;
+        } else if (profile.type === 'Polycurve') {
+            const polyline = [];
+            for (let i = 0; i < profile.segments.length; i++) {
+                const segment = profile.segments[i];
+                // console.log(segment.type+': '+segment.value.join(','));
+                let x = segment.value[0] * this.settings.scale;
+                let y = segment.value[1] * this.settings.scale;
+                polyline.push({x: x, y: y});
+            }
+            return polyline;
+        }
+    }
 
+    getExtrusion(obj, log) {
+        if (obj.type === 'Extrusion') {
+            if (obj.profile) {
+                const polyline = this.getPolyline(obj.profile);
+                if (polyline) {
+                    //path line can be in either direction, so we normalize to always extruding UP
+                    let z = this.settings.scale * Math.min(obj.pathStart.value[2], obj.pathEnd.value[2]);
+                    return {
+                        polyline: polyline,
+                        z: z,
+                        height: obj.length * this.settings.scale,
+                    };
+                }
+            }
         }
     }
 
     getMesh(obj) {
         if (obj.type === 'Mesh') {
             if (obj.faces && obj.vertices) {
-                return {type:'mesh', faces: obj.faces, vertices: obj.vertices.map((v) => v * this.settings.scale)};
+                return {type: 'mesh', faces: obj.faces, vertices: obj.vertices.map((v) => v * this.settings.scale)};
             }
         }
     }
