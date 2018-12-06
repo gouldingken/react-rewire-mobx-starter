@@ -13,6 +13,7 @@ export default class MainStore {
     previousOption = 'Existing';
     moveSets = [];
     inclusionList = [];
+    highlightProgram = null;
 
     constructor() {
         this.timelineInteractionStore = new InteractionStore();
@@ -33,6 +34,10 @@ export default class MainStore {
         this.inclusionList = val;
     }
 
+    setHighlightProgram(val) {
+        this.highlightProgram = val;
+    }
+
     includeInList(id) {
         if (!this.inclusionList) this.inclusionList = [];
         if (this.inclusionList.indexOf(id) < 0) {
@@ -46,9 +51,11 @@ decorate(MainStore, {
     activeOption: observable,
     moveSets: observable,
     inclusionList: observable,
+    highlightProgram: observable,
 
     setActiveOption: action,
     setMoveSets: action,
     setInclusionList: action,
+    setHighlightProgram: action,
     includeInList: action,
 });

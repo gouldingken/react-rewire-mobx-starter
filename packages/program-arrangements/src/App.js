@@ -9,10 +9,12 @@ import MoveSets from "./components/MoveSets";
 class App extends Component {
     render() {
         const {store} = this.props;
+
         return (
             <div className="App">
                 <ThreeContainer useShadows={true} dataHandler={new ProgramTimelineDataHandler()} store={store}
-                                previousOption={store.previousOption} activeOption={store.activeOption} inclusionList={store.inclusionList}/>
+                                previousOption={store.previousOption} activeOption={store.activeOption}
+                                inclusionList={store.inclusionList} highlightIds={store.highlightProgram}/>
                 {/*<GanttSvg interactions={store.timelineInteractionStore}/>*/}
                 <OptionPicker store={store} activeOption={store.activeOption}/>
                 <MoveSets store={store} moveSets={store.moveSets}/>

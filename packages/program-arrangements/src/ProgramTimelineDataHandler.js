@@ -28,6 +28,19 @@ export default class ProgramTimelineDataHandler extends ADataHandler {
 
     }
 
+    static colorProgram(name) {
+        switch (name) {
+            case 'Basketball Course': return '#fffffb';
+            case 'Locker': return '#f9705f';
+            case 'Sport Medicine': return '#ffca78';
+            case 'VIP/Meeting': return '#fff984';
+            case 'Office': return '#c4b5d3';
+            case 'Strength&Conditioning': return '#f985a6';
+        }
+
+        return '#b3ceec';
+    }
+
     get useExtrudes() {
         return true;
     }
@@ -135,6 +148,7 @@ export default class ProgramTimelineDataHandler extends ADataHandler {
                                 const extrusion2 = speckleData.getExtrusion(pair[bKey][partId], logVerbose);//assumes matching objects
                                 if (extrusion1 && extrusion2) {
                                     let tweenPathObject = this.getTweenPathObject(extrusion1.polyline, extrusion2.polyline, colors[name], 0, extrusion1.z, extrusion2.z, extrusion1.height, extrusion2.height);
+                                    tweenPathObject.id = name;
                                     tweenPathObject.group = name + '_' + partId;
                                     if (logVerbose) {
                                         console.log(aKey + '->' + bKey + ' -- zPos: ' + tweenPathObject.fromZ + ' -> ' + tweenPathObject.toZ);
@@ -171,7 +185,7 @@ export default class ProgramTimelineDataHandler extends ADataHandler {
             let offset = 0;//used to minimize z-fighting
             ans.sort((a, b) => a.depth - b.depth);
             ans.forEach((tweenObj, i) => {
-                tweenObj.offset = i * 0.01;
+                tweenObj.offset = i * 0.001;
             });
             callback(ans);
         });

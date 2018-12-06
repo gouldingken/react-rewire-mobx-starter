@@ -43,6 +43,7 @@ export default class ThreeApp extends Emitter {
     constructor(holder, dataHandler, settings) {
         super();
         this.tweenObjects = [];
+        this.materialObjects = [];
         this.holder = holder;
         this.settings = settings || {};
 
@@ -161,6 +162,7 @@ export default class ThreeApp extends Emitter {
                             if (this.settings.useShadows) {
                                 shapeExtrude.mesh.castShadow = true;
                             }
+                            this.addMaterialObject(shapeExtrude.mesh, extrude.color, extrude.id);
                             shapeExtrude.mesh.translateZ(zPos);
                             meshTween.add(shapeExtrude.mesh, extrude.fromKey, extrude.toKey);
                         });
@@ -440,5 +442,28 @@ export default class ThreeApp extends Emitter {
             this.basePlane.receiveShadow = true;
         }
         this.scene.add(this.basePlane);
+    }
+
+    addMaterialObject(mesh, color, id) {
+        const material = new MeshPhongMaterial({color: color});
+        const materialDim = new MeshBasicMaterial({
+            color: color,
+            wireframe: true
+        });
+        const materialObj = {
+            id: id,
+            setHighlight: (highlight) => {
+                if (!mesh.visible) return;
+                if (highlight) {
+                    mesh.material = material;
+                } else {
+                    mesh.material = materialDim;
+                }
+                // console.log('HIGHLIGHT: ' + id + ': ' + highlight);
+            }
+        };
+
+        this.materialObjects.push(materialObj);
+
     }
 }
