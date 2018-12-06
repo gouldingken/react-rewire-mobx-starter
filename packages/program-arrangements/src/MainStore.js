@@ -24,12 +24,15 @@ export default class MainStore {
         this.activeOption = val;
         this.inclusionList = [];//assumes a mode where nothing shows until added to the inclusion list
     }
+
     setMoveSets(val) {
         this.moveSets = val;
     }
+
     setInclusionList(val) {
         this.inclusionList = val;
     }
+
     includeInList(id) {
         if (!this.inclusionList) this.inclusionList = [];
         if (this.inclusionList.indexOf(id) < 0) {

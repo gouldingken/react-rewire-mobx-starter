@@ -12,8 +12,9 @@ fetch('./assets/data/moveSets.json').then(function (response) {
     return response.json();
 }).then((data) => {
     store.setMoveSets(data["option  2"]);//TODO use active option and normalize option names
+}).catch(function(e) {
+    console.log("error");
 });
-
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: http://bit.ly/CRA-PWA

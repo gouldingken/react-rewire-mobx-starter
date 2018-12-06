@@ -11,7 +11,7 @@ class App extends Component {
         const {store} = this.props;
         return (
             <div className="App">
-                <ThreeContainer dataHandler={new ProgramTimelineDataHandler()} store={store}
+                <ThreeContainer useShadows={true} dataHandler={new ProgramTimelineDataHandler()} store={store}
                                 previousOption={store.previousOption} activeOption={store.activeOption} inclusionList={store.inclusionList}/>
                 {/*<GanttSvg interactions={store.timelineInteractionStore}/>*/}
                 <OptionPicker store={store} activeOption={store.activeOption}/>

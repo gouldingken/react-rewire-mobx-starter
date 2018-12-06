@@ -7,15 +7,30 @@ import {
     Mesh,
     LoadingManager,
     MeshLambertMaterial,
-    Math,
-    DoubleSide, FrontSide, HemisphereLight, DirectionalLight, Box3, ExtrudeBufferGeometry, Shape, AmbientLight
+    DoubleSide,
+    FrontSide,
+    HemisphereLight,
+    DirectionalLight,
+    Box3,
+    ExtrudeBufferGeometry,
+    Shape,
+    AmbientLight,
+    PlaneGeometry,
+    BasicShadowMap,
+    CubeGeometry,
+    DirectionalLightHelper,
+    CameraHelper,
+    PCFSoftShadowMap,
+    MeshPhongMaterial
 } from 'three';
+import {Math as ThreeMath} from 'three';
 import OrbitControls from 'orbit-controls-es6';
 import OBJLoader from "./core/OBJLoader";
 import ShapeExtrude from "./ShapeExtrude";
 import MeshTween from "./MeshTween";
 import Converter from "./Converter";
 import {Emitter} from "sasaki-core";
+import HatchShader from "./shaders/HatchShader";
 
 /**
  * Creates a new instance of ThreeApp.
@@ -25,10 +40,11 @@ import {Emitter} from "sasaki-core";
  * var instance = new ThreeApp();
  */
 export default class ThreeApp extends Emitter {
-    constructor(holder, dataHandler) {
+    constructor(holder, dataHandler, settings) {
         super();
         this.tweenObjects = [];
         this.holder = holder;
+        this.settings = settings || {};
 
         /** @type ADataHandler */
         this.dataHandler = dataHandler;
@@ -54,14 +70,27 @@ export default class ThreeApp extends Emitter {
 
         const material = new MeshBasicMaterial({color: '#433F81'});
 
-        const light = new HemisphereLight(0xffffbb, 0x080820, 0.4);
+        const light = new HemisphereLight('#fffce8', '#080820', 0.5);
         this.scene.add(light);
 
-        const directionalLight = new DirectionalLight(0xffffff, 0.5);
+        const directionalLight = new DirectionalLight(0xffffff, 0.7);
+        directionalLight.position.set(30, 50, 80);
+        directionalLight.target.position.set(0, 0, 0);
+
+        if (settings.useShadows) {
+
+            this.renderer.shadowMap.enabled = true;
+            // this.renderer.shadowMap.type = BasicShadowMap;
+            this.renderer.shadowMap.type = PCFSoftShadowMap;
+            this.setupShadowLight(directionalLight, false);
+
+            this.addBasePlane();
+        }
         this.scene.add(directionalLight);
 
         const ambient = new AmbientLight(0x404040, 0.7); // soft white light
         this.scene.add(ambient);
+
 
         const manager = this.getLoadingManager();
 
@@ -126,18 +155,25 @@ export default class ThreeApp extends Emitter {
                         extrude.tweenPaths.forEach((path, i) => {
                             let useOffset = extrude.offset && i > 0 && i < extrude.tweenPaths.length - 1;
                             let along = i / (extrude.tweenPaths.length - 1);
-                            let depth = Math.lerp(extrude.fromDepth, extrude.toDepth, along);
-                            let zPos = Math.lerp(extrude.fromZ, extrude.toZ, along);
+                            let depth = ThreeMath.lerp(extrude.fromDepth, extrude.toDepth, along);
+                            let zPos = ThreeMath.lerp(extrude.fromZ, extrude.toZ, along);
                             let shapeExtrude = new ShapeExtrude(path, depth + ((useOffset) ? extrude.offset : 0), extrude.color, extrude.hatch);
-
+                            if (this.settings.useShadows) {
+                                shapeExtrude.mesh.castShadow = true;
+                            }
                             shapeExtrude.mesh.translateZ(zPos);
                             meshTween.add(shapeExtrude.mesh, extrude.fromKey, extrude.toKey);
                         });
                     } else if (extrude.path) {
                         let shapeExtrude = new ShapeExtrude(extrude.path, extrude.depth, extrude.color, extrude.hatch);
                         shapeExtrude.mesh.translateZ(extrude.z);
+                        if (this.settings.useShadows) {
+                            shapeExtrude.mesh.castShadow = true;
+                        }
                         this.scene.add(shapeExtrude.mesh);
+
                     } else if (extrude.type === 'mesh') {//TODO rename 'extrude' to something more generic
+
                         this.scene.add(Converter.getMesh(extrude, new MeshLambertMaterial({color: extrude.color})));
                     }
                 });
@@ -204,7 +240,7 @@ export default class ThreeApp extends Emitter {
         } else {
             child.visible = true;
             child.material = this.getColoredMaterial(color);
-            child.castShadow = false;
+            child.castShadow = true;
             child.receiveShadow = false;
         }
 
@@ -286,6 +322,30 @@ export default class ThreeApp extends Emitter {
 
     }
 
+    setupShadowLight(light, useHelper) {
+        const size = this.settings.shadowSize || 100;
+
+        light.shadow.camera.near = 10;
+        light.shadow.camera.far = size * 1.5;
+        //
+        light.shadow.mapSize.width = 2048;  // default 512
+        light.shadow.mapSize.height = 2048;
+        //
+
+        light.shadow.camera.left = -size / 2;
+        light.shadow.camera.right = size / 2;
+        light.shadow.camera.top = size / 2;
+        light.shadow.camera.bottom = -size / 2;
+
+        light.castShadow = true;
+
+        if (useHelper) {
+            const helper = new CameraHelper(light.shadow.camera);
+            this.scene.add(helper);
+        }
+
+    }
+
     updateScene() {
         if (!this.time) this.time = 0.1;
         this.time += 0.002;
@@ -299,5 +359,86 @@ export default class ThreeApp extends Emitter {
         Object.keys(this.objectsById).forEach((id) => {
             this.setMaterial(id, this.dataHandler.getColor(id))
         });
+    }
+
+    addExtrudeTest() {
+
+        const shape = new Shape();
+        const path = [
+            {x: 0, y: 0},
+            {x: 10, y: 0},
+            {x: 10, y: 10},
+            {x: 0, y: 10}];
+        path.forEach((pos, i) => {
+            if (i === 0) {
+                shape.moveTo(pos.x, pos.y);
+            } else {
+                shape.lineTo(pos.x, pos.y);
+            }
+        });
+
+        const extrudeSettings = {
+            steps: 1,
+            depth: 10,
+            bevelEnabled: false
+        };
+
+        const geometry = new ExtrudeBufferGeometry(shape, extrudeSettings);
+        const material = new MeshPhongMaterial({
+            color: '#aef733',
+            side: FrontSide,
+            // opacity: 0.95,
+            // transparent: true
+        });
+        const mesh = new Mesh(geometry, material);
+        if (this.settings.useShadows) {
+            mesh.castShadow = true;
+            mesh.receiveShadow = true;
+        }
+        mesh.rotateX(-Math.PI / 2);
+        this.scene.add(mesh);
+    }
+
+    addBox() {
+        const geometry = new BoxGeometry(20, 20, 20);
+        const material = new MeshPhongMaterial({
+            color: '#aef733',
+            side: FrontSide,
+            // opacity: 0.95,
+            // transparent: true
+        });
+        const box = new Mesh(geometry, material);
+        // box.position.set(10, 0, 100);
+        box.rotation.set(Math.PI / 2, Math.PI / 4, Math.PI / 8);
+        // box.rotateX(-Math.PI / 2);
+
+        if (this.settings.useShadows) {
+            box.castShadow = true;
+            box.receiveShadow = true;
+        }
+        this.scene.add(box);
+    }
+
+    addBasePlane() {
+        // this.addExtrudeTest();
+        // this.addBox();
+
+        const geometry = new PlaneGeometry(100, 100, 1);
+        const material = new MeshPhongMaterial({
+            color: '#f7f7f7',
+            side: FrontSide,
+            // opacity: 0.95,
+            // transparent: true
+        });
+        this.basePlane = new Mesh(geometry, material);
+        // this.basePlane.position.set(10, 0, 100);
+        this.basePlane.rotation.set(-Math.PI / 2, 0, 0);
+        // this.basePlane.rotateX(-Math.PI / 2);
+
+        if (this.settings.useShadows) {
+            // this.basePlane.castShadow = true;
+            this.basePlane.receiveShadow = true;
+        }
+        this.scene.add(this.basePlane);
     }
 }

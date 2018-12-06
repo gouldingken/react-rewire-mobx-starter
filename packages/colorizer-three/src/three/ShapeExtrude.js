@@ -1,4 +1,4 @@
-import {ExtrudeBufferGeometry, Mesh, MeshLambertMaterial, Shape} from "three";
+import {ExtrudeBufferGeometry, Mesh, MeshLambertMaterial, MeshPhongMaterial, Shape} from "three";
 import HatchShader from "./shaders/HatchShader";
 
 /**
@@ -31,10 +31,11 @@ export default class ShapeExtrude {
         if (hatch) {
             material = new HatchShader({color: color}).getMaterial();
         } else {
-            material = new MeshLambertMaterial({color: color});
+            material = new MeshPhongMaterial({color: color});
         }
         const mesh = new Mesh(geometry, material);
-
+        // mesh.castShadow = true;
+        // mesh.receiveShadow = true;
         //Note shapes are 2D and are extruded in the "Z" direction
         mesh.rotateX(-Math.PI / 2);
         this.mesh = mesh;
