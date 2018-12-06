@@ -10,7 +10,7 @@ import HatchShader from "./shaders/HatchShader";
  */
 export default class ShapeExtrude {
 
-    constructor(path, depth, color, hatch) {
+    constructor(path, depth, material) {
         const shape = new Shape();
         path.forEach((pos, i) => {
             if (i === 0) {
@@ -27,12 +27,6 @@ export default class ShapeExtrude {
         };
 
         const geometry = new ExtrudeBufferGeometry(shape, extrudeSettings);
-        let material;
-        if (hatch) {
-            material = new HatchShader({color: color}).getMaterial();
-        } else {
-            material = new MeshPhongMaterial({color: color});
-        }
         const mesh = new Mesh(geometry, material);
         // mesh.castShadow = true;
         // mesh.receiveShadow = true;

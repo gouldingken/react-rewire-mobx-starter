@@ -1,5 +1,5 @@
 {
-  "option 1": [
+  "Option 1": [
     {
       "date": {
         "year": 2019,
@@ -48,7 +48,7 @@
       },
       "moves": [
         {
-          "name": "Office",
+          "name": "Office-A",
           "startDate": {
             "year": 2020,
             "month": 3
@@ -98,6 +98,17 @@
             "year": 2020,
             "month": 7
           }
+        },
+        {
+          "name": "Office-B",
+          "startDate": {
+            "year": 2020,
+            "month": 4
+          },
+          "endDate": {
+            "year": 2020,
+            "month": 7
+          }
         }
       ]
     },
@@ -121,7 +132,7 @@
       ]
     }
   ],
-  "option  2": [
+  "Option 2": [
     {
       "date": {
         "year": 2019,
@@ -181,7 +192,7 @@
           }
         },
         {
-          "name": "Office",
+          "name": "Office-A",
           "startDate": {
             "year": 2020,
             "month": 3
@@ -254,7 +265,7 @@
       ]
     }
   ],
-  "option  3": [
+  "Option 3": [
     {
       "date": {
         "year": 2019,
@@ -303,7 +314,7 @@
       },
       "moves": [
         {
-          "name": "Office",
+          "name": "Office-A",
           "startDate": {
             "year": 2020,
             "month": 3

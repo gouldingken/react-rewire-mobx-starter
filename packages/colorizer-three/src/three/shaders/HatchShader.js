@@ -42,13 +42,15 @@ export default class HatchShader extends CustomShader {
             float w = float(spacing);
             float m = mod( gl_FragCoord.x - gl_FragCoord.y , w );
         
+            float a = 0.7;
             if( m == 0.0 ) {
                 outColor = color;
             } else {
                 outColor = color * darken;
+                a = 0.5;
             }
             
-            gl_FragColor = vec4( outColor, 1.0 );
+            gl_FragColor = vec4( outColor, a );
 //            vec4 lights = vec4(0.0, 0.0, 0.0, 1.0);
 //            for(int i = 0; i < MAX_POINT_LIGHTS; i++) {
 //                vec3 lightVector = normalize(vPosition - pointLightPosition[i]);
@@ -65,8 +67,8 @@ export default class HatchShader extends CustomShader {
 
     get customUniforms() {
         return UniformsUtils.merge([UniformsLib['lights'], {
-            spacing: {value: 5},
-            darken: {value: 0.5},
+            spacing: {value: this.props.spacing || 5},
+            darken: {value: this.props.darken || 0.5},
             color: {type: "c", value: new Color(this.props.color || '#fac502')},
         }]);
     }

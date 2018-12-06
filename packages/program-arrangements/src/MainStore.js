@@ -9,7 +9,7 @@ import {InteractionStore} from "react-timeline-gantt";
  * var instance = new MainStore();
  */
 export default class MainStore {
-    activeOption = 'Option 2';
+    activeOption = 'Option 1';
     previousOption = 'Existing';
     moveSets = [];
     inclusionList = [];
@@ -35,6 +35,8 @@ export default class MainStore {
     }
 
     setHighlightProgram(val) {
+        console.log('setHighlightProgram: ' + val);
+
         this.highlightProgram = val;
     }
 
@@ -42,6 +44,13 @@ export default class MainStore {
         if (!this.inclusionList) this.inclusionList = [];
         if (this.inclusionList.indexOf(id) < 0) {
             this.inclusionList.push(id);
+        }
+    }
+    excludeFromList(id) {
+        if (!this.inclusionList) return;
+        let index = this.inclusionList.indexOf(id);
+        if (index >= 0) {
+            this.inclusionList.splice(index, 1);
         }
     }
 }

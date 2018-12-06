@@ -46,7 +46,8 @@ export default class CustomShader {
             uniforms: this.customUniforms,
             vertexShader: this.vertexShader,
             fragmentShader: this.fragmentShader,
-            lights: this.useLights
+            lights: this.useLights,
+            transparent: true
         };
         return new ShaderMaterial(parameters);
     }

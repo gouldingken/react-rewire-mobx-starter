@@ -43,7 +43,12 @@ export default class ThreeContainer extends React.Component {
     updateTweenObjects(inclusionList, previousOption, activeOption) {
         this.threeApp.tweenObjects.forEach((tweenObj, i) => {
             const include = !inclusionList || inclusionList.indexOf(tweenObj.name) >= 0;
+            //TODO in order to reverse the tween (if toggling off again)
+            //we need to store the tween state and reverse based on "include" prop
             tweenObj.setTweenSet(previousOption, activeOption, include);
+        });
+        this.threeApp.optionObjects.forEach((optionObj, i) => {
+            optionObj.object.visible = optionObj.option === activeOption;
         });
     }
 

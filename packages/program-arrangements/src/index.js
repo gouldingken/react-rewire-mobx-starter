@@ -11,7 +11,7 @@ ReactDOM.render(<App store={store}/>, document.getElementById('root'));
 fetch('./assets/data/moveSets.json').then(function (response) {
     return response.json();
 }).then((data) => {
-    store.setMoveSets(data["option  2"]);//TODO use active option and normalize option names
+    store.setMoveSets(data["Option 1"]);//TODO use active option and normalize option names
 }).catch(function(e) {
     console.log("error");
 });

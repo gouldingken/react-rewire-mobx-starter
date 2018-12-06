@@ -8,10 +8,10 @@ export default class MoveSet extends React.Component {
     constructor(props) {
         super(props);
         const {store} = this.props;
-        autorun(() => {
-            console.log("inclusionList: ", store.inclusionList.join(", "));
-            // this.forceUpdate();
-        });
+        // autorun(() => {
+        //     console.log("inclusionList: ", store.inclusionList.join(", "));
+        //     // this.forceUpdate();
+        // });
 
     }
 
@@ -26,7 +26,7 @@ export default class MoveSet extends React.Component {
             <div className="MoveSet">
                 {moveSet.date.year} - {moveSet.date.month}
                 {moveSet.moves.map((move, i) =>
-                    <Move store={store} key={i} move={move} isMoved={isMoved(move)} includeMove={MoveSet.includeMove}/>
+                    <Move store={store} key={i} move={move} isMoved={isMoved(move)} includeMove={MoveSet.includeMove} excludeMove={MoveSet.excludeMove}/>
                 )}
                 <div>
                     <button onClick={event => this.moveAll()}>Move Set</button>
@@ -45,6 +45,11 @@ export default class MoveSet extends React.Component {
     static includeMove(move, store) {
         for (let i = 1; i <= 7; i++) {//HACK to match subgroups for this move name -- where should this be stored?
             store.includeInList(move.name + '_' + i);
+        }
+    }
+    static excludeMove(move, store) {
+        for (let i = 1; i <= 7; i++) {//HACK to match subgroups for this move name -- where should this be stored?
+            store.excludeFromList(move.name + '_' + i);
         }
     }
 }

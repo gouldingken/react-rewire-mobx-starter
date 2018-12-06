@@ -44,6 +44,7 @@ export default class ThreeApp extends Emitter {
         super();
         this.tweenObjects = [];
         this.materialObjects = [];
+        this.optionObjects = [];
         this.holder = holder;
         this.settings = settings || {};
 
@@ -158,7 +159,7 @@ export default class ThreeApp extends Emitter {
                             let along = i / (extrude.tweenPaths.length - 1);
                             let depth = ThreeMath.lerp(extrude.fromDepth, extrude.toDepth, along);
                             let zPos = ThreeMath.lerp(extrude.fromZ, extrude.toZ, along);
-                            let shapeExtrude = new ShapeExtrude(path, depth + ((useOffset) ? extrude.offset : 0), extrude.color, extrude.hatch);
+                            let shapeExtrude = new ShapeExtrude(path, depth + ((useOffset) ? extrude.offset : 0), this.getColoredMaterial(extrude.color, 1, extrude.hatch));
                             if (this.settings.useShadows) {
                                 shapeExtrude.mesh.castShadow = true;
                             }
@@ -167,16 +168,22 @@ export default class ThreeApp extends Emitter {
                             meshTween.add(shapeExtrude.mesh, extrude.fromKey, extrude.toKey);
                         });
                     } else if (extrude.path) {
-                        let shapeExtrude = new ShapeExtrude(extrude.path, extrude.depth, extrude.color, extrude.hatch);
+                        let shapeExtrude = new ShapeExtrude(extrude.path, extrude.depth, this.getColoredMaterial(extrude.color, 1, extrude.hatch));
                         shapeExtrude.mesh.translateZ(extrude.z);
                         if (this.settings.useShadows) {
-                            shapeExtrude.mesh.castShadow = true;
+                            shapeExtrude.mesh.castShadow = !extrude.hatch;
+                        }
+                        if (extrude.option) {
+                            this.optionObjects.push({object:shapeExtrude.mesh, option: extrude.option});
                         }
                         this.scene.add(shapeExtrude.mesh);
 
                     } else if (extrude.type === 'mesh') {//TODO rename 'extrude' to something more generic
-
-                        this.scene.add(Converter.getMesh(extrude, new MeshLambertMaterial({color: extrude.color})));
+                        let mesh = Converter.getMesh(extrude, this.getColoredMaterial(extrude.color, 1, extrude.hatch));
+                        if (extrude.option) {
+                            this.optionObjects.push({object:mesh, option: extrude.option});
+                        }
+                        this.scene.add(mesh);
                     }
                 });
 
@@ -221,17 +228,25 @@ export default class ThreeApp extends Emitter {
         this.start();
     };
 
-    getColoredMaterial(color) {
+    getColoredMaterial(color, opacity, hatch) {
         if (!this.coloredMaterials) this.coloredMaterials = {};
-        if (!this.coloredMaterials[color]) {
-            this.coloredMaterials[color] = new MeshLambertMaterial({
-                color: color,
-                side: DoubleSide,
-                transparent: true,
-                opacity: 0.75,
-            });
+        const matId = color + '_' + opacity + '_' + hatch;
+        if (!this.coloredMaterials[matId]) {
+            if (hatch) {
+                this.coloredMaterials[matId] = new HatchShader({color: color, spacing: 4, darken: 0.8}).getMaterial();
+            } else {
+                const settings = {
+                    color: color,
+                    side: DoubleSide
+                };
+                if (opacity !== 1) {
+                    settings.transparent = true;
+                    settings.opacity = opacity;
+                }
+                this.coloredMaterials[matId] = new MeshPhongMaterial(settings);
+            }
         }
-        return this.coloredMaterials[color];
+        return this.coloredMaterials[matId];
     }
 
     setMaterial(id, color) {
@@ -446,9 +461,15 @@ export default class ThreeApp extends Emitter {
 
     addMaterialObject(mesh, color, id) {
         const material = new MeshPhongMaterial({color: color});
-        const materialDim = new MeshBasicMaterial({
+        // const materialDim = new MeshBasicMaterial({
+        //     color: color,
+        //     wireframe: true
+        // });
+        const materialDim = new MeshPhongMaterial({
             color: color,
-            wireframe: true
+            side: FrontSide,
+            opacity: 0.1,
+            transparent: true
         });
         const materialObj = {
             id: id,
@@ -456,10 +477,15 @@ export default class ThreeApp extends Emitter {
                 if (!mesh.visible) return;
                 if (highlight) {
                     mesh.material = material;
+                    if (this.settings.useShadows) {
+                        mesh.castShadow = true;
+                    }
                 } else {
                     mesh.material = materialDim;
+                    if (this.settings.useShadows) {
+                        mesh.castShadow = false;
+                    }
                 }
-                // console.log('HIGHLIGHT: ' + id + ': ' + highlight);
             }
         };
 

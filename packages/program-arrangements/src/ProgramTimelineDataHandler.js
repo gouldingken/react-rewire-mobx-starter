@@ -34,7 +34,8 @@ export default class ProgramTimelineDataHandler extends ADataHandler {
             case 'Locker': return '#f9705f';
             case 'Sport Medicine': return '#ffca78';
             case 'VIP/Meeting': return '#fff984';
-            case 'Office': return '#c4b5d3';
+            case 'Office-A': return '#c4b5d3';
+            case 'Office-B': return '#c4b5d3';
             case 'Strength&Conditioning': return '#f985a6';
         }
 
@@ -95,21 +96,34 @@ export default class ProgramTimelineDataHandler extends ADataHandler {
                 const bits = layer.name.split('::');
                 const optionName = bits[0];
                 const programName = bits[1];
-                const partName = bits[2] || '1';
+                let isStatic = false;
+                let isNew = false;
                 if (!programName) {
                     if (optionName === 'Exisiting Arch') {//typo matches Rhino
-                        layer.objects.forEach((obj, i) => {
-                            const extrusion = speckleData.getExtrusion(obj);
-                            if (extrusion) {
-                                ans.push(this.getPathObject(extrusion.polyline, layer.color, extrusion.height, 0, extrusion.z));
-                            }
-                            const mesh = speckleData.getMesh(obj);
-                            if (mesh) {
-                                mesh.color = layer.color;
-                                ans.push(mesh);
-                            }
-                        });
+                        isStatic = true;
                     }
+                } else if (programName === '_architecture') {
+                    isStatic = true;
+                    isNew = true;
+                }
+
+                const partName = bits[2] || '1';
+                if (isStatic) {
+                    layer.objects.forEach((obj, i) => {
+                        const extrusion = speckleData.getExtrusion(obj);
+                        if (extrusion) {
+                            let pathObject = this.getPathObject(extrusion.polyline, layer.color, extrusion.height, 0, extrusion.z);
+                            if (isNew) pathObject.option = optionName;
+                            ans.push(pathObject);
+                        }
+                        const mesh = speckleData.getMesh(obj);
+                        if (mesh) {
+                            if (isNew)  mesh.option = optionName;
+                            mesh.color = layer.color;
+                            mesh.hatch = isNew;
+                            ans.push(mesh);
+                        }
+                    });
                 } else {
                     if (!objectPairs[programName]) {
                         objectPairs[programName] = {};
@@ -125,9 +139,10 @@ export default class ProgramTimelineDataHandler extends ADataHandler {
 
             const options = {
                 'Existing': 'Existing',
+                'Option 1': 'Option 1',
                 'Option 2': 'Option 2',
                 'Option 3': 'Option 3',
-                'Option 4': 'Option 4',
+                // 'Option 4': 'Option 4',
             };
 
             Object.keys(objectPairs).forEach((name) => {
