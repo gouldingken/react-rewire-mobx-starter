@@ -8,7 +8,7 @@ export default class Move extends React.Component {
     }
 
     render() {
-        const {move, store, includeMove, excludeMove, isMoved} = this.props;
+        const {move, store, includeMove, excludeMove, isMoved, isHighlightedProgram} = this.props;
         console.log('MOVE component render');
         return (
             <div className="Move" style={{background:ProgramTimelineDataHandler.colorProgram(move.name)}} onClick={() => {
@@ -24,7 +24,10 @@ export default class Move extends React.Component {
                 console.log('MOUSE LEAVE');
                 // store.setHighlightProgram(null)
             }}>
-                {move.name} {isMoved ? 'Y' : 'N'}
+                <div className={'title' + ((isHighlightedProgram) ? ' highlight' : '')}>{move.name}</div>
+                <div className={'move-tag'+ ((isMoved) ? ' moved' : '')}>
+                    {isMoved ? store.activeOption : store.previousOption}
+                </div>
             </div>
         );
     }

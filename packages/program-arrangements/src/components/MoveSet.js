@@ -24,12 +24,14 @@ export default class MoveSet extends React.Component {
 
         return (
             <div className="MoveSet">
-                {moveSet.date.year} - {moveSet.date.month}
+                <div className={'title'}>
+                    {moveSet.date.year} - {moveSet.date.month}
+                </div>
                 {moveSet.moves.map((move, i) =>
-                    <Move store={store} key={i} move={move} isMoved={isMoved(move)} includeMove={MoveSet.includeMove} excludeMove={MoveSet.excludeMove}/>
+                    <Move store={store} key={i} move={move} isMoved={isMoved(move)} isHighlightedProgram={store.highlightProgram === move.name} includeMove={MoveSet.includeMove} excludeMove={MoveSet.excludeMove}/>
                 )}
                 <div>
-                    <button onClick={event => this.moveAll()}>Move Set</button>
+                    <button className={'move-btn'} onClick={event => this.moveAll()}>Move Phase</button>
                 </div>
             </div>
         );

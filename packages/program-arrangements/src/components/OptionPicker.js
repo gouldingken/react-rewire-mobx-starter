@@ -19,27 +19,30 @@ export default class OptionPicker extends React.Component {
         const {activeOption} = this.props;
         return (
             <div className="OptionPicker">
-                <div>{activeOption}</div>
-                <button onClick={(e) => {
-                    this.setActiveOption('Existing', e);
-                }}>Existing
-                </button>
-                <button onClick={(e) => {
-                    this.setActiveOption('Option 1', e);
-                }}>Option 1
-                </button>
-                <button onClick={(e) => {
-                    this.setActiveOption('Option 2', e);
-                }}>Option 2
-                </button>
-                <button onClick={(e) => {
-                    this.setActiveOption('Option 3', e);
-                }}>Option 3
-                </button>
-                <button onClick={(e) => {
-                    this.setActiveOption('Option 4', e);
-                }}>Option 4
-                </button>
+                <div>
+                    <button onClick={(e) => {
+                        this.setActiveOption('Existing', e);
+                    }}>Existing
+                    </button>
+                    <button onClick={(e) => {
+                        this.setActiveOption('Option 1', e);
+                    }}>Option 1
+                    </button>
+                    <button onClick={(e) => {
+                        this.setActiveOption('Option 2', e);
+                    }}>Option 2
+                    </button>
+                    <button onClick={(e) => {
+                        this.setActiveOption('Option 3', e);
+                    }}>Option 3
+                    </button>
+                    <button onClick={(e) => {
+                        this.setActiveOption('Option 4', e);
+                    }}>Option 4
+                    </button>
+                </div>
+                <div className={'option-title'}>{activeOption}</div>
+
             </div>
         );
     }

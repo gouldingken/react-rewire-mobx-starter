@@ -1,3 +1,9 @@
+@import "core";
+
+body, html {
+  @include p-body;
+}
+
 .App {
   position: absolute;
   top: 0;

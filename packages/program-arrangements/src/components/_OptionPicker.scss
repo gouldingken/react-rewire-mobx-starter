@@ -1,8 +1,10 @@
+@import "../core";
 .OptionPicker {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom:0;
-  width: 200px;
-  background: yellow;
+  .option-title {
+    padding: 0 6px;
+    @include h3;
+  }
+  button {
+    @include ss-button-sm;
+  }
 }

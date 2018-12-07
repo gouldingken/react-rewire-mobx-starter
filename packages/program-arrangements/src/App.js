@@ -5,6 +5,7 @@ import ProgramTimelineDataHandler from "./ProgramTimelineDataHandler";
 import OptionPicker from "./components/OptionPicker";
 import {GanttSvg} from "react-timeline-gantt";
 import MoveSets from "./components/MoveSets";
+import SidePanel from "./components/SidePanel";
 
 class App extends Component {
     render() {
@@ -16,8 +17,7 @@ class App extends Component {
                                 previousOption={store.previousOption} activeOption={store.activeOption}
                                 inclusionList={store.inclusionList} highlightIds={store.highlightProgram}/>
                 {/*<GanttSvg interactions={store.timelineInteractionStore}/>*/}
-                <OptionPicker store={store} activeOption={store.activeOption}/>
-                <MoveSets store={store} moveSets={store.moveSets}/>
+                <SidePanel store={store}/>
 
             </div>
         );

@@ -1,17 +1,49 @@
+@import "../core";
+
 .MoveSets {
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom:0;
-  width: 200px;
+  position: relative;
   background: #fffffb;
   .MoveSet {
+    position: relative;
     padding: 8px 6px;
+    .title {
+      @include h5;
+    }
+    .move-btn {
+      position: absolute;
+      @include ss-button-sm;
+
+    }
     background: #f7f7f7;
     .Move {
+      position: relative;
       padding: 8px 6px;
       background: #ffc2fc;
 
+      .move-tag {
+        position: absolute;
+        top: 0;
+        right: 0;
+        @include h6;
+        font-size: 0.8rem;
+        padding: 8px 10px;
+        &.moved {
+          background: #333333;
+          color: #eeeeee;
+        }
+      }
+
+      .title {
+        @include h6;
+        &.highlight {
+          font-weight: bold;
+        }
+      }
+
+
     }
+  }
+  button {
+    @include ss-button-sm;
   }
 }
