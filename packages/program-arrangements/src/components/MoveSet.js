@@ -19,7 +19,7 @@ export default class MoveSet extends React.Component {
         const {moveSet, store} = this.props;
 
         let isMoved = (move) => {
-            return !store.inclusionList || store.inclusionList.indexOf(move.name+'_1') >= 0;
+            return !store.inclusionList || store.inclusionList.indexOf(move.name + '_1') >= 0;
         };
 
         return (
@@ -28,7 +28,9 @@ export default class MoveSet extends React.Component {
                     {moveSet.date.year} - {moveSet.date.month}
                 </div>
                 {moveSet.moves.map((move, i) =>
-                    <Move store={store} key={i} move={move} isMoved={isMoved(move)} isHighlightedProgram={store.highlightProgram === move.name} includeMove={MoveSet.includeMove} excludeMove={MoveSet.excludeMove}/>
+                    <Move store={store} key={i} move={move} isMoved={isMoved(move)}
+                          isHighlightedProgram={MoveSet.isHighlighted(store.highlightProgram, move)}
+                          includeMove={MoveSet.includeMove} excludeMove={MoveSet.excludeMove}/>
                 )}
                 <div>
                     <button className={'move-btn'} onClick={event => this.moveAll()}>Move Phase</button>
@@ -45,14 +47,22 @@ export default class MoveSet extends React.Component {
     }
 
     static includeMove(move, store) {
-        for (let i = 1; i <= 7; i++) {//HACK to match subgroups for this move name -- where should this be stored?
-            store.includeInList(move.name + '_' + i);
-        }
+        move.moveIds.forEach((moveId, i) => {
+            store.includeInList(moveId);
+        });
     }
+
     static excludeMove(move, store) {
-        for (let i = 1; i <= 7; i++) {//HACK to match subgroups for this move name -- where should this be stored?
-            store.excludeFromList(move.name + '_' + i);
-        }
+        move.moveIds.forEach((moveId, i) => {
+            store.includeInList(moveId);
+        });
+    }
+
+    static isHighlighted(highlightProgram, move) {
+        if (!highlightProgram) return false;
+        return move.moveIds.some(function (moveId, i) {
+            return highlightProgram.indexOf(moveId) >= 0;
+        });
     }
 }
 

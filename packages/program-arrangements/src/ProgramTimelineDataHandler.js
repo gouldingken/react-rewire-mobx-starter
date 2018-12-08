@@ -30,13 +30,16 @@ export default class ProgramTimelineDataHandler extends ADataHandler {
 
     static colorProgram(name) {
         switch (name) {
-            case 'Basketball Course': return '#fffffb';
+            case 'Basketball Arena': return '#fffffb';
+            case 'Practice Courts': return '#fffffb';
             case 'Locker': return '#f9705f';
-            case 'Sport Medicine': return '#ffca78';
-            case 'VIP/Meeting': return '#fff984';
-            case 'Office-A': return '#c4b5d3';
-            case 'Office-B': return '#c4b5d3';
-            case 'Strength&Conditioning': return '#f985a6';
+            case 'Locker_1': return '#f9705f';//TODO figure out how to handle elements that are combined in 1 option but separated in others
+            case 'Locker_2': return '#f9705f';
+            case 'Sports Medicine': return '#ffca78';
+            case 'VIP Suites': return '#fff984';
+            case 'Meeting Rooms': return '#fff984';
+            case 'Office': return '#c4b5d3';
+            case 'Strength & Conditioning': return '#f985a6';
         }
 
         return '#b3ceec';
@@ -142,7 +145,7 @@ export default class ProgramTimelineDataHandler extends ADataHandler {
                 'Option 1': 'Option 1',
                 'Option 2': 'Option 2',
                 'Option 3': 'Option 3',
-                // 'Option 4': 'Option 4',
+                'Option 4': 'Option 4',
             };
 
             Object.keys(objectPairs).forEach((name) => {
@@ -172,7 +175,7 @@ export default class ProgramTimelineDataHandler extends ADataHandler {
                                     tweenPathObject.toKey = options[optionKeys[j]];
                                     ans.push(tweenPathObject);
                                 } else {
-                                    console.log('Missing Extrusion! ' + extrusion1 + ' - ' + extrusion2);
+                                    console.log(`Missing Extrusion in ${name} ${aKey} -> ${bKey} part ${partId}`);
                                 }
                             });
 

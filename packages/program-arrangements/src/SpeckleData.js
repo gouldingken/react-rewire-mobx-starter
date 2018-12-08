@@ -213,6 +213,10 @@ export default class SpeckleData {
     }
 
     getExtrusion(obj, log) {
+        if (!obj) {
+            console.log('No object passed');
+            return;
+        }
         if (obj.type === 'Extrusion') {
             if (obj.profile) {
                 const polyline = this.getPolyline(obj.profile);

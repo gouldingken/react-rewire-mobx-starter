@@ -7,15 +7,83 @@
       },
       "moves": [
         {
-          "name": "Basketball Course",
+          "name": "Lobby / Hall of Fame",
           "startDate": {
             "year": 2019,
             "month": 9
           },
           "endDate": {
-            "year": 2020,
+            "year": 2021,
             "month": 2
-          }
+          },
+          "moveIds": [
+            "Lobby / Hall of Fame_1",
+            "Lobby / Hall of Fame_2",
+            "Lobby / Hall of Fame_3",
+            "Lobby / Hall of Fame_4"
+          ]
+        },
+        {
+          "name": "Office",
+          "startDate": {
+            "year": 2019,
+            "month": 9
+          },
+          "endDate": {
+            "year": 2021,
+            "month": 2
+          },
+          "moveIds": [
+            "Office-A_1",
+            "Office-A_2"
+          ]
+        },
+        {
+          "name": "Basketball Arena",
+          "startDate": {
+            "year": 2019,
+            "month": 9
+          },
+          "endDate": {
+            "year": 2021,
+            "month": 2
+          },
+          "moveIds": [
+            "Basketball Arena_1"
+          ]
+        },
+        {
+          "name": "VIP Suites",
+          "startDate": {
+            "year": 2019,
+            "month": 9
+          },
+          "endDate": {
+            "year": 2021,
+            "month": 2
+          },
+          "moveIds": [
+            "VIP Suites_1",
+            "VIP Suites_2",
+            "VIP Suites_3",
+            "VIP Suites_4",
+            "VIP Suites_5"
+          ]
+        },
+        {
+          "name": "Practice Courts",
+          "startDate": {
+            "year": 2019,
+            "month": 9
+          },
+          "endDate": {
+            "year": 2021,
+            "month": 2
+          },
+          "moveIds": [
+            "Practice Courts_1",
+            "Practice Courts_2"
+          ]
         },
         {
           "name": "Locker",
@@ -24,110 +92,93 @@
             "month": 9
           },
           "endDate": {
-            "year": 2020,
+            "year": 2021,
             "month": 2
-          }
-        },
-        {
-          "name": "Sport Medicine",
-          "startDate": {
-            "year": 2019,
-            "month": 9
           },
-          "endDate": {
-            "year": 2020,
-            "month": 2
-          }
-        }
-      ]
-    },
-    {
-      "date": {
-        "year": 2020,
-        "month": 3
-      },
-      "moves": [
-        {
-          "name": "Office-A",
-          "startDate": {
-            "year": 2020,
-            "month": 3
-          },
-          "endDate": {
-            "year": 2021,
-            "month": 9
-          }
-        },
-        {
-          "name": "acdemics support",
-          "startDate": {
-            "year": 2020,
-            "month": 3
-          },
-          "endDate": {
-            "year": 2021,
-            "month": 9
-          }
-        },
-        {
-          "name": "VIP/Meeting",
-          "startDate": {
-            "year": 2020,
-            "month": 3
-          },
-          "endDate": {
-            "year": 2021,
-            "month": 9
-          }
-        }
-      ]
-    },
-    {
-      "date": {
-        "year": 2020,
-        "month": 4
-      },
-      "moves": [
-        {
-          "name": "Strength&Conditioning",
-          "startDate": {
-            "year": 2020,
-            "month": 4
-          },
-          "endDate": {
-            "year": 2020,
-            "month": 7
-          }
-        },
-        {
-          "name": "Office-B",
-          "startDate": {
-            "year": 2020,
-            "month": 4
-          },
-          "endDate": {
-            "year": 2020,
-            "month": 7
-          }
+          "moveIds": [
+            "Locker_1",
+            "Locker_2"
+          ]
         }
       ]
     },
     {
       "date": {
         "year": 2021,
-        "month": 6
+        "month": 3
       },
       "moves": [
         {
-          "name": "sports arena",
+          "name": "Sports Medicine",
           "startDate": {
             "year": 2021,
-            "month": 6
+            "month": 3
           },
           "endDate": {
+            "year": 2022,
+            "month": 3
+          },
+          "moveIds": [
+            "Sports Medicine_1"
+          ]
+        },
+        {
+          "name": "Strength & Conditioning",
+          "startDate": {
             "year": 2021,
-            "month": 9
-          }
+            "month": 3
+          },
+          "endDate": {
+            "year": 2022,
+            "month": 3
+          },
+          "moveIds": [
+            "Strength & Conditioning_1",
+            "Strength & Conditioning_2",
+            "Strength & Conditioning_3"
+          ]
+        }
+      ]
+    },
+    {
+      "date": {
+        "year": 2022,
+        "month": 4
+      },
+      "moves": [
+        {
+          "name": "Meeting Rooms",
+          "startDate": {
+            "year": 2022,
+            "month": 4
+          },
+          "endDate": {
+            "year": 2022,
+            "month": 7
+          },
+          "moveIds": [
+            "Meeting Rooms_1",
+            "Meeting Rooms_2",
+            "Meeting Rooms_3",
+            "Meeting Rooms_4",
+            "Meeting Rooms_5",
+            "Meeting Rooms_6",
+            "Meeting Rooms_7"
+          ]
+        },
+        {
+          "name": "Office",
+          "startDate": {
+            "year": 2022,
+            "month": 4
+          },
+          "endDate": {
+            "year": 2022,
+            "month": 7
+          },
+          "moveIds": [
+            "Office-B_1"
+          ]
         }
       ]
     }
@@ -140,15 +191,25 @@
       },
       "moves": [
         {
-          "name": "Basketball Course",
+          "name": "Practice Courts",
           "startDate": {
             "year": 2019,
             "month": 9
           },
-          "endDate": {
-            "year": 2020,
-            "month": 2
-          }
+          "moveIds": [
+            "Practice Courts_1",
+            "Practice Courts_2"
+          ]
+        },
+        {
+          "name": "Sports Medicine",
+          "startDate": {
+            "year": 2019,
+            "month": 9
+          },
+          "moveIds": [
+            "Sports Medicine_1"
+          ]
         },
         {
           "name": "Locker",
@@ -156,111 +217,112 @@
             "year": 2019,
             "month": 9
           },
-          "endDate": {
-            "year": 2020,
-            "month": 2
-          }
-        },
-        {
-          "name": "Sport Medicine",
-          "startDate": {
-            "year": 2019,
-            "month": 9
-          },
-          "endDate": {
-            "year": 2020,
-            "month": 2
-          }
-        }
-      ]
-    },
-    {
-      "date": {
-        "year": 2020,
-        "month": 3
-      },
-      "moves": [
-        {
-          "name": "VIP/Meeting",
-          "startDate": {
-            "year": 2020,
-            "month": 3
-          },
-          "endDate": {
-            "year": 2021,
-            "month": 9
-          }
-        },
-        {
-          "name": "Office-A",
-          "startDate": {
-            "year": 2020,
-            "month": 3
-          },
-          "endDate": {
-            "year": 2021,
-            "month": 9
-          }
-        },
-        {
-          "name": "acdemics support",
-          "startDate": {
-            "year": 2020,
-            "month": 3
-          },
-          "endDate": {
-            "year": 2021,
-            "month": 9
-          }
-        },
-        {
-          "name": "offices 50%",
-          "startDate": {
-            "year": 2020,
-            "month": 3
-          },
-          "endDate": {
-            "year": 2021,
-            "month": 9
-          }
-        }
-      ]
-    },
-    {
-      "date": {
-        "year": 2020,
-        "month": 4
-      },
-      "moves": [
-        {
-          "name": "Strength&Conditioning",
-          "startDate": {
-            "year": 2020,
-            "month": 4
-          },
-          "endDate": {
-            "year": 2020,
-            "month": 7
-          }
+          "moveIds": [
+            "Locker_1",
+            "Locker_2"
+          ]
         }
       ]
     },
     {
       "date": {
         "year": 2021,
-        "month": 6
+        "month": 3
       },
       "moves": [
         {
-          "name": "sports arena",
+          "name": "Lobby / Hall of Fame",
           "startDate": {
             "year": 2021,
-            "month": 6
+            "month": 3
           },
-          "endDate": {
+          "moveIds": [
+            "Lobby / Hall of Fame_1",
+            "Lobby / Hall of Fame_2",
+            "Lobby / Hall of Fame_3",
+            "Lobby / Hall of Fame_4"
+          ]
+        },
+        {
+          "name": "Basketball Arena",
+          "startDate": {
             "year": 2021,
-            "month": 9
-          }
+            "month": 3
+          },
+          "moveIds": [
+            "Basketball Arena_1"
+          ]
+        },
+        {
+          "name": "VIP Suites",
+          "startDate": {
+            "year": 2021,
+            "month": 3
+          },
+          "moveIds": [
+            "VIP Suites_1",
+            "VIP Suites_2",
+            "VIP Suites_3",
+            "VIP Suites_4",
+            "VIP Suites_5"
+          ]
+        },
+        {
+          "name": "Meeting Rooms",
+          "startDate": {
+            "year": 2021,
+            "month": 3
+          },
+          "moveIds": [
+            "Meeting Rooms_1",
+            "Meeting Rooms_2",
+            "Meeting Rooms_3",
+            "Meeting Rooms_4",
+            "Meeting Rooms_5",
+            "Meeting Rooms_6",
+            "Meeting Rooms_7"
+          ]
+        },
+        {
+          "name": "Office",
+          "startDate": {
+            "year": 2021,
+            "month": 3
+          },
+          "moveIds": [
+            "Office-A_1",
+            "Office-A_2"
+          ]
+        }
+      ]
+    },
+    {
+      "date": {
+        "year": 2022,
+        "month": 4
+      },
+      "moves": [
+        {
+          "name": "Strength & Conditioning",
+          "startDate": {
+            "year": 2022,
+            "month": 4
+          },
+          "moveIds": [
+            "Strength & Conditioning_1",
+            "Strength & Conditioning_2",
+            "Strength & Conditioning_3"
+          ]
+        },
+        {
+          "name": "Office",
+          "startDate": {
+            "year": 2022,
+            "month": 4
+          },
+          "moveIds": [
+            "Office-B_1"
+          ]
         }
       ]
     }
@@ -273,119 +335,270 @@
       },
       "moves": [
         {
-          "name": "Basketball Course",
+          "name": "Practice Courts",
           "startDate": {
             "year": 2019,
             "month": 9
           },
-          "endDate": {
-            "year": 2020,
-            "month": 2
-          }
+          "moveIds": [
+            "Practice Courts_1",
+            "Practice Courts_2"
+          ]
         },
         {
-          "name": "Sport Medicine",
+          "name": "Strength & Conditioning",
           "startDate": {
             "year": 2019,
             "month": 9
           },
-          "endDate": {
-            "year": 2020,
-            "month": 2
-          }
-        },
-        {
-          "name": "Locker",
-          "startDate": {
-            "year": 2019,
-            "month": 9
-          },
-          "endDate": {
-            "year": 2020,
-            "month": 2
-          }
-        }
-      ]
-    },
-    {
-      "date": {
-        "year": 2020,
-        "month": 3
-      },
-      "moves": [
-        {
-          "name": "Office-A",
-          "startDate": {
-            "year": 2020,
-            "month": 3
-          },
-          "endDate": {
-            "year": 2021,
-            "month": 9
-          }
-        },
-        {
-          "name": "acdemics support",
-          "startDate": {
-            "year": 2020,
-            "month": 3
-          },
-          "endDate": {
-            "year": 2021,
-            "month": 9
-          }
-        },
-        {
-          "name": "Hall of Fame/Visitor",
-          "startDate": {
-            "year": 2020,
-            "month": 3
-          },
-          "endDate": {
-            "year": 2021,
-            "month": 9
-          }
+          "moveIds": [
+            "Strength & Conditioning_1",
+            "Strength & Conditioning_2",
+            "Strength & Conditioning_3"
+          ]
         }
       ]
     },
     {
       "date": {
         "year": 2021,
-        "month": 6
+        "month": 3
       },
       "moves": [
         {
-          "name": "Strength&Conditioning",
+          "name": "Meeting Rooms",
           "startDate": {
             "year": 2021,
-            "month": 6
+            "month": 3
           },
-          "endDate": {
-            "year": 2021,
-            "month": 9
-          }
+          "moveIds": [
+            "Meeting Rooms_1",
+            "Meeting Rooms_2",
+            "Meeting Rooms_3",
+            "Meeting Rooms_4",
+            "Meeting Rooms_5",
+            "Meeting Rooms_6",
+            "Meeting Rooms_7"
+          ]
         },
         {
-          "name": "sports arena",
+          "name": "Lobby / Hall of Fame",
           "startDate": {
             "year": 2021,
-            "month": 6
+            "month": 3
           },
-          "endDate": {
-            "year": 2021,
-            "month": 9
-          }
+          "moveIds": [
+            "Lobby / Hall of Fame_1",
+            "Lobby / Hall of Fame_2",
+            "Lobby / Hall of Fame_3",
+            "Lobby / Hall of Fame_4"
+          ]
         },
         {
-          "name": "student lounge",
+          "name": "VIP Suites",
           "startDate": {
             "year": 2021,
-            "month": 6
+            "month": 3
           },
-          "endDate": {
+          "moveIds": [
+            "VIP Suites_1",
+            "VIP Suites_2",
+            "VIP Suites_3",
+            "VIP Suites_4",
+            "VIP Suites_5"
+          ]
+        },
+        {
+          "name": "Sports Medicine",
+          "startDate": {
+            "year": 2021,
+            "month": 3
+          },
+          "moveIds": [
+            "Sports Medicine_1"
+          ]
+        },
+        {
+          "name": "Office",
+          "startDate": {
+            "year": 2021,
+            "month": 3
+          },
+          "moveIds": [
+            "Office-B_1"
+          ]
+        }
+      ]
+    },
+    {
+      "date": {
+        "year": 2022,
+        "month": 4
+      },
+      "moves": [
+        {
+          "name": "Locker",
+          "startDate": {
             "year": 2022,
+            "month": 4
+          },
+          "moveIds": [
+            "Locker_1",
+            "Locker_2"
+          ]
+        },
+        {
+          "name": "Office",
+          "startDate": {
+            "year": 2022,
+            "month": 4
+          },
+          "moveIds": [
+            "Office-A_1",
+            "Office-A_2"
+          ]
+        },
+        {
+          "name": "Basketball Arena",
+          "startDate": {
+            "year": 2022,
+            "month": 4
+          },
+          "moveIds": [
+            "Basketball Arena_1"
+          ]
+        }
+      ]
+    }
+  ],
+  "Option 4": [
+    {
+      "date": {
+        "year": 2019,
+        "month": 9
+      },
+      "moves": [
+        {
+          "name": "Meeting Rooms",
+          "startDate": {
+            "year": 2019,
             "month": 9
-          }
+          },
+          "moveIds": [
+            "Meeting Rooms_1",
+            "Meeting Rooms_2",
+            "Meeting Rooms_3",
+            "Meeting Rooms_4",
+            "Meeting Rooms_5",
+            "Meeting Rooms_6",
+            "Meeting Rooms_7"
+          ]
+        },
+        {
+          "name": "Lobby / Hall of Fame",
+          "startDate": {
+            "year": 2019,
+            "month": 9
+          },
+          "moveIds": [
+            "Lobby / Hall of Fame_1",
+            "Lobby / Hall of Fame_2",
+            "Lobby / Hall of Fame_3",
+            "Lobby / Hall of Fame_4"
+          ]
+        },
+        {
+          "name": "VIP Suites",
+          "startDate": {
+            "year": 2019,
+            "month": 9
+          },
+          "moveIds": [
+            "VIP Suites_1",
+            "VIP Suites_2",
+            "VIP Suites_3",
+            "VIP Suites_4",
+            "VIP Suites_5"
+          ]
+        },
+        {
+          "name": "Sports Medicine",
+          "startDate": {
+            "year": 2019,
+            "month": 9
+          },
+          "moveIds": [
+            "Sports Medicine_1"
+          ]
+        },
+        {
+          "name": "Office",
+          "startDate": {
+            "year": 2019,
+            "month": 9
+          },
+          "moveIds": [
+            "Office-A_1",
+            "Office-A_2",
+            "Office-B_1"
+          ]
+        },
+        {
+          "name": "Locker_1",
+          "startDate": {
+            "year": 2019,
+            "month": 9
+          },
+          "moveIds": []
+        },
+        {
+          "name": "Basketball Arena",
+          "startDate": {
+            "year": 2019,
+            "month": 9
+          },
+          "moveIds": [
+            "Basketball Arena_1"
+          ]
+        }
+      ]
+    },
+    {
+      "date": {
+        "year": 2021,
+        "month": 3
+      },
+      "moves": [
+        {
+          "name": "Practice Courts",
+          "startDate": {
+            "year": 2021,
+            "month": 3
+          },
+          "moveIds": [
+            "Practice Courts_1",
+            "Practice Courts_2"
+          ]
+        },
+        {
+          "name": "Strength & Conditioning",
+          "startDate": {
+            "year": 2021,
+            "month": 3
+          },
+          "moveIds": [
+            "Strength & Conditioning_1",
+            "Strength & Conditioning_2",
+            "Strength & Conditioning_3"
+          ]
+        },
+        {
+          "name": "Locker_2",
+          "startDate": {
+            "year": 2021,
+            "month": 3
+          },
+          "moveIds": []
         }
       ]
     }
