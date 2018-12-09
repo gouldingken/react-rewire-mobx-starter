@@ -5,7 +5,7 @@
  * @example
  * var instance = new Converter();
  */
-import {Face3, Geometry, Line, Mesh, Vector3} from "three";
+import {Face3, Geometry, Line, Mesh, Vector2, Vector3} from "three";
 
 export default class Converter {
 
@@ -22,7 +22,7 @@ export default class Converter {
         return line;
     }
 
-    static getMesh(obj, meshMaterial) {
+    static getMesh(obj, meshMaterial, generateUvs) {
         let geometry = new Geometry();
         for (let i = 2; i < obj.vertices.length; i += 3)
             geometry.vertices.push(new Vector3(obj.vertices[i - 2], obj.vertices[i - 1], obj.vertices[i]))
@@ -43,6 +43,31 @@ export default class Converter {
         }
         geometry.computeFaceNormals();
         geometry.computeVertexNormals();
+
+        if (generateUvs) {geometry.computeBoundingBox();
+
+            const max = geometry.boundingBox.max;
+            const min = geometry.boundingBox.min;
+            const offset = new Vector2(0 - min.x, 0 - min.y);
+            const range = new Vector2(max.x - min.x, max.y - min.y);
+            const faces = geometry.faces;
+
+            geometry.faceVertexUvs[0] = [];
+
+            for (let i = 0; i < faces.length ; i++) {
+                const v1 = geometry.vertices[faces[i].a];
+                const v2 = geometry.vertices[faces[i].b];
+                const v3 = geometry.vertices[faces[i].c];
+
+                geometry.faceVertexUvs[0].push([
+                    new Vector2((v1.x + offset.x)/range.x ,(v1.y + offset.y)/range.y),
+                    new Vector2((v2.x + offset.x)/range.x ,(v2.y + offset.y)/range.y),
+                    new Vector2((v3.x + offset.x)/range.x ,(v3.y + offset.y)/range.y)
+                ]);
+            }
+            geometry.uvsNeedUpdate = true;
+
+        }
 
         let mesh = new Mesh(geometry, meshMaterial);
         mesh.rotateX(-Math.PI / 2);

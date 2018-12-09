@@ -17,6 +17,7 @@ import {
     AmbientLight,
     PlaneGeometry,
     BasicShadowMap,
+    TextureLoader,
     CubeGeometry,
     DirectionalLightHelper,
     CameraHelper,
@@ -75,8 +76,8 @@ export default class ThreeApp extends Emitter {
         const light = new HemisphereLight('#fffce8', '#080820', 0.5);
         this.scene.add(light);
 
-        const directionalLight = new DirectionalLight(0xffffff, 0.7);
-        directionalLight.position.set(30, 50, 80);
+        const directionalLight = new DirectionalLight(0xffffff, 0.6);
+        directionalLight.position.set(80, 100, -80);
         directionalLight.target.position.set(0, 0, 0);
 
         if (settings.useShadows) {
@@ -84,7 +85,7 @@ export default class ThreeApp extends Emitter {
             this.renderer.shadowMap.enabled = true;
             // this.renderer.shadowMap.type = BasicShadowMap;
             this.renderer.shadowMap.type = PCFSoftShadowMap;
-            this.setupShadowLight(directionalLight, false);
+            this.setupShadowLight(directionalLight, true);
 
             this.addBasePlane();
         }
@@ -179,14 +180,25 @@ export default class ThreeApp extends Emitter {
                         this.scene.add(shapeExtrude.mesh);
 
                     } else if (extrude.type === 'mesh') {//TODO rename 'extrude' to something more generic
-                        let mesh = Converter.getMesh(extrude, this.getColoredMaterial(extrude.color, 1, extrude.hatch));
+                        let material = this.getColoredMaterial(extrude.color, 1, extrude.hatch);
+                        let generateUvs = false;
+                        if (extrude.properties && extrude.properties.texture) {
+                            const texture = new TextureLoader().load(extrude.properties.texture);
+                            material = new MeshPhongMaterial({map: texture});
+                            generateUvs = true;
+                        }
+                        let mesh = Converter.getMesh(extrude, material, generateUvs);
+                        if (extrude.properties && extrude.properties.receiveShadow) {
+                            mesh.receiveShadow = true;
+                        }
                         if (extrude.option) {
                             this.optionObjects.push({object: mesh, option: extrude.option});
                         }
+
                         this.scene.add(mesh);
                     } else if (extrude.type === 'curves') {
                         extrude.curves.forEach((segment, i) => {
-                            let line = Converter.getLine(segment, this.getColoredLineMaterial(extrude.color, 0.07));
+                            let line = Converter.getLine(segment, this.getColoredLineMaterial(extrude.color, 0.7));
                             if (extrude.option) {
                                 this.optionObjects.push({object: line, option: extrude.option});
                             }
@@ -370,7 +382,7 @@ export default class ThreeApp extends Emitter {
         const size = this.settings.shadowSize || 100;
 
         light.shadow.camera.near = 10;
-        light.shadow.camera.far = size * 1.5;
+        light.shadow.camera.far = size * 3;
         //
         light.shadow.mapSize.width = 2048;  // default 512
         light.shadow.mapSize.height = 2048;
@@ -464,6 +476,7 @@ export default class ThreeApp extends Emitter {
     }
 
     addBasePlane() {
+        return;
         // this.addExtrudeTest();
         // this.addBox();
 

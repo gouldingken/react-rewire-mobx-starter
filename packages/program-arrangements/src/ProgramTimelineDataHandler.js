@@ -97,133 +97,148 @@ export default class ProgramTimelineDataHandler extends ADataHandler {
         // let speckleData = new SpeckleData({scale: 0.1});
         const testObjectStream = 'SkSB07V14';
         const testLinesStream = 'rkTGh2OJ4';
+        const contextStream = 'HJGjsJc1V';
         const optionsStream = 'rysHaUmJE';
-        let speckleData = new SpeckleData({scale: 0.1}, testObjectStream);
-        const ans = [];
 
-        speckleData.getObjects().then((layers) => {
+        // const streams = [testObjectStream];
+        const streams = [contextStream, optionsStream];
 
-            const objectPairs = {};
-            const colors = {};
-            layers.forEach((layer, i) => {
-                console.log('LAYER: ' + layer.name);
-                const bits = layer.name.split('::');
-                const optionName = bits[0];
-                const programName = bits[1];
-                let isStatic = false;
-                let isNew = false;
-                if (!programName) {
-                    if (optionName === 'Exisiting Arch') {//typo matches Rhino
+        streams.forEach((stream, i) => {
+
+            let speckleData = new SpeckleData({scale: 0.1}, stream);
+            const ans = [];
+
+            speckleData.getObjects().then((layers) => {
+
+                const objectPairs = {};
+                const colors = {};
+                layers.forEach((layer, i) => {
+                    console.log('LAYER: ' + layer.name);
+                    const bits = layer.name.split('::');
+                    const optionName = bits[0];
+                    const programName = bits[1];
+                    let isStatic = false;
+                    let isNew = false;
+                    const properties = {};
+                    if (!programName) {
+                        if (optionName === 'Exisiting Arch' || optionName === 'Context') {//typo matches Rhino
+                            isStatic = true;
+                        }
+                    } else if (programName === '_architecture') {
                         isStatic = true;
+                        isNew = true;
+                    } else if (programName === 'BaseImage') {
+                        isStatic = true;
+                        properties.texture = './assets/colgate-base.png';
+                        properties.receiveShadow = true;
                     }
-                } else if (programName === '_architecture') {
-                    isStatic = true;
-                    isNew = true;
-                } else if (programName === 'Unprint') {//TEMP for testing lines
-                    isStatic = true;
-                    isNew = true;
-                }
 
-                const partName = bits[2] || '1';
-                if (isStatic) {
-                    layer.objects.forEach((obj, i) => {
-                        const extrusion = speckleData.getExtrusion(obj);
-                        if (extrusion) {
-                            let pathObject = this.getPathObject(extrusion.polyline, layer.color, extrusion.height, 0, extrusion.z);
-                            if (isNew) pathObject.option = optionName;
-                            ans.push(pathObject);
+                    const partName = bits[2] || '1';
+                    if (isStatic) {
+                        layer.objects.forEach((obj, i) => {
+                            const extrusion = speckleData.getExtrusion(obj);
+                            if (extrusion) {
+                                let pathObject = this.getPathObject(extrusion.polyline, layer.color, extrusion.height, 0, extrusion.z);
+                                if (isNew) pathObject.option = optionName;
+                                ans.push(pathObject);
+                                return;
+                            }
+                            const mesh = speckleData.getMesh(obj);
+                            if (mesh) {
+                                if (isNew) mesh.option = optionName;
+                                mesh.properties = properties;
+                                mesh.color = layer.color;
+                                mesh.hatch = isNew;
+                                ans.push(mesh);
+                                return;
+                            }
+                            const curves = speckleData.getCurves(obj);
+                            if (curves) {
+                                ans.push({type: 'curves', curves: curves, color: layer.color});
+                                return;
+                            }
+                        });
+                    } else {
+                        if (!objectPairs[programName]) {
+                            objectPairs[programName] = {};
                         }
-                        const mesh = speckleData.getMesh(obj);
-                        if (mesh) {
-                            if (isNew) mesh.option = optionName;
-                            mesh.color = layer.color;
-                            mesh.hatch = isNew;
-                            ans.push(mesh);
+                        if (!objectPairs[programName][optionName]) {
+                            objectPairs[programName][optionName] = {};
                         }
-                        const curves = speckleData.getCurves(obj);
-                        if (curves) {
-                            ans.push({type: 'curves', curves: curves, color: layer.color});
-                        }
-                    });
-                } else {
-                    if (!objectPairs[programName]) {
-                        objectPairs[programName] = {};
+                        colors[programName] = layer.color;
+
+                        objectPairs[programName][optionName][partName] = layer.objects[0];
                     }
-                    if (!objectPairs[programName][optionName]) {
-                        objectPairs[programName][optionName] = {};
-                    }
-                    colors[programName] = layer.color;
+                });
 
-                    objectPairs[programName][optionName][partName] = layer.objects[0];
-                }
-            });
+                const options = {
+                    'Existing': 'Existing',
+                    'Option 1': 'Option 1',
+                    'Option 2': 'Option 2',
+                    'Option 3': 'Option 3',
+                    'Option 4': 'Option 4',
+                };
 
-            const options = {
-                'Existing': 'Existing',
-                'Option 1': 'Option 1',
-                'Option 2': 'Option 2',
-                'Option 3': 'Option 3',
-                'Option 4': 'Option 4',
-            };
+                Object.keys(objectPairs).forEach((name) => {
+                    console.log('---' + name);
 
-            Object.keys(objectPairs).forEach((name) => {
-                console.log('---' + name);
+                    const pair = objectPairs[name];
 
-                const pair = objectPairs[name];
-
-                let optionKeys = Object.keys(options);
-                for (let i = 0; i < optionKeys.length; i++) {
-                    for (let j = i + 1; j < optionKeys.length; j++) {
-                        // console.log(optionKeys[i] + ' -> ' + optionKeys[j]);
-                        const aKey = optionKeys[i];
-                        const bKey = optionKeys[j];
-                        if (pair[aKey] && pair[bKey]) {
-                            Object.keys(pair[aKey]).forEach((partId) => {
-                                const logVerbose = false;//name + '_' + partId === 'Strength&Conditioning_2';
-                                const extrusion1 = speckleData.getExtrusion(pair[aKey][partId], logVerbose);
-                                const extrusion2 = speckleData.getExtrusion(pair[bKey][partId], logVerbose);//assumes matching objects
-                                if (extrusion1 && extrusion2) {
-                                    let tweenPathObject = this.getTweenPathObject(extrusion1.polyline, extrusion2.polyline, colors[name], 0, extrusion1.z, extrusion2.z, extrusion1.height, extrusion2.height);
-                                    tweenPathObject.id = name + '_' + partId;
-                                    tweenPathObject.group = name + '_' + partId;
-                                    if (logVerbose) {
-                                        console.log(aKey + '->' + bKey + ' -- zPos: ' + tweenPathObject.fromZ + ' -> ' + tweenPathObject.toZ);
+                    let optionKeys = Object.keys(options);
+                    for (let i = 0; i < optionKeys.length; i++) {
+                        for (let j = i + 1; j < optionKeys.length; j++) {
+                            // console.log(optionKeys[i] + ' -> ' + optionKeys[j]);
+                            const aKey = optionKeys[i];
+                            const bKey = optionKeys[j];
+                            if (pair[aKey] && pair[bKey]) {
+                                Object.keys(pair[aKey]).forEach((partId) => {
+                                    const logVerbose = false;//name + '_' + partId === 'Strength&Conditioning_2';
+                                    const extrusion1 = speckleData.getExtrusion(pair[aKey][partId], logVerbose);
+                                    const extrusion2 = speckleData.getExtrusion(pair[bKey][partId], logVerbose);//assumes matching objects
+                                    if (extrusion1 && extrusion2) {
+                                        let tweenPathObject = this.getTweenPathObject(extrusion1.polyline, extrusion2.polyline, colors[name], 0, extrusion1.z, extrusion2.z, extrusion1.height, extrusion2.height);
+                                        tweenPathObject.id = name + '_' + partId;
+                                        tweenPathObject.group = name + '_' + partId;
+                                        if (logVerbose) {
+                                            console.log(aKey + '->' + bKey + ' -- zPos: ' + tweenPathObject.fromZ + ' -> ' + tweenPathObject.toZ);
+                                        }
+                                        tweenPathObject.fromKey = options[optionKeys[i]];
+                                        tweenPathObject.toKey = options[optionKeys[j]];
+                                        ans.push(tweenPathObject);
+                                    } else {
+                                        console.log(`Missing Extrusion in ${name} ${aKey} -> ${bKey} part ${partId}`);
                                     }
-                                    tweenPathObject.fromKey = options[optionKeys[i]];
-                                    tweenPathObject.toKey = options[optionKeys[j]];
-                                    ans.push(tweenPathObject);
-                                } else {
-                                    console.log(`Missing Extrusion in ${name} ${aKey} -> ${bKey} part ${partId}`);
-                                }
-                            });
+                                });
+
+                            }
 
                         }
-
                     }
-                }
-            });
+                });
 
-            const groupLists = {};
-            ans.forEach((tweenObj, i) => {
-                if (!tweenObj.group) return;
-                if (!groupLists[tweenObj.group]) groupLists[tweenObj.group] = [];
-                groupLists[tweenObj.group].push(tweenObj.fromKey + ' -> ' + tweenObj.toKey);
-            });
+                const groupLists = {};
+                ans.forEach((tweenObj, i) => {
+                    if (!tweenObj.group) return;
+                    if (!groupLists[tweenObj.group]) groupLists[tweenObj.group] = [];
+                    groupLists[tweenObj.group].push(tweenObj.fromKey + ' -> ' + tweenObj.toKey);
+                });
 
-            const targetGroupLength = 6;
-            Object.keys(groupLists).forEach((k) => {
-                const groupList = groupLists[k];
-                if (groupList.length !== targetGroupLength) {
-                    console.log('Length mismatch: ' + JSON.stringify(groupList, null, 2));
-                }
-            });
+                const targetGroupLength = 6;
+                Object.keys(groupLists).forEach((k) => {
+                    const groupList = groupLists[k];
+                    if (groupList.length !== targetGroupLength) {
+                        console.log('Length mismatch: ' + JSON.stringify(groupList, null, 2));
+                    }
+                });
 
-            let offset = 0;//used to minimize z-fighting
-            ans.sort((a, b) => a.depth - b.depth);
-            ans.forEach((tweenObj, i) => {
-                tweenObj.offset = i * 0.001;
+                let offset = 0;//used to minimize z-fighting
+                ans.sort((a, b) => a.depth - b.depth);
+                ans.forEach((tweenObj, i) => {
+                    tweenObj.offset = i * 0.001;
+                });
+                callback(ans);
             });
-            callback(ans);
         });
+
     }
 }

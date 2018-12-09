@@ -239,6 +239,9 @@ export default class SpeckleData {
                 return {type: 'mesh', faces: obj.faces, vertices: obj.vertices.map((v) => v * this.settings.scale)};
             }
         }
+        if (obj.type === 'Brep' && obj.displayValue) {
+            return this.getMesh(obj.displayValue);
+        }
     }
 
     getLine(obj) {
