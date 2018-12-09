@@ -21,7 +21,7 @@ import {
     DirectionalLightHelper,
     CameraHelper,
     PCFSoftShadowMap,
-    MeshPhongMaterial
+    MeshPhongMaterial, LineBasicMaterial, Color
 } from 'three';
 import {Math as ThreeMath} from 'three';
 import OrbitControls from 'orbit-controls-es6';
@@ -174,16 +174,25 @@ export default class ThreeApp extends Emitter {
                             shapeExtrude.mesh.castShadow = !extrude.hatch;
                         }
                         if (extrude.option) {
-                            this.optionObjects.push({object:shapeExtrude.mesh, option: extrude.option});
+                            this.optionObjects.push({object: shapeExtrude.mesh, option: extrude.option});
                         }
                         this.scene.add(shapeExtrude.mesh);
 
                     } else if (extrude.type === 'mesh') {//TODO rename 'extrude' to something more generic
                         let mesh = Converter.getMesh(extrude, this.getColoredMaterial(extrude.color, 1, extrude.hatch));
                         if (extrude.option) {
-                            this.optionObjects.push({object:mesh, option: extrude.option});
+                            this.optionObjects.push({object: mesh, option: extrude.option});
                         }
                         this.scene.add(mesh);
+                    } else if (extrude.type === 'curves') {
+                        extrude.curves.forEach((segment, i) => {
+                            let line = Converter.getLine(segment, this.getColoredLineMaterial(extrude.color, 0.07));
+                            if (extrude.option) {
+                                this.optionObjects.push({object: line, option: extrude.option});
+                            }
+                            this.scene.add(line);
+                        });
+
                     }
                 });
 
@@ -227,6 +236,24 @@ export default class ThreeApp extends Emitter {
 
         this.start();
     };
+
+    getColoredLineMaterial(color, opacity = 1) {
+        if (!this.coloredLineMaterials) this.coloredLineMaterials = {};
+        const matId = color + '_' + opacity;
+        if (!this.coloredLineMaterials[matId]) {
+            const settings = {
+                color: color,
+                // linewidth: width -- Note: linewidth property is not supported on most WegGL platforms
+                //consider using MeshLine implementation when thick lines are needed
+            };
+            if (opacity !== 1) {
+                settings.transparent = true;
+                settings.opacity = opacity;
+            }
+            this.coloredLineMaterials[matId] = new LineBasicMaterial(settings);
+        }
+        return this.coloredLineMaterials[matId];
+    }
 
     getColoredMaterial(color, opacity, hatch) {
         if (!this.coloredMaterials) this.coloredMaterials = {};

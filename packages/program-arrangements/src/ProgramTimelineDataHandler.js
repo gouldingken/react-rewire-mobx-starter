@@ -30,16 +30,26 @@ export default class ProgramTimelineDataHandler extends ADataHandler {
 
     static colorProgram(name) {
         switch (name) {
-            case 'Basketball Arena': return '#fffffb';
-            case 'Practice Courts': return '#fffffb';
-            case 'Locker': return '#f9705f';
-            case 'Locker_1': return '#f9705f';//TODO figure out how to handle elements that are combined in 1 option but separated in others
-            case 'Locker_2': return '#f9705f';
-            case 'Sports Medicine': return '#ffca78';
-            case 'VIP Suites': return '#fff984';
-            case 'Meeting Rooms': return '#fff984';
-            case 'Office': return '#c4b5d3';
-            case 'Strength & Conditioning': return '#f985a6';
+            case 'Basketball Arena':
+                return '#fffffb';
+            case 'Practice Courts':
+                return '#fffffb';
+            case 'Locker':
+                return '#f9705f';
+            case 'Locker_1':
+                return '#f9705f';//TODO figure out how to handle elements that are combined in 1 option but separated in others
+            case 'Locker_2':
+                return '#f9705f';
+            case 'Sports Medicine':
+                return '#ffca78';
+            case 'VIP Suites':
+                return '#fff984';
+            case 'Meeting Rooms':
+                return '#fff984';
+            case 'Office':
+                return '#c4b5d3';
+            case 'Strength & Conditioning':
+                return '#f985a6';
         }
 
         return '#b3ceec';
@@ -86,8 +96,9 @@ export default class ProgramTimelineDataHandler extends ADataHandler {
     getExtrudeObjects(callback) {
         // let speckleData = new SpeckleData({scale: 0.1});
         const testObjectStream = 'SkSB07V14';
+        const testLinesStream = 'rkTGh2OJ4';
         const optionsStream = 'rysHaUmJE';
-        let speckleData = new SpeckleData({scale: 0.1}, optionsStream);//'r16RQMMJE'
+        let speckleData = new SpeckleData({scale: 0.1}, testObjectStream);
         const ans = [];
 
         speckleData.getObjects().then((layers) => {
@@ -108,6 +119,9 @@ export default class ProgramTimelineDataHandler extends ADataHandler {
                 } else if (programName === '_architecture') {
                     isStatic = true;
                     isNew = true;
+                } else if (programName === 'Unprint') {//TEMP for testing lines
+                    isStatic = true;
+                    isNew = true;
                 }
 
                 const partName = bits[2] || '1';
@@ -121,10 +135,14 @@ export default class ProgramTimelineDataHandler extends ADataHandler {
                         }
                         const mesh = speckleData.getMesh(obj);
                         if (mesh) {
-                            if (isNew)  mesh.option = optionName;
+                            if (isNew) mesh.option = optionName;
                             mesh.color = layer.color;
                             mesh.hatch = isNew;
                             ans.push(mesh);
+                        }
+                        const curves = speckleData.getCurves(obj);
+                        if (curves) {
+                            ans.push({type: 'curves', curves: curves, color: layer.color});
                         }
                     });
                 } else {
@@ -166,7 +184,7 @@ export default class ProgramTimelineDataHandler extends ADataHandler {
                                 const extrusion2 = speckleData.getExtrusion(pair[bKey][partId], logVerbose);//assumes matching objects
                                 if (extrusion1 && extrusion2) {
                                     let tweenPathObject = this.getTweenPathObject(extrusion1.polyline, extrusion2.polyline, colors[name], 0, extrusion1.z, extrusion2.z, extrusion1.height, extrusion2.height);
-                                    tweenPathObject.id = name;
+                                    tweenPathObject.id = name + '_' + partId;
                                     tweenPathObject.group = name + '_' + partId;
                                     if (logVerbose) {
                                         console.log(aKey + '->' + bKey + ' -- zPos: ' + tweenPathObject.fromZ + ' -> ' + tweenPathObject.toZ);

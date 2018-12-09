@@ -189,7 +189,7 @@ export default class SpeckleData {
     }
 
     getPolyline(profile) {
-        if (profile.type === 'Polyline') {
+        if (profile.type === 'Polyline') {//TODO consolidate with getCurve
             const polyline = [];
             //path line can be in either direction, so we normalize to always extruding UP
             for (let i = 2; i < profile.value.length; i += 3) {
@@ -238,6 +238,48 @@ export default class SpeckleData {
             if (obj.faces && obj.vertices) {
                 return {type: 'mesh', faces: obj.faces, vertices: obj.vertices.map((v) => v * this.settings.scale)};
             }
+        }
+    }
+
+    getLine(obj) {
+        const scale = (v) => {
+            return this.settings.scale * v;
+        };
+        if (obj.value) {
+            const vertices = [];
+            vertices.push([scale(obj.value[0]), scale(obj.value[1]), scale(obj.value[2])]);
+            vertices.push([scale(obj.value[3]), scale(obj.value[4]), scale(obj.value[5])]);
+            return {type: 'line', vertices: vertices};
+        }
+    }
+
+    getCurves(obj) {
+        if (obj.type === 'Line') {
+            return [this.getLine(obj)];
+        } else if (obj.type === 'Polycurve') {
+            if (obj.segments) {
+                return obj.segments.map((seg) => this.getLine(seg));
+            }
+        } else if (obj.type === 'Polyline') {
+            const vertices = [];
+            for (let i = 2; i < obj.value.length; i += 3) {
+                let x = obj.value[i - 2] * this.settings.scale;
+                let y = obj.value[i - 1] * this.settings.scale;
+                let z = obj.value[i] * this.settings.scale;
+                vertices.push([x, y, z]);
+                // z = profile.value[i] * this.settings.scale;
+            }
+            const ans = [];
+            for (let i = 0; i < vertices.length - 1; i++) {
+                const vertexA = vertices[i];
+                const vertexB = vertices[i + 1];
+                ans.push({type: 'line', vertices: [vertexA, vertexB]});
+            }
+            ans.push({type: 'line', vertices: [vertices[vertices.length - 1], vertices[0]]});
+
+            return ans;
+        } else {
+            console.log('Unsupported type: ' + obj.type);
         }
     }
 

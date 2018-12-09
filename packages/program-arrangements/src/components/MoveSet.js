@@ -19,7 +19,10 @@ export default class MoveSet extends React.Component {
         const {moveSet, store} = this.props;
 
         let isMoved = (move) => {
-            return !store.inclusionList || store.inclusionList.indexOf(move.name + '_1') >= 0;
+            if (!store.inclusionList) return false;
+            return move.moveIds.some(function (moveId, i) {
+                return store.inclusionList.indexOf(moveId) >= 0;
+            });
         };
 
         return (

@@ -66,8 +66,7 @@
             "VIP Suites_1",
             "VIP Suites_2",
             "VIP Suites_3",
-            "VIP Suites_4",
-            "VIP Suites_5"
+            "VIP Suites_4"
           ]
         },
         {
@@ -96,8 +95,9 @@
             "month": 2
           },
           "moveIds": [
-            "Locker_1",
-            "Locker_2"
+            "Locker-A_1",
+            "Locker-B_1",
+            "Locker-B_2"
           ]
         }
       ]
@@ -158,12 +158,7 @@
           },
           "moveIds": [
             "Meeting Rooms_1",
-            "Meeting Rooms_2",
-            "Meeting Rooms_3",
-            "Meeting Rooms_4",
-            "Meeting Rooms_5",
-            "Meeting Rooms_6",
-            "Meeting Rooms_7"
+            "Meeting Rooms_2"
           ]
         },
         {
@@ -218,8 +213,9 @@
             "month": 9
           },
           "moveIds": [
-            "Locker_1",
-            "Locker_2"
+            "Locker-A_1",
+            "Locker-B_1",
+            "Locker-B_2"
           ]
         }
       ]
@@ -263,8 +259,7 @@
             "VIP Suites_1",
             "VIP Suites_2",
             "VIP Suites_3",
-            "VIP Suites_4",
-            "VIP Suites_5"
+            "VIP Suites_4"
           ]
         },
         {
@@ -275,12 +270,7 @@
           },
           "moveIds": [
             "Meeting Rooms_1",
-            "Meeting Rooms_2",
-            "Meeting Rooms_3",
-            "Meeting Rooms_4",
-            "Meeting Rooms_5",
-            "Meeting Rooms_6",
-            "Meeting Rooms_7"
+            "Meeting Rooms_2"
           ]
         },
         {
@@ -373,12 +363,7 @@
           },
           "moveIds": [
             "Meeting Rooms_1",
-            "Meeting Rooms_2",
-            "Meeting Rooms_3",
-            "Meeting Rooms_4",
-            "Meeting Rooms_5",
-            "Meeting Rooms_6",
-            "Meeting Rooms_7"
+            "Meeting Rooms_2"
           ]
         },
         {
@@ -404,8 +389,7 @@
             "VIP Suites_1",
             "VIP Suites_2",
             "VIP Suites_3",
-            "VIP Suites_4",
-            "VIP Suites_5"
+            "VIP Suites_4"
           ]
         },
         {
@@ -443,8 +427,9 @@
             "month": 4
           },
           "moveIds": [
-            "Locker_1",
-            "Locker_2"
+            "Locker-A_1",
+            "Locker-B_1",
+            "Locker-B_2"
           ]
         },
         {
@@ -486,12 +471,7 @@
           },
           "moveIds": [
             "Meeting Rooms_1",
-            "Meeting Rooms_2",
-            "Meeting Rooms_3",
-            "Meeting Rooms_4",
-            "Meeting Rooms_5",
-            "Meeting Rooms_6",
-            "Meeting Rooms_7"
+            "Meeting Rooms_2"
           ]
         },
         {
@@ -517,8 +497,7 @@
             "VIP Suites_1",
             "VIP Suites_2",
             "VIP Suites_3",
-            "VIP Suites_4",
-            "VIP Suites_5"
+            "VIP Suites_4"
           ]
         },
         {
@@ -544,12 +523,14 @@
           ]
         },
         {
-          "name": "Locker_1",
+          "name": "Locker",
           "startDate": {
             "year": 2019,
             "month": 9
           },
-          "moveIds": []
+          "moveIds": [
+            "Locker-A_1"
+          ]
         },
         {
           "name": "Basketball Arena",
@@ -593,12 +574,15 @@
           ]
         },
         {
-          "name": "Locker_2",
+          "name": "Locker",
           "startDate": {
             "year": 2021,
             "month": 3
           },
-          "moveIds": []
+          "moveIds": [
+            "Locker-B_1",
+            "Locker-B_2"
+          ]
         }
       ]
     }

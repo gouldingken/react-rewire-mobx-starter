@@ -5,12 +5,22 @@
  * @example
  * var instance = new Converter();
  */
-import {Face3, Geometry, Mesh, Vector3} from "three";
+import {Face3, Geometry, Line, Mesh, Vector3} from "three";
 
 export default class Converter {
 
     constructor() {
     };
+
+    static getLine(obj, lineMaterial) {
+        let geometry = new Geometry();
+        obj.vertices.forEach((vertex, i) => {
+            geometry.vertices.push(new Vector3(vertex[0], vertex[1], vertex[2]));
+        });
+        let line = new Line(geometry, lineMaterial);
+        line.rotateX(-Math.PI / 2);
+        return line;
+    }
 
     static getMesh(obj, meshMaterial) {
         let geometry = new Geometry();
