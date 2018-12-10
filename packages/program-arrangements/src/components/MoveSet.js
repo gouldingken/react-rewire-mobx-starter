@@ -3,6 +3,8 @@ import {observer} from "mobx-react";
 import Move from "./Move";
 import MoveSets from "./MoveSets";
 import {autorun} from "mobx";
+import {If} from "sasaki-core";
+import ProgramUtils from "../ProgramUtils";
 
 export default class MoveSet extends React.Component {
     constructor(props) {
@@ -16,27 +18,28 @@ export default class MoveSet extends React.Component {
     }
 
     render() {
-        const {moveSet, store} = this.props;
+        const {moveSet, store, showMoveButtons} = this.props;
 
-        let isMoved = (move) => {
-            if (!store.inclusionList) return false;
-            return move.moveIds.some(function (moveId, i) {
-                return store.inclusionList.indexOf(moveId) >= 0;
-            });
-        };
+        let title = 'Program';
+
+        if (moveSet.date) {
+            title = `${moveSet.date.year} - ${moveSet.date.month}`
+        }
 
         return (
             <div className="MoveSet">
                 <div className={'title'}>
-                    {moveSet.date.year} - {moveSet.date.month}
+                    {title}
                 </div>
                 {moveSet.moves.map((move, i) =>
-                    <Move store={store} key={i} move={move} isMoved={isMoved(move)}
+                    <Move store={store} key={i} move={move} isMoved={ProgramUtils.isMoved(store, move)}
                           isHighlightedProgram={MoveSet.isHighlighted(store.highlightProgram, move)}
                           includeMove={MoveSet.includeMove} excludeMove={MoveSet.excludeMove}/>
                 )}
                 <div>
-                    <button className={'move-btn'} onClick={event => this.moveAll()}>Move Phase</button>
+                    <If true={showMoveButtons}>
+                        <button className={'move-btn'} onClick={event => this.moveAll()}>Move Phase</button>
+                    </If>
                 </div>
             </div>
         );

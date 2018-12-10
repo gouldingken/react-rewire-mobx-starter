@@ -94,7 +94,6 @@ export default class ThreeApp extends Emitter {
         const ambient = new AmbientLight(0x404040, 0.7); // soft white light
         this.scene.add(ambient);
 
-
         const manager = this.getLoadingManager();
 
         const defaultMaterial = new MeshLambertMaterial({

@@ -1,6 +1,7 @@
 import React from 'react';
 import {observer} from "mobx-react";
 import ProgramTimelineDataHandler from "../ProgramTimelineDataHandler";
+import ProgramUtils from "../ProgramUtils";
 
 export default class Move extends React.Component {
     constructor(props) {
@@ -9,7 +10,12 @@ export default class Move extends React.Component {
 
     render() {
         const {move, store, includeMove, excludeMove, isMoved, isHighlightedProgram} = this.props;
-        console.log('MOVE component render');
+        let asf = move.properties.asf;
+        if (asf > 0) {
+            asf = asf.toLocaleString();
+        } else {
+            asf = '-';
+        }
         return (
             <div className="Move" style={{background: ProgramTimelineDataHandler.colorProgram(move.name)}}
                  onClick={() => {
@@ -28,6 +34,12 @@ export default class Move extends React.Component {
                 // store.setHighlightProgram(null)
             }}>
                 <div className={'title' + ((isHighlightedProgram) ? ' highlight' : '')}>{move.name}</div>
+                <div className={'asf-label'}>
+                    {asf}
+                </div>
+                <div className={'cost-label'}>
+                    {ProgramUtils.formatCost(move.properties.cost)}
+                </div>
                 <div className={'move-tag' + ((isMoved) ? ' moved' : '')}>
                     {isMoved ? store.activeOption : store.previousOption}
                 </div>

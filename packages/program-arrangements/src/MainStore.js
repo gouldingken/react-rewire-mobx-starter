@@ -9,7 +9,7 @@ import {InteractionStore} from "react-timeline-gantt";
  * var instance = new MainStore();
  */
 export default class MainStore {
-    activeOption = 'Option 1';
+    activeOption = 'Existing';
     previousOption = 'Existing';
     moveSetsByOption = {};
     moveSets = [];

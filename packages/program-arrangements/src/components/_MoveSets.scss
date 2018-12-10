@@ -3,6 +3,19 @@
 .MoveSets {
   position: relative;
   background: #fffffb;
+
+  .option-title {
+    padding: 0 6px;
+    @include h3;
+  }
+  .sum-total {
+    @include h4;
+    padding: 0 6px;
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+
   .MoveSet {
     position: relative;
     padding: 8px 6px;
@@ -33,13 +46,28 @@
         }
       }
 
+      @mixin tableLabel {
+        position: absolute;
+        top: 8px;
+        font-size: 0.8em;
+      }
+
+      .asf-label {
+        @include tableLabel;
+        left: 200px;
+      }
+
+      .cost-label {
+        @include tableLabel;
+        left: 280px;
+      }
+
       .title {
         @include h6;
         &.highlight {
           font-weight: bold;
         }
       }
-
 
     }
   }

@@ -41,8 +41,6 @@ export default class OptionPicker extends React.Component {
                     }}>Option 4
                     </button>
                 </div>
-                <div className={'option-title'}>{activeOption}</div>
-
             </div>
         );
     }

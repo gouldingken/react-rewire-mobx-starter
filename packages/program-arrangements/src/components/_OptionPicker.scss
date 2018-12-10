@@ -1,9 +1,5 @@
 @import "../core";
 .OptionPicker {
-  .option-title {
-    padding: 0 6px;
-    @include h3;
-  }
   button {
     @include ss-button-sm;
   }
