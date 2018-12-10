@@ -8,6 +8,12 @@ export default class OptionPicker extends React.Component {
 
     setActiveOption(option, e) {
         const {store} = this.props;
+
+        if (option === 'Existing') {
+            store.resetToExisting();
+            return;
+        }
+
         store.setActiveOption(option);
         if (e.ctrlKey) {
             store.setInclusionList(null);

@@ -2,10 +2,13 @@ import React from 'react';
 import {observer} from "mobx-react";
 import ProgramTimelineDataHandler from "../ProgramTimelineDataHandler";
 import ProgramUtils from "../ProgramUtils";
+import {If} from "sasaki-core";
 
 export default class Move extends React.Component {
     constructor(props) {
         super(props);
+
+
     }
 
     render() {
@@ -16,6 +19,7 @@ export default class Move extends React.Component {
         } else {
             asf = '-';
         }
+        //TODO replace ASF with existing ASF if not moved yet...
         return (
             <div className="Move" style={{background: ProgramTimelineDataHandler.colorProgram(move.name)}}
                  onClick={() => {
@@ -26,13 +30,19 @@ export default class Move extends React.Component {
                      }
                  }}
                  onMouseOver={() => store.setHighlightProgram(move.moveIds)}
-                 onMouseOut={() => {
-                     console.log('MOUSE OUT');
-                     store.setHighlightProgram(null)
-                 }} onMouseLeave={() => {
-                console.log('MOUSE LEAVE');
-                // store.setHighlightProgram(null)
-            }}>
+                 onMouseOut={(e) => {
+                     // console.log('MOUSE OUT ' + e.target.className);
+                     if (e.target.className === 'Move') {//prevent actions on sub-element mouse out events
+                         // store.setHighlightProgram(null)
+                     }
+                 }}
+                 onMouseLeave={(e) => {
+                     console.log('MOUSE LEAVE ' + e.target.className);//
+                     //bit of a hack to capture mouse leaving the Move element, but also the tag on the right...
+                     if (e.target.className.indexOf('move-tag') === 0 || e.target.className === 'Move') {
+                         store.setHighlightProgram(null)
+                     }
+                 }}>
                 <div className={'title' + ((isHighlightedProgram) ? ' highlight' : '')}>{move.name}</div>
                 <div className={'asf-label'}>
                     {asf}
@@ -40,9 +50,11 @@ export default class Move extends React.Component {
                 <div className={'cost-label'}>
                     {ProgramUtils.formatCost(move.properties.cost)}
                 </div>
-                <div className={'move-tag' + ((isMoved) ? ' moved' : '')}>
-                    {isMoved ? store.activeOption : store.previousOption}
-                </div>
+                <If true={store.activeOption !== 'Existing'}>
+                    <div className={'move-tag' + ((isMoved) ? ' moved' : '')}>
+                        {isMoved ? store.activeOption : store.previousOption}
+                    </div>
+                </If>
             </div>
         );
     }

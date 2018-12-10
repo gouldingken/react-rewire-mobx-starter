@@ -113,7 +113,10 @@ export default class ProgramTimelineDataHandler extends ADataHandler {
                 const objectPairs = {};
                 const colors = {};
                 layers.forEach((layer, i) => {
-                    console.log('LAYER: ' + layer.name);
+                    // console.log('LAYER: ' + layer.name);
+                    // if (layer.name.indexOf('Wireframe') >= 0) {
+                    //     console.log('LAYER: ' + layer.name);
+                    // }
                     const bits = layer.name.split('::');
                     const optionName = bits[0];
                     const programName = bits[1];
@@ -126,7 +129,7 @@ export default class ProgramTimelineDataHandler extends ADataHandler {
                         }
                     } else if (programName === '_architecture') {
                         isStatic = true;
-                        isNew = true;
+                        isNew = optionName !== 'Context';
                     } else if (programName === 'BaseImage') {
                         isStatic = true;
                         properties.texture = './assets/colgate-base.png';
@@ -154,7 +157,13 @@ export default class ProgramTimelineDataHandler extends ADataHandler {
                             }
                             const curves = speckleData.getCurves(obj);
                             if (curves) {
-                                ans.push({type: 'curves', curves: curves, color: layer.color});
+                                let curveItem = {type: 'curves', curves: curves, color: layer.color};
+                                if (isNew) {
+                                    console.log('Curve on option layer: ' + optionName + ': ' + layer.name);
+                                    curveItem.option = optionName;
+                                }
+
+                                ans.push(curveItem);
                                 return;
                             }
                         });
@@ -223,7 +232,7 @@ export default class ProgramTimelineDataHandler extends ADataHandler {
                     groupLists[tweenObj.group].push(tweenObj.fromKey + ' -> ' + tweenObj.toKey);
                 });
 
-                const targetGroupLength = 6;
+                const targetGroupLength = 10;
                 Object.keys(groupLists).forEach((k) => {
                     const groupList = groupLists[k];
                     if (groupList.length !== targetGroupLength) {

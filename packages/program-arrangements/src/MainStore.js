@@ -10,7 +10,7 @@ import {InteractionStore} from "react-timeline-gantt";
  */
 export default class MainStore {
     activeOption = 'Existing';
-    previousOption = 'Existing';
+    previousOption = 'Option 1';
     moveSetsByOption = {};
     moveSets = [];
     inclusionList = [];
@@ -31,6 +31,8 @@ export default class MainStore {
         this.activeOption = val;
         this.inclusionList = [];//assumes a mode where nothing shows until added to the inclusion list
         this.setMoveSets(this.moveSetsByOption[this.activeOption]);
+        this.setHighlightProgram(null)
+
     }
 
     setMoveSets(val) {
@@ -39,6 +41,12 @@ export default class MainStore {
 
     setInclusionList(val) {
         this.inclusionList = val;
+    }
+
+    resetToExisting() {
+        this.inclusionList = null;
+        this.setActiveOption('Existing');
+        // this.previousOption = this.activeOption = 'Existing';
     }
 
     setHighlightProgram(val) {

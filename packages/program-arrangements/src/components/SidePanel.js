@@ -13,7 +13,7 @@ export default class SidePanel extends React.Component {
         return (
             <div className="SidePanel">
                 <OptionPicker store={store} activeOption={store.activeOption}/>
-                <MoveSets showMoveButtons={store.activeOption !== store.previousOption}
+                <MoveSets showMoveButtons={store.activeOption !== 'Existing'}
                           activeOption={store.activeOption} store={store} moveSets={store.moveSets}/>
             </div>
         );

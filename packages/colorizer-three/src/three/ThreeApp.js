@@ -85,7 +85,7 @@ export default class ThreeApp extends Emitter {
             this.renderer.shadowMap.enabled = true;
             // this.renderer.shadowMap.type = BasicShadowMap;
             this.renderer.shadowMap.type = PCFSoftShadowMap;
-            this.setupShadowLight(directionalLight, true);
+            this.setupShadowLight(directionalLight, false);
 
             this.addBasePlane();
         }
@@ -242,10 +242,26 @@ export default class ThreeApp extends Emitter {
         controls.enabled = true;
         controls.maxDistance = 1500;
         controls.minDistance = 0;
+        this.controls = controls;
 
         this.size = {width: 0, height: 0};
 
         this.start();
+
+        // setInterval(() => {
+        //     this.saveCameraPos();
+        // }, 2000);
+
+        this.restoreCameraPos({
+            "position": {"x": -45.19224822472235, "y": 34.294276851630464, "z": 30.518805139764638},
+            "rotation": {
+                "_x": -1.1899753288115706,
+                "_y": -0.46457214828903654,
+                "_z": -0.8415331745761527,
+                "_order": "XYZ"
+            },
+            "controlCenter": {"x": -15.743692141546173, "y": -20.25728827042996, "z": 8.678267433754344}
+        });
     };
 
     getColoredLineMaterial(color, opacity = 1) {
@@ -321,6 +337,23 @@ export default class ThreeApp extends Emitter {
             //console.log('There was an error loading ' + url);
         };
         return manager;
+    }
+
+    saveCameraPos() {
+        const camToSave = {};
+        camToSave.position = this.camera.position.clone();
+        camToSave.rotation = this.camera.rotation.clone();
+        camToSave.controlCenter = this.controls.center.clone();
+
+        console.log(JSON.stringify(camToSave));
+    }
+
+    restoreCameraPos(savedState) {
+        this.camera.position.set(savedState.position.x, savedState.position.y, savedState.position.z);
+        this.camera.rotation.set(savedState.rotation._x, savedState.rotation._y, savedState.rotation._z);
+
+        this.controls.center.set(savedState.controlCenter.x, savedState.controlCenter.y, savedState.controlCenter.z);
+        this.controls.update();
     }
 
     start() {
