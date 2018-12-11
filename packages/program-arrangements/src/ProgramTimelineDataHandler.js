@@ -28,12 +28,23 @@ export default class ProgramTimelineDataHandler extends ADataHandler {
 
     }
 
-    static colorProgram(name) {
+    static colorProgramOverride(name) {
         switch (name) {
             case 'Basketball Arena':
-                return '#fffffb';
+                return '#9dcdbc';
             case 'Practice Courts':
-                return '#fffffb';
+                return '#9dcdbc';
+        }
+        return null;
+    }
+
+
+    static colorProgram(name, returnDefault) {
+        switch (name) {
+            case 'Basketball Arena':
+                return '#9dcdbc';
+            case 'Practice Courts':
+                return '#9dcdbc';
             case 'Locker':
                 return '#f9705f';
             case 'Locker_1':
@@ -52,6 +63,7 @@ export default class ProgramTimelineDataHandler extends ADataHandler {
                 return '#f985a6';
         }
 
+        if (!returnDefault) return null;
         return '#b3ceec';
     }
 
@@ -174,7 +186,7 @@ export default class ProgramTimelineDataHandler extends ADataHandler {
                         if (!objectPairs[programName][optionName]) {
                             objectPairs[programName][optionName] = {};
                         }
-                        colors[programName] = layer.color;
+                        colors[programName] = ProgramTimelineDataHandler.colorProgramOverride(programName) || layer.color;
 
                         objectPairs[programName][optionName][partName] = layer.objects[0];
                     }

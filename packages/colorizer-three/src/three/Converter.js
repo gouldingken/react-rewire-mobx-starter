@@ -6,6 +6,8 @@
  * var instance = new Converter();
  */
 import {Face3, Geometry, Line, Mesh, Vector2, Vector3} from "three";
+import MeshLine from "./core/MeshLine";
+import Maf from "./core/Maf";
 
 export default class Converter {
 
@@ -17,9 +19,26 @@ export default class Converter {
         obj.vertices.forEach((vertex, i) => {
             geometry.vertices.push(new Vector3(vertex[0], vertex[1], vertex[2]));
         });
-        let line = new Line(geometry, lineMaterial);
-        line.rotateX(-Math.PI / 2);
-        return line;
+
+        if (lineMaterial.uniforms.lineWidth) {
+            let line = new MeshLine();
+            // line.setGeometry(geometry);
+            line.setGeometry(geometry, (p) => {
+                // return 1 * Maf.parabola(p, 1)
+                return 1 + Math.sin(50 * p);
+                // return 1 - p;
+            });
+
+            const mesh = new Mesh(line.geometry, lineMaterial);
+            mesh.rotateX(-Math.PI / 2);
+            return mesh;
+        } else {
+            let line = new Line(geometry, lineMaterial);
+            line.rotateX(-Math.PI / 2);
+            return line;
+        }
+
+
     }
 
     static getMesh(obj, meshMaterial, generateUvs) {
@@ -44,7 +63,8 @@ export default class Converter {
         geometry.computeFaceNormals();
         geometry.computeVertexNormals();
 
-        if (generateUvs) {geometry.computeBoundingBox();
+        if (generateUvs) {
+            geometry.computeBoundingBox();
 
             const max = geometry.boundingBox.max;
             const min = geometry.boundingBox.min;
@@ -54,15 +74,15 @@ export default class Converter {
 
             geometry.faceVertexUvs[0] = [];
 
-            for (let i = 0; i < faces.length ; i++) {
+            for (let i = 0; i < faces.length; i++) {
                 const v1 = geometry.vertices[faces[i].a];
                 const v2 = geometry.vertices[faces[i].b];
                 const v3 = geometry.vertices[faces[i].c];
 
                 geometry.faceVertexUvs[0].push([
-                    new Vector2((v1.x + offset.x)/range.x ,(v1.y + offset.y)/range.y),
-                    new Vector2((v2.x + offset.x)/range.x ,(v2.y + offset.y)/range.y),
-                    new Vector2((v3.x + offset.x)/range.x ,(v3.y + offset.y)/range.y)
+                    new Vector2((v1.x + offset.x) / range.x, (v1.y + offset.y) / range.y),
+                    new Vector2((v2.x + offset.x) / range.x, (v2.y + offset.y) / range.y),
+                    new Vector2((v3.x + offset.x) / range.x, (v3.y + offset.y) / range.y)
                 ]);
             }
             geometry.uvsNeedUpdate = true;

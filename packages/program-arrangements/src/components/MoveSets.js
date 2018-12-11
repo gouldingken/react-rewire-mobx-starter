@@ -15,7 +15,14 @@ export default class MoveSets extends React.Component {
         let movedSum = ProgramUtils.getMoveSum(store);
 
         return (
-            <div className="MoveSets">
+            <div className="MoveSets" onMouseLeave={(e) => {
+                console.log('MOUSE LEAVE ' + e.target.className);//
+                //bit of a hack to capture mouse leaving the Move element, but also the tag on the right...
+                if (e.target.className === 'MoveSets') {
+                    //TODO...
+                    // store.setHighlightProgram(null)
+                }
+            }}>
                 <div className={'option-title'}>{activeOption}</div>
                 <div className={'sum-total'}>{ProgramUtils.formatCost(movedSum)}</div>
                 <div>

@@ -7,11 +7,11 @@
       },
       "moves": [
         {
-          "name": "Lobby / Hall of Fame",
+          "name": "Locker",
           "properties": {
-            "asf": 2500,
-            "type": "New Construction",
-            "cost": 1000000
+            "asf": 20500,
+            "type": "Renovation",
+            "cost": 5125000
           },
           "startDate": {
             "year": 2019,
@@ -22,18 +22,17 @@
             "month": 2
           },
           "moveIds": [
-            "Lobby / Hall of Fame_1",
-            "Lobby / Hall of Fame_2",
-            "Lobby / Hall of Fame_3",
-            "Lobby / Hall of Fame_4"
+            "Locker-A_1",
+            "Locker-B_1",
+            "Locker-B_2"
           ]
         },
         {
-          "name": "Office",
+          "name": "Practice Courts",
           "properties": {
-            "asf": 27000,
-            "type": "New Construction",
-            "cost": 10800000
+            "asf": 18000,
+            "type": "Renovation",
+            "cost": 4500000
           },
           "startDate": {
             "year": 2019,
@@ -44,8 +43,27 @@
             "month": 2
           },
           "moveIds": [
-            "Office-A_1",
-            "Office-A_2"
+            "Practice Courts_1",
+            "Practice Courts_2"
+          ]
+        },
+        {
+          "name": "Sports Medicine",
+          "properties": {
+            "asf": 13100,
+            "type": "Renovation",
+            "cost": 3275000
+          },
+          "startDate": {
+            "year": 2019,
+            "month": 9
+          },
+          "endDate": {
+            "year": 2021,
+            "month": 2
+          },
+          "moveIds": [
+            "Sports Medicine_1"
           ]
         },
         {
@@ -65,6 +83,28 @@
           },
           "moveIds": [
             "Basketball Arena_1"
+          ]
+        },
+        {
+          "name": "Lobby / Hall of Fame",
+          "properties": {
+            "asf": 2500,
+            "type": "New Construction",
+            "cost": 1000000
+          },
+          "startDate": {
+            "year": 2019,
+            "month": 9
+          },
+          "endDate": {
+            "year": 2021,
+            "month": 2
+          },
+          "moveIds": [
+            "Lobby / Hall of Fame_1",
+            "Lobby / Hall of Fame_2",
+            "Lobby / Hall of Fame_3",
+            "Lobby / Hall of Fame_4"
           ]
         },
         {
@@ -90,11 +130,11 @@
           ]
         },
         {
-          "name": "Practice Courts",
+          "name": "Office",
           "properties": {
-            "asf": 18000,
-            "type": "Renovation",
-            "cost": 4500000
+            "asf": 27000,
+            "type": "New Construction",
+            "cost": 10800000
           },
           "startDate": {
             "year": 2019,
@@ -105,29 +145,8 @@
             "month": 2
           },
           "moveIds": [
-            "Practice Courts_1",
-            "Practice Courts_2"
-          ]
-        },
-        {
-          "name": "Locker",
-          "properties": {
-            "asf": 20500,
-            "type": "Renovation",
-            "cost": 5125000
-          },
-          "startDate": {
-            "year": 2019,
-            "month": 9
-          },
-          "endDate": {
-            "year": 2021,
-            "month": 2
-          },
-          "moveIds": [
-            "Locker-A_1",
-            "Locker-B_1",
-            "Locker-B_2"
+            "Office-A_1",
+            "Office-A_2"
           ]
         }
       ]
@@ -138,25 +157,6 @@
         "month": 3
       },
       "moves": [
-        {
-          "name": "Sports Medicine",
-          "properties": {
-            "asf": 13100,
-            "type": "Renovation",
-            "cost": 3275000
-          },
-          "startDate": {
-            "year": 2021,
-            "month": 3
-          },
-          "endDate": {
-            "year": 2022,
-            "month": 3
-          },
-          "moveIds": [
-            "Sports Medicine_1"
-          ]
-        },
         {
           "name": "Strength & Conditioning",
           "properties": {
@@ -177,15 +177,7 @@
             "Strength & Conditioning_2",
             "Strength & Conditioning_3"
           ]
-        }
-      ]
-    },
-    {
-      "date": {
-        "year": 2022,
-        "month": 4
-      },
-      "moves": [
+        },
         {
           "name": "Meeting Rooms",
           "properties": {
@@ -194,12 +186,12 @@
             "cost": 500000
           },
           "startDate": {
-            "year": 2022,
-            "month": 4
+            "year": 2021,
+            "month": 3
           },
           "endDate": {
             "year": 2022,
-            "month": 7
+            "month": 3
           },
           "moveIds": [
             "Meeting Rooms_1",
@@ -214,12 +206,12 @@
             "cost": 2000000
           },
           "startDate": {
-            "year": 2022,
-            "month": 4
+            "year": 2021,
+            "month": 3
           },
           "endDate": {
             "year": 2022,
-            "month": 7
+            "month": 3
           },
           "moveIds": [
             "Office-B_1"
@@ -240,7 +232,7 @@
           "properties": {
             "asf": 20000,
             "type": "Renovation",
-            "cost": 8000000
+            "cost": 5000000
           },
           "startDate": {
             "year": 2019,
@@ -256,7 +248,7 @@
           "properties": {
             "asf": 13300,
             "type": "Renovation",
-            "cost": 5320000
+            "cost": 3325000
           },
           "startDate": {
             "year": 2019,
@@ -271,7 +263,7 @@
           "properties": {
             "asf": 5000,
             "type": "Renovation",
-            "cost": 2000000
+            "cost": 1250000
           },
           "startDate": {
             "year": 2019,
@@ -292,11 +284,44 @@
       },
       "moves": [
         {
+          "name": "Office",
+          "properties": {
+            "asf": 14000,
+            "type": "New Construction",
+            "cost": 5600000
+          },
+          "startDate": {
+            "year": 2021,
+            "month": 3
+          },
+          "moveIds": [
+            "Office-B_1",
+            "Office-A_1",
+            "Office-A_2"
+          ]
+        },
+        {
+          "name": "Meeting Rooms",
+          "properties": {
+            "asf": 6000,
+            "type": "New Construction",
+            "cost": 2400000
+          },
+          "startDate": {
+            "year": 2021,
+            "month": 3
+          },
+          "moveIds": [
+            "Meeting Rooms_1",
+            "Meeting Rooms_2"
+          ]
+        },
+        {
           "name": "Lobby / Hall of Fame",
           "properties": {
             "asf": 10000,
             "type": "New Construction",
-            "cost": 6000000
+            "cost": 4000000
           },
           "startDate": {
             "year": 2021,
@@ -310,68 +335,20 @@
           ]
         },
         {
-          "name": "Basketball Arena",
+          "name": "Strength & Conditioning",
           "properties": {
-            "asf": 33000,
-            "type": "Renovation",
-            "cost": 13200000
-          },
-          "startDate": {
-            "year": 2021,
-            "month": 3
-          },
-          "moveIds": [
-            "Basketball Arena_1"
-          ]
-        },
-        {
-          "name": "VIP Suites",
-          "properties": {
-            "asf": 2000,
-            "type": "Renovation",
-            "cost": 800000
-          },
-          "startDate": {
-            "year": 2021,
-            "month": 3
-          },
-          "moveIds": [
-            "VIP Suites_1",
-            "VIP Suites_2",
-            "VIP Suites_3",
-            "VIP Suites_4"
-          ]
-        },
-        {
-          "name": "Meeting Rooms",
-          "properties": {
-            "asf": 6000,
+            "asf": 24500,
             "type": "New Construction",
-            "cost": 3600000
+            "cost": 9800000
           },
           "startDate": {
             "year": 2021,
             "month": 3
           },
           "moveIds": [
-            "Meeting Rooms_1",
-            "Meeting Rooms_2"
-          ]
-        },
-        {
-          "name": "Office",
-          "properties": {
-            "asf": null,
-            "type": "Renovation",
-            "cost": 0
-          },
-          "startDate": {
-            "year": 2021,
-            "month": 3
-          },
-          "moveIds": [
-            "Office-A_1",
-            "Office-A_2"
+            "Strength & Conditioning_1",
+            "Strength & Conditioning_2",
+            "Strength & Conditioning_3"
           ]
         }
       ]
@@ -383,35 +360,36 @@
       },
       "moves": [
         {
-          "name": "Strength & Conditioning",
+          "name": "Basketball Arena",
           "properties": {
-            "asf": 24500,
-            "type": "New Construction",
-            "cost": 14700000
+            "asf": 33000,
+            "type": "Renovation",
+            "cost": 8250000
           },
           "startDate": {
             "year": 2022,
             "month": 4
           },
           "moveIds": [
-            "Strength & Conditioning_1",
-            "Strength & Conditioning_2",
-            "Strength & Conditioning_3"
+            "Basketball Arena_1"
           ]
         },
         {
-          "name": "Office",
+          "name": "VIP Suites",
           "properties": {
-            "asf": 21000,
-            "type": "New Construction",
-            "cost": 12600000
+            "asf": 2000,
+            "type": "Renovation",
+            "cost": 500000
           },
           "startDate": {
             "year": 2022,
             "month": 4
           },
           "moveIds": [
-            "Office-B_1"
+            "VIP Suites_1",
+            "VIP Suites_2",
+            "VIP Suites_3",
+            "VIP Suites_4"
           ]
         }
       ]
@@ -429,7 +407,7 @@
           "properties": {
             "asf": 16000,
             "type": "Renovation",
-            "cost": 6400000
+            "cost": 4000000
           },
           "startDate": {
             "year": 2019,
@@ -445,7 +423,7 @@
           "properties": {
             "asf": 24000,
             "type": "Renovation",
-            "cost": 9600000
+            "cost": 6000000
           },
           "startDate": {
             "year": 2019,
@@ -470,7 +448,7 @@
           "properties": {
             "asf": 4000,
             "type": "New Construction",
-            "cost": 2400000
+            "cost": 1600000
           },
           "startDate": {
             "year": 2021,
@@ -486,7 +464,7 @@
           "properties": {
             "asf": 10000,
             "type": "New Construction",
-            "cost": 6000000
+            "cost": 4000000
           },
           "startDate": {
             "year": 2021,
@@ -500,21 +478,20 @@
           ]
         },
         {
-          "name": "VIP Suites",
+          "name": "Locker",
           "properties": {
-            "asf": 2000,
-            "type": "Renovation",
-            "cost": 800000
+            "asf": 21000,
+            "type": "New Construction",
+            "cost": 8400000
           },
           "startDate": {
             "year": 2021,
             "month": 3
           },
           "moveIds": [
-            "VIP Suites_1",
-            "VIP Suites_2",
-            "VIP Suites_3",
-            "VIP Suites_4"
+            "Locker-A_1",
+            "Locker-B_1",
+            "Locker-B_2"
           ]
         },
         {
@@ -522,7 +499,7 @@
           "properties": {
             "asf": 12800,
             "type": "Renovation",
-            "cost": 5120000
+            "cost": 3200000
           },
           "startDate": {
             "year": 2021,
@@ -530,21 +507,6 @@
           },
           "moveIds": [
             "Sports Medicine_1"
-          ]
-        },
-        {
-          "name": "Office",
-          "properties": {
-            "asf": 29000,
-            "type": "Renovation",
-            "cost": 11600000
-          },
-          "startDate": {
-            "year": 2021,
-            "month": 3
-          },
-          "moveIds": [
-            "Office-B_1"
           ]
         }
       ]
@@ -556,36 +518,38 @@
       },
       "moves": [
         {
-          "name": "Locker",
+          "name": "Office",
           "properties": {
-            "asf": 21000,
-            "type": "New Construction",
-            "cost": 12600000
+            "asf": 14500,
+            "type": "Renovation",
+            "cost": 3625000
           },
           "startDate": {
             "year": 2022,
             "month": 4
           },
           "moveIds": [
-            "Locker-A_1",
-            "Locker-B_1",
-            "Locker-B_2"
+            "Office-B_1",
+            "Office-A_1",
+            "Office-A_2"
           ]
         },
         {
-          "name": "Office",
+          "name": "VIP Suites",
           "properties": {
-            "asf": 8000,
-            "type": "New Construction",
-            "cost": 4800000
+            "asf": 2000,
+            "type": "Renovation",
+            "cost": 500000
           },
           "startDate": {
             "year": 2022,
             "month": 4
           },
           "moveIds": [
-            "Office-A_1",
-            "Office-A_2"
+            "VIP Suites_1",
+            "VIP Suites_2",
+            "VIP Suites_3",
+            "VIP Suites_4"
           ]
         },
         {
@@ -593,7 +557,7 @@
           "properties": {
             "asf": 35000,
             "type": "Renovation",
-            "cost": 14000000
+            "cost": 8750000
           },
           "startDate": {
             "year": 2022,
@@ -618,7 +582,7 @@
           "properties": {
             "asf": 3000,
             "type": "New Construction",
-            "cost": 1800000
+            "cost": 1200000
           },
           "startDate": {
             "year": 2019,
@@ -634,7 +598,7 @@
           "properties": {
             "asf": 5000,
             "type": "New Construction",
-            "cost": 3000000
+            "cost": 2000000
           },
           "startDate": {
             "year": 2019,
@@ -652,7 +616,7 @@
           "properties": {
             "asf": 2000,
             "type": "New Construction",
-            "cost": 1200000
+            "cost": 800000
           },
           "startDate": {
             "year": 2019,
@@ -670,7 +634,7 @@
           "properties": {
             "asf": 12800,
             "type": "New Construction",
-            "cost": 7680000
+            "cost": 5120000
           },
           "startDate": {
             "year": 2019,
@@ -685,7 +649,7 @@
           "properties": {
             "asf": 20000,
             "type": "New Construction",
-            "cost": 12000000
+            "cost": 8000000
           },
           "startDate": {
             "year": 2019,
@@ -702,7 +666,7 @@
           "properties": {
             "asf": 11700,
             "type": "New Construction",
-            "cost": 7020000
+            "cost": 4680000
           },
           "startDate": {
             "year": 2019,
@@ -717,7 +681,7 @@
           "properties": {
             "asf": 35000,
             "type": "New Construction",
-            "cost": 21000000
+            "cost": 14000000
           },
           "startDate": {
             "year": 2019,
@@ -740,7 +704,7 @@
           "properties": {
             "asf": 20000,
             "type": "Renovation",
-            "cost": 8000000
+            "cost": 5000000
           },
           "startDate": {
             "year": 2021,
@@ -756,7 +720,7 @@
           "properties": {
             "asf": 24000,
             "type": "Renovation",
-            "cost": 9600000
+            "cost": 6000000
           },
           "startDate": {
             "year": 2021,
@@ -773,7 +737,7 @@
           "properties": {
             "asf": 10000,
             "type": "Renovation",
-            "cost": 4000000
+            "cost": 2500000
           },
           "startDate": {
             "year": 2021,
@@ -793,7 +757,7 @@
         {
           "name": "Office",
           "properties": {
-            "asf": 1000,
+            "asf": 2000,
             "type": "-",
             "cost": 0
           },
@@ -804,7 +768,7 @@
         {
           "name": "Basketball Arena",
           "properties": {
-            "asf": 1000,
+            "asf": 18000,
             "type": "-",
             "cost": 0
           },
@@ -815,7 +779,7 @@
         {
           "name": "Practice Courts",
           "properties": {
-            "asf": 1000,
+            "asf": 18000,
             "type": "-",
             "cost": 0
           },
@@ -827,7 +791,7 @@
         {
           "name": "Locker",
           "properties": {
-            "asf": 1000,
+            "asf": 10000,
             "type": "-",
             "cost": 0
           },
@@ -838,7 +802,7 @@
         {
           "name": "Locker",
           "properties": {
-            "asf": 1000,
+            "asf": 10000,
             "type": "-",
             "cost": 0
           },
@@ -850,7 +814,7 @@
         {
           "name": "Sports Medicine",
           "properties": {
-            "asf": 1000,
+            "asf": 10000,
             "type": "-",
             "cost": 0
           },
@@ -887,7 +851,7 @@
         {
           "name": "Office",
           "properties": {
-            "asf": 1000,
+            "asf": 4000,
             "type": "-",
             "cost": 0
           },
@@ -899,7 +863,7 @@
         {
           "name": "Strength & Conditioning",
           "properties": {
-            "asf": 1000,
+            "asf": 5500,
             "type": "-",
             "cost": 0
           },

@@ -32,6 +32,7 @@ import MeshTween from "./MeshTween";
 import Converter from "./Converter";
 import {Emitter} from "sasaki-core";
 import HatchShader from "./shaders/HatchShader";
+import MeshLineMaterial from "./core/MeshLineMaterial";
 
 /**
  * Creates a new instance of ThreeApp.
@@ -197,7 +198,7 @@ export default class ThreeApp extends Emitter {
                         this.scene.add(mesh);
                     } else if (extrude.type === 'curves') {
                         extrude.curves.forEach((segment, i) => {
-                            let line = Converter.getLine(segment, this.getColoredLineMaterial(extrude.color, 0.7));
+                            let line = Converter.getLine(segment, this.getColoredLineMaterial(extrude.color, 0.1, 0.7));
                             if (extrude.option) {
                                 this.optionObjects.push({object: line, option: extrude.option});
                             }
@@ -264,20 +265,24 @@ export default class ThreeApp extends Emitter {
         });
     };
 
-    getColoredLineMaterial(color, opacity = 1) {
+    getColoredLineMaterial(color, width, opacity = 1) {
         if (!this.coloredLineMaterials) this.coloredLineMaterials = {};
-        const matId = color + '_' + opacity;
+        const matId = color + '_' + width + '_' + opacity;
         if (!this.coloredLineMaterials[matId]) {
             const settings = {
-                color: color,
-                // linewidth: width -- Note: linewidth property is not supported on most WegGL platforms
-                //consider using MeshLine implementation when thick lines are needed
+                color: new Color(color),
             };
             if (opacity !== 1) {
                 settings.transparent = true;
                 settings.opacity = opacity;
             }
-            this.coloredLineMaterials[matId] = new LineBasicMaterial(settings);
+            if (width !== 0) {
+                settings.lineWidth = 0.1;
+                // settings.dashArray = [0.1, 0.2];//does this work?
+                this.coloredLineMaterials[matId] = new MeshLineMaterial(settings);
+            } else {
+                this.coloredLineMaterials[matId] = new LineBasicMaterial(settings)
+            }
         }
         return this.coloredLineMaterials[matId];
     }

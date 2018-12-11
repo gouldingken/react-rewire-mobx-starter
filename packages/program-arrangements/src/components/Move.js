@@ -21,7 +21,7 @@ export default class Move extends React.Component {
         }
         //TODO replace ASF with existing ASF if not moved yet...
         return (
-            <div className="Move" style={{background: ProgramTimelineDataHandler.colorProgram(move.name)}}
+            <div className="Move" style={{background: ProgramTimelineDataHandler.colorProgram(move.name, true)}}
                  onClick={() => {
                      if (isMoved) {
                          excludeMove(move, store);
