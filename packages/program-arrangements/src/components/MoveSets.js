@@ -3,6 +3,7 @@ import {observer} from "mobx-react";
 import MoveSet from "./MoveSet";
 import {If} from "sasaki-core";
 import ProgramUtils from "../ProgramUtils";
+import ProgramTimelineDataHandler from "../ProgramTimelineDataHandler";
 
 export default class MoveSets extends React.Component {
     constructor(props) {
@@ -24,7 +25,7 @@ export default class MoveSets extends React.Component {
                 }
             }}>
                 <div className={'option-title'}>{activeOption}</div>
-                <div className={'sum-total'}>{ProgramUtils.formatCost(movedSum)}</div>
+                <div className={'sum-total'}>{ProgramTimelineDataHandler.getCostRange(movedSum)}</div>
                 <div>
                     {moveSets.map((moveSet, i) =>
                         <MoveSet showMoveButtons={showMoveButtons} store={store} key={i} moveSet={moveSet}/>

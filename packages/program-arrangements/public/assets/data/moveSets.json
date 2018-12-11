@@ -1,6 +1,233 @@
 {
+  "M1": [
+    {
+      "phaseName": "Phase 1",
+      "date": {
+        "year": 2019,
+        "month": 9
+      },
+      "moves": [
+        {
+          "name": "Practice Courts",
+          "properties": {
+            "asf": 18000,
+            "type": "Renovation",
+            "cost": 4500000
+          },
+          "startDate": {
+            "year": 2019,
+            "month": 9
+          },
+          "endDate": {
+            "year": 2021,
+            "month": 2
+          },
+          "moveIds": [
+            "Practice Courts_1",
+            "Practice Courts_2"
+          ]
+        },
+        {
+          "name": "Basketball Arena",
+          "properties": {
+            "asf": 31000,
+            "type": "Renovation",
+            "cost": 7750000
+          },
+          "startDate": {
+            "year": 2019,
+            "month": 9
+          },
+          "endDate": {
+            "year": 2021,
+            "month": 2
+          },
+          "moveIds": [
+            "Basketball Arena_1"
+          ]
+        },
+        {
+          "name": "Lobby / Hall of Fame",
+          "properties": {
+            "asf": 2500,
+            "type": "New Construction",
+            "cost": 1000000
+          },
+          "startDate": {
+            "year": 2019,
+            "month": 9
+          },
+          "endDate": {
+            "year": 2021,
+            "month": 2
+          },
+          "moveIds": [
+            "Lobby / Hall of Fame_1",
+            "Lobby / Hall of Fame_2",
+            "Lobby / Hall of Fame_3",
+            "Lobby / Hall of Fame_4"
+          ]
+        },
+        {
+          "name": "Office",
+          "properties": {
+            "asf": 27000,
+            "type": "New Construction",
+            "cost": 10800000
+          },
+          "startDate": {
+            "year": 2019,
+            "month": 9
+          },
+          "endDate": {
+            "year": 2021,
+            "month": 2
+          },
+          "moveIds": [
+            "Office-A_1",
+            "Office-A_2"
+          ]
+        },
+        {
+          "name": "Strength & Conditioning",
+          "properties": {
+            "asf": 24100,
+            "type": "New Construction",
+            "cost": 9640000
+          },
+          "startDate": {
+            "year": 2019,
+            "month": 9
+          },
+          "endDate": {
+            "year": 2021,
+            "month": 2
+          },
+          "moveIds": [
+            "Strength & Conditioning_1",
+            "Strength & Conditioning_2",
+            "Strength & Conditioning_3"
+          ]
+        }
+      ]
+    }
+  ],
+  "M2": [
+    {
+      "phaseName": "Phase 1",
+      "date": {
+        "year": 2019,
+        "month": 9
+      },
+      "moves": [
+        {
+          "name": "Practice Courts",
+          "properties": {
+            "asf": 18000,
+            "type": "Renovation",
+            "cost": 4500000
+          },
+          "startDate": {
+            "year": 2019,
+            "month": 9
+          },
+          "endDate": {
+            "year": 2021,
+            "month": 2
+          },
+          "moveIds": [
+            "Practice Courts_1",
+            "Practice Courts_2"
+          ]
+        },
+        {
+          "name": "Basketball Arena",
+          "properties": {
+            "asf": 31000,
+            "type": "Renovation",
+            "cost": 7750000
+          },
+          "startDate": {
+            "year": 2019,
+            "month": 9
+          },
+          "endDate": {
+            "year": 2021,
+            "month": 2
+          },
+          "moveIds": [
+            "Basketball Arena_1"
+          ]
+        },
+        {
+          "name": "Lobby / Hall of Fame",
+          "properties": {
+            "asf": 2500,
+            "type": "New Construction",
+            "cost": 1000000
+          },
+          "startDate": {
+            "year": 2019,
+            "month": 9
+          },
+          "endDate": {
+            "year": 2021,
+            "month": 2
+          },
+          "moveIds": [
+            "Lobby / Hall of Fame_1",
+            "Lobby / Hall of Fame_2",
+            "Lobby / Hall of Fame_3",
+            "Lobby / Hall of Fame_4"
+          ]
+        },
+        {
+          "name": "Office",
+          "properties": {
+            "asf": 27000,
+            "type": "New Construction",
+            "cost": 10800000
+          },
+          "startDate": {
+            "year": 2019,
+            "month": 9
+          },
+          "endDate": {
+            "year": 2021,
+            "month": 2
+          },
+          "moveIds": [
+            "Office-A_1",
+            "Office-A_2"
+          ]
+        },
+        {
+          "name": "Strength & Conditioning",
+          "properties": {
+            "asf": 24100,
+            "type": "New Construction",
+            "cost": 9640000
+          },
+          "startDate": {
+            "year": 2019,
+            "month": 9
+          },
+          "endDate": {
+            "year": 2021,
+            "month": 2
+          },
+          "moveIds": [
+            "Strength & Conditioning_1",
+            "Strength & Conditioning_2",
+            "Strength & Conditioning_3"
+          ]
+        }
+      ]
+    }
+  ],
   "Option 1": [
     {
+      "phaseName": "Phase 1",
       "date": {
         "year": 2019,
         "month": 9
@@ -152,6 +379,7 @@
       ]
     },
     {
+      "phaseName": "Phase 2",
       "date": {
         "year": 2021,
         "month": 3
@@ -222,6 +450,7 @@
   ],
   "Option 2": [
     {
+      "phaseName": "Phase 1",
       "date": {
         "year": 2019,
         "month": 9
@@ -278,6 +507,7 @@
       ]
     },
     {
+      "phaseName": "Phase 2",
       "date": {
         "year": 2021,
         "month": 3
@@ -354,6 +584,7 @@
       ]
     },
     {
+      "phaseName": "Phase 3",
       "date": {
         "year": 2022,
         "month": 4
@@ -397,6 +628,7 @@
   ],
   "Option 3": [
     {
+      "phaseName": "Phase 1",
       "date": {
         "year": 2019,
         "month": 9
@@ -438,6 +670,7 @@
       ]
     },
     {
+      "phaseName": "Phase 2",
       "date": {
         "year": 2021,
         "month": 3
@@ -512,6 +745,7 @@
       ]
     },
     {
+      "phaseName": "Phase 3",
       "date": {
         "year": 2022,
         "month": 4
@@ -572,6 +806,7 @@
   ],
   "Option 4": [
     {
+      "phaseName": "Phase 1",
       "date": {
         "year": 2019,
         "month": 9
@@ -694,6 +929,7 @@
       ]
     },
     {
+      "phaseName": "Phase 2",
       "date": {
         "year": 2021,
         "month": 3

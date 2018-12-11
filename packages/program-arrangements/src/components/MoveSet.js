@@ -23,7 +23,7 @@ export default class MoveSet extends React.Component {
         let title = 'Program';
 
         if (moveSet.date) {
-            title = `${moveSet.date.year} - ${moveSet.date.month}`
+            title = moveSet.phaseName || `${moveSet.date.year} - ${moveSet.date.month}`
         }
 
         return (

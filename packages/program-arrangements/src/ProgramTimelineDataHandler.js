@@ -1,6 +1,7 @@
 import {ADataHandler} from "colorizer-three";
 import ShapeInterpolator from "./ShapeInterpolator";
 import SpeckleData from "./SpeckleData";
+import ProgramUtils from "./ProgramUtils";
 
 /**
  * Creates a new instance of ProgramTimelineDataHandler.
@@ -104,6 +105,12 @@ export default class ProgramTimelineDataHandler extends ADataHandler {
         };
     }
 
+    static getCostRange(cost) {
+        if (cost === 0) return '';
+        const low = 0.7 * cost;
+        return ProgramUtils.formatCost(low) + ' - ' + ProgramUtils.formatCost(cost);
+    }
+
 
     getExtrudeObjects(callback) {
         // let speckleData = new SpeckleData({scale: 0.1});
@@ -194,6 +201,8 @@ export default class ProgramTimelineDataHandler extends ADataHandler {
 
                 const options = {
                     'Existing': 'Existing',
+                    'M1': 'M1',
+                    'M2': 'M2',
                     'Option 1': 'Option 1',
                     'Option 2': 'Option 2',
                     'Option 3': 'Option 3',

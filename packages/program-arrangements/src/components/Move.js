@@ -48,7 +48,7 @@ export default class Move extends React.Component {
                     {asf}
                 </div>
                 <div className={'cost-label'}>
-                    {ProgramUtils.formatCost(move.properties.cost)}
+                    {ProgramTimelineDataHandler.getCostRange(move.properties.cost)}
                 </div>
                 <If true={store.activeOption !== 'Existing'}>
                     <div className={'move-tag' + ((isMoved) ? ' moved' : '')}>
