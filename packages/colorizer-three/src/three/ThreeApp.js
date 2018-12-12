@@ -78,7 +78,7 @@ export default class ThreeApp extends Emitter {
         this.scene.add(light);
 
         const directionalLight = new DirectionalLight(0xffffff, 0.6);
-        directionalLight.position.set(80, 100, -80);
+        directionalLight.position.set(80, 100, -120);
         directionalLight.target.position.set(0, 0, 0);
 
         if (settings.useShadows) {
@@ -151,12 +151,12 @@ export default class ThreeApp extends Emitter {
                             meshTweens[extrude.group] = new MeshTween(this.scene, extrude.group);
                             this.tweenObjects.push(meshTweens[extrude.group]);
                         }
-                        const mat = this.getColoredMaterial(extrude.color, 1, extrude.properties);
+                        const mat = this.getColoredMaterial(extrude.properties.color, 1, extrude.properties);
                         let fromMesh = Converter.getMesh(extrude.fromMesh, mat, false);
                         let toMesh = Converter.getMesh(extrude.toMesh, mat, false);
 
-                        this.addMaterialObject(fromMesh, extrude.color, extrude.id);
-                        this.addMaterialObject(toMesh, extrude.color, extrude.id);
+                        this.addMaterialObject(fromMesh, extrude.color, extrude.id, extrude.properties);
+                        this.addMaterialObject(toMesh, extrude.color, extrude.id, extrude.properties);
 
                         const meshTween = meshTweens[extrude.group];
                         meshTween.add(fromMesh, extrude.fromKey, extrude.toKey);
@@ -562,22 +562,30 @@ export default class ThreeApp extends Emitter {
         this.scene.add(this.basePlane);
     }
 
-    addMaterialObject(mesh, color, id) {
+    addMaterialObject(mesh, color, id, properties) {
         if (!mesh) {
             console.log('NO MESH PASSED');
             return;
         }
-        const material = new MeshPhongMaterial({color: color});
-        // const materialDim = new MeshBasicMaterial({
-        //     color: color,
-        //     wireframe: true
-        // });
-        const materialDim = new MeshPhongMaterial({
+        let material = new MeshPhongMaterial({color: color});
+        let materialDim = new MeshPhongMaterial({
             color: color,
             side: FrontSide,
             opacity: 0.1,
             transparent: true
         });
+        if (properties && properties.basicMaterial) {
+            material = new MeshBasicMaterial({color: color});
+            materialDim = new MeshBasicMaterial({
+                color: color,
+                opacity: 0.1,
+                transparent: true
+            });
+        }
+        // const materialDim = new MeshBasicMaterial({
+        //     color: color,
+        //     wireframe: true
+        // });
         const materialObj = {
             id: id,
             setHighlight: (highlight) => {

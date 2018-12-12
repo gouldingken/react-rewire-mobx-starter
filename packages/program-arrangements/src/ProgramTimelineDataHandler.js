@@ -264,7 +264,10 @@ export default class ProgramTimelineDataHandler extends ADataHandler {
                                                 toMesh: toMesh,
                                                 fromKey: options[aKey],
                                                 toKey: options[bKey],
-                                                color: '#ff0000',// colors[name]
+                                                properties: {
+                                                    color: '#ffffff',
+                                                    basicMaterial: true,
+                                                }
                                             };
                                             ans.push(bookEndTweenObject);
                                         }
