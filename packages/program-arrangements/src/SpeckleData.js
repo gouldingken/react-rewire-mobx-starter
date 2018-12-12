@@ -286,8 +286,23 @@ export default class SpeckleData {
         }
     }
 
+    getStreamUrl() {
+        if (this.settings.useLocalStreamData) {
+            return `./assets/data/streams/${this.streamId}.json`;
+        } else {
+            return `http://142.93.245.213:3000/api/v1/streams/${this.streamId}`;
+        }
+    }
+    getStreamObjectsUrl() {
+        if (this.settings.useLocalStreamData) {
+            return `./assets/data/objects/${this.streamId}.json`;
+        } else {
+            return `http://142.93.245.213:3000/api/v1/streams/${this.streamId}/objects/`;
+        }
+    }
+
     objectInfo() {
-        return fetch(`http://142.93.245.213:3000/api/v1/streams/${this.streamId}/objects/`).then((response) => {
+        return fetch(this.getStreamObjectsUrl()).then((response) => {
             return response.json();
         }).then((objectInfo) => {
             this.objectsById = {};
@@ -298,7 +313,7 @@ export default class SpeckleData {
     }
 
     streamInfo() {
-        return fetch(`http://142.93.245.213:3000/api/v1/streams/${this.streamId}`).then((response) => {
+        return fetch(this.getStreamUrl()).then((response) => {
             return response.json();
         }).then((streamInfo) => {
             const orderedObjectIds = streamInfo.resource.objects.map((o) => o._id);

@@ -32,7 +32,9 @@ export default class MeshTween {
             this.tweenSets[tweenSetId] = new TweenSet(fromKey, toKey);
         }
         this.tweenSets[tweenSetId].add(mesh);
-        this.group.add(mesh);
+        if (mesh) {
+            this.group.add(mesh);
+        }
     }
 
     setTweenSet(fromKey, toKey, activate) {

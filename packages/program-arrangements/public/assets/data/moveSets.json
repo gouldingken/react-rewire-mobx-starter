@@ -24,7 +24,8 @@
           },
           "moveIds": [
             "Practice Courts_1",
-            "Practice Courts_2"
+            "Practice Courts_2",
+            "Practice Courts__static"
           ]
         },
         {
@@ -43,7 +44,29 @@
             "month": 2
           },
           "moveIds": [
-            "Basketball Arena_1"
+            "Basketball Arena_1",
+            "Basketball Arena__static"
+          ]
+        },
+        {
+          "name": "Strength & Conditioning",
+          "properties": {
+            "asf": 24100,
+            "type": "New Construction",
+            "cost": 9640000
+          },
+          "startDate": {
+            "year": 2019,
+            "month": 9
+          },
+          "endDate": {
+            "year": 2021,
+            "month": 2
+          },
+          "moveIds": [
+            "Strength & Conditioning_1",
+            "Strength & Conditioning_2",
+            "Strength & Conditioning_3"
           ]
         },
         {
@@ -86,27 +109,6 @@
           "moveIds": [
             "Office-A_1",
             "Office-A_2"
-          ]
-        },
-        {
-          "name": "Strength & Conditioning",
-          "properties": {
-            "asf": 24100,
-            "type": "New Construction",
-            "cost": 9640000
-          },
-          "startDate": {
-            "year": 2019,
-            "month": 9
-          },
-          "endDate": {
-            "year": 2021,
-            "month": 2
-          },
-          "moveIds": [
-            "Strength & Conditioning_1",
-            "Strength & Conditioning_2",
-            "Strength & Conditioning_3"
           ]
         }
       ]
@@ -137,7 +139,8 @@
           },
           "moveIds": [
             "Practice Courts_1",
-            "Practice Courts_2"
+            "Practice Courts_2",
+            "Practice Courts__static"
           ]
         },
         {
@@ -156,7 +159,29 @@
             "month": 2
           },
           "moveIds": [
-            "Basketball Arena_1"
+            "Basketball Arena_1",
+            "Basketball Arena__static"
+          ]
+        },
+        {
+          "name": "Strength & Conditioning",
+          "properties": {
+            "asf": 24100,
+            "type": "New Construction",
+            "cost": 9640000
+          },
+          "startDate": {
+            "year": 2019,
+            "month": 9
+          },
+          "endDate": {
+            "year": 2021,
+            "month": 2
+          },
+          "moveIds": [
+            "Strength & Conditioning_1",
+            "Strength & Conditioning_2",
+            "Strength & Conditioning_3"
           ]
         },
         {
@@ -199,27 +224,6 @@
           "moveIds": [
             "Office-A_1",
             "Office-A_2"
-          ]
-        },
-        {
-          "name": "Strength & Conditioning",
-          "properties": {
-            "asf": 24100,
-            "type": "New Construction",
-            "cost": 9640000
-          },
-          "startDate": {
-            "year": 2019,
-            "month": 9
-          },
-          "endDate": {
-            "year": 2021,
-            "month": 2
-          },
-          "moveIds": [
-            "Strength & Conditioning_1",
-            "Strength & Conditioning_2",
-            "Strength & Conditioning_3"
           ]
         }
       ]
@@ -271,7 +275,8 @@
           },
           "moveIds": [
             "Practice Courts_1",
-            "Practice Courts_2"
+            "Practice Courts_2",
+            "Practice Courts__static"
           ]
         },
         {
@@ -309,7 +314,8 @@
             "month": 2
           },
           "moveIds": [
-            "Basketball Arena_1"
+            "Basketball Arena_1",
+            "Basketball Arena__static"
           ]
         },
         {
@@ -375,6 +381,27 @@
             "Office-A_1",
             "Office-A_2"
           ]
+        },
+        {
+          "name": "Strength & Conditioning",
+          "properties": {
+            "asf": 24100,
+            "type": "Renovation",
+            "cost": 6025000
+          },
+          "startDate": {
+            "year": 2019,
+            "month": 9
+          },
+          "endDate": {
+            "year": 2021,
+            "month": 2
+          },
+          "moveIds": [
+            "Strength & Conditioning_1",
+            "Strength & Conditioning_2",
+            "Strength & Conditioning_3"
+          ]
         }
       ]
     },
@@ -385,27 +412,6 @@
         "month": 3
       },
       "moves": [
-        {
-          "name": "Strength & Conditioning",
-          "properties": {
-            "asf": 24100,
-            "type": "Renovation",
-            "cost": 6025000
-          },
-          "startDate": {
-            "year": 2021,
-            "month": 3
-          },
-          "endDate": {
-            "year": 2022,
-            "month": 3
-          },
-          "moveIds": [
-            "Strength & Conditioning_1",
-            "Strength & Conditioning_2",
-            "Strength & Conditioning_3"
-          ]
-        },
         {
           "name": "Meeting Rooms",
           "properties": {
@@ -469,7 +475,8 @@
           },
           "moveIds": [
             "Practice Courts_1",
-            "Practice Courts_2"
+            "Practice Courts_2",
+            "Practice Courts__static"
           ]
         },
         {
@@ -514,6 +521,41 @@
       },
       "moves": [
         {
+          "name": "Strength & Conditioning",
+          "properties": {
+            "asf": 24500,
+            "type": "New Construction",
+            "cost": 9800000
+          },
+          "startDate": {
+            "year": 2021,
+            "month": 3
+          },
+          "moveIds": [
+            "Strength & Conditioning_1",
+            "Strength & Conditioning_2",
+            "Strength & Conditioning_3"
+          ]
+        },
+        {
+          "name": "Lobby / Hall of Fame",
+          "properties": {
+            "asf": 10000,
+            "type": "New Construction",
+            "cost": 4000000
+          },
+          "startDate": {
+            "year": 2021,
+            "month": 3
+          },
+          "moveIds": [
+            "Lobby / Hall of Fame_1",
+            "Lobby / Hall of Fame_2",
+            "Lobby / Hall of Fame_3",
+            "Lobby / Hall of Fame_4"
+          ]
+        },
+        {
           "name": "Office",
           "properties": {
             "asf": 14000,
@@ -545,41 +587,6 @@
             "Meeting Rooms_1",
             "Meeting Rooms_2"
           ]
-        },
-        {
-          "name": "Lobby / Hall of Fame",
-          "properties": {
-            "asf": 10000,
-            "type": "New Construction",
-            "cost": 4000000
-          },
-          "startDate": {
-            "year": 2021,
-            "month": 3
-          },
-          "moveIds": [
-            "Lobby / Hall of Fame_1",
-            "Lobby / Hall of Fame_2",
-            "Lobby / Hall of Fame_3",
-            "Lobby / Hall of Fame_4"
-          ]
-        },
-        {
-          "name": "Strength & Conditioning",
-          "properties": {
-            "asf": 24500,
-            "type": "New Construction",
-            "cost": 9800000
-          },
-          "startDate": {
-            "year": 2021,
-            "month": 3
-          },
-          "moveIds": [
-            "Strength & Conditioning_1",
-            "Strength & Conditioning_2",
-            "Strength & Conditioning_3"
-          ]
         }
       ]
     },
@@ -602,7 +609,8 @@
             "month": 4
           },
           "moveIds": [
-            "Basketball Arena_1"
+            "Basketball Arena_1",
+            "Basketball Arena__static"
           ]
         },
         {
@@ -647,7 +655,8 @@
           },
           "moveIds": [
             "Practice Courts_1",
-            "Practice Courts_2"
+            "Practice Courts_2",
+            "Practice Courts__static"
           ]
         },
         {
@@ -741,6 +750,23 @@
           "moveIds": [
             "Sports Medicine_1"
           ]
+        },
+        {
+          "name": "Office",
+          "properties": {
+            "asf": 14500,
+            "type": "Renovation",
+            "cost": 3625000
+          },
+          "startDate": {
+            "year": 2021,
+            "month": 3
+          },
+          "moveIds": [
+            "Office-B_1",
+            "Office-A_1",
+            "Office-A_2"
+          ]
         }
       ]
     },
@@ -752,20 +778,19 @@
       },
       "moves": [
         {
-          "name": "Office",
+          "name": "Basketball Arena",
           "properties": {
-            "asf": 14500,
+            "asf": 35000,
             "type": "Renovation",
-            "cost": 3625000
+            "cost": 8750000
           },
           "startDate": {
             "year": 2022,
             "month": 4
           },
           "moveIds": [
-            "Office-B_1",
-            "Office-A_1",
-            "Office-A_2"
+            "Basketball Arena_1",
+            "Basketball Arena__static"
           ]
         },
         {
@@ -784,21 +809,6 @@
             "VIP Suites_2",
             "VIP Suites_3",
             "VIP Suites_4"
-          ]
-        },
-        {
-          "name": "Basketball Arena",
-          "properties": {
-            "asf": 35000,
-            "type": "Renovation",
-            "cost": 8750000
-          },
-          "startDate": {
-            "year": 2022,
-            "month": 4
-          },
-          "moveIds": [
-            "Basketball Arena_1"
           ]
         }
       ]
@@ -923,7 +933,8 @@
             "month": 9
           },
           "moveIds": [
-            "Basketball Arena_1"
+            "Basketball Arena_1",
+            "Basketball Arena__static"
           ]
         }
       ]
@@ -948,7 +959,8 @@
           },
           "moveIds": [
             "Practice Courts_1",
-            "Practice Courts_2"
+            "Practice Courts_2",
+            "Practice Courts__static"
           ]
         },
         {
@@ -1009,7 +1021,8 @@
             "cost": 0
           },
           "moveIds": [
-            "Basketball Arena_1"
+            "Basketball Arena_1",
+            "Basketball Arena__static"
           ]
         },
         {
@@ -1021,7 +1034,8 @@
           },
           "moveIds": [
             "Practice Courts_1",
-            "Practice Courts_2"
+            "Practice Courts_2",
+            "Practice Courts__static"
           ]
         },
         {

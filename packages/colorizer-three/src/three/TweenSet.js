@@ -17,13 +17,19 @@ export default class TweenSet {
     };
 
     add(mesh) {
-        mesh.visible = this.visible && this.meshes.length === this.displayIndex;
+        if (mesh) {
+            mesh.visible = this.visible && this.meshes.length === this.displayIndex;
+        }
         this.meshes.push(mesh);
     }
 
     updateVisibility() {
         this.meshes.forEach((mesh, i) => {
+            if (!mesh) {
+                return;
+            }//null values can be used as placeholders
             mesh.visible = this.visible && i === this.displayIndex;
+            // console.log(`${mesh.visible}: ${this.visible} ${i === this.displayIndex}`);
         });
     }
 

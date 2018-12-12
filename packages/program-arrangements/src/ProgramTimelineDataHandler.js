@@ -17,6 +17,7 @@ export default class ProgramTimelineDataHandler extends ADataHandler {
 
         this.colorLookup = {};
         const colorPalette = {};
+        this.tweenSteps = 20;
     };
 
     getColor(id) {
@@ -85,9 +86,8 @@ export default class ProgramTimelineDataHandler extends ADataHandler {
 
         const interpolator = new ShapeInterpolator(path1, path2, true);
 
-        let steps = 20;
-        for (let i = 0; i <= steps; i++) {
-            tweenPathObj.tweenPaths.push(interpolator.getPath(i / steps));
+        for (let i = 0; i <= this.tweenSteps; i++) {
+            tweenPathObj.tweenPaths.push(interpolator.getPath(i / this.tweenSteps));
         }
 
         return tweenPathObj;
@@ -124,24 +124,40 @@ export default class ProgramTimelineDataHandler extends ADataHandler {
 
         streams.forEach((stream, i) => {
 
-            let speckleData = new SpeckleData({scale: 0.1}, stream);
+            let speckleData = new SpeckleData({scale: 0.1, useLocalStreamData: false}, stream);
             const ans = [];
+
+            const objectPairs = {};
+
+            const addTweenPairObject = (optionName, programName, partName, object) => {
+                if (!objectPairs[programName]) {
+                    objectPairs[programName] = {};
+                }
+                if (!objectPairs[programName][optionName]) {
+                    objectPairs[programName][optionName] = {};
+                }
+
+                objectPairs[programName][optionName][partName] = object;
+
+            };
 
             speckleData.getObjects().then((layers) => {
 
-                const objectPairs = {};
+
                 const colors = {};
                 layers.forEach((layer, i) => {
-                    // console.log('LAYER: ' + layer.name);
+                    console.log('LAYER: ' + layer.name);
                     // if (layer.name.indexOf('Wireframe') >= 0) {
                     //     console.log('LAYER: ' + layer.name);
                     // }
                     const bits = layer.name.split('::');
                     const optionName = bits[0];
                     const programName = bits[1];
+                    const partName = bits[2] || '1';
+                    let isBookend = false;
                     let isStatic = false;
                     let isNew = false;
-                    const properties = {};
+                    const properties = {useShadow: true};
                     if (!programName) {
                         if (optionName === 'Exisiting Arch' || optionName === 'Context') {//typo matches Rhino
                             isStatic = true;
@@ -149,13 +165,27 @@ export default class ProgramTimelineDataHandler extends ADataHandler {
                     } else if (programName === '_architecture') {
                         isStatic = true;
                         isNew = optionName !== 'Context';
+                        properties.useHatch = isNew;
                     } else if (programName === 'BaseImage') {
                         isStatic = true;
                         properties.texture = './assets/colgate-base.png';
                         properties.receiveShadow = true;
                     }
+                    if (partName === '_static') {
+                        isBookend = true;
+                        isStatic = true;
+                        isNew = true;
+                        properties.basicMaterial = true;
 
-                    const partName = bits[2] || '1';
+                        // properties.bookEndTween = {//TODO we need to use the same logic here with objectPairs[programName][optionName] etc...
+                        //     'fromKey': 'Existing',
+                        //     'toKey': optionName,
+                        //     'tweenLength': this.tweenSteps,
+                        // };
+
+                        console.log(`Static prog: ${optionName} ${programName}`);
+                    }
+
                     if (isStatic) {
                         layer.objects.forEach((obj, i) => {
                             const extrusion = speckleData.getExtrusion(obj);
@@ -167,11 +197,16 @@ export default class ProgramTimelineDataHandler extends ADataHandler {
                             }
                             const mesh = speckleData.getMesh(obj);
                             if (mesh) {
-                                if (isNew) mesh.option = optionName;
                                 mesh.properties = properties;
                                 mesh.color = layer.color;
-                                mesh.hatch = isNew;
-                                ans.push(mesh);
+                                if (isBookend) {
+                                    //TODO we also need to figure out how to manage multiple objects? or should we just union meshes in Rhino for this one?
+                                    //for some reason we're missing Existing -> M1 etc, but we do have M1 -> M2
+                                    console.log(`BOOKEND: ${optionName} ${programName} ${partName}`);
+                                    addTweenPairObject(optionName, programName, partName, mesh);
+                                } else {
+                                    ans.push(mesh);
+                                }
                                 return;
                             }
                             const curves = speckleData.getCurves(obj);
@@ -187,15 +222,9 @@ export default class ProgramTimelineDataHandler extends ADataHandler {
                             }
                         });
                     } else {
-                        if (!objectPairs[programName]) {
-                            objectPairs[programName] = {};
-                        }
-                        if (!objectPairs[programName][optionName]) {
-                            objectPairs[programName][optionName] = {};
-                        }
+                        addTweenPairObject(optionName, programName, partName, layer.objects[0]);
                         colors[programName] = ProgramTimelineDataHandler.colorProgramOverride(programName) || layer.color;
 
-                        objectPairs[programName][optionName][partName] = layer.objects[0];
                     }
                 });
 
@@ -222,6 +251,26 @@ export default class ProgramTimelineDataHandler extends ADataHandler {
                             const bKey = optionKeys[j];
                             if (pair[aKey] && pair[bKey]) {
                                 Object.keys(pair[aKey]).forEach((partId) => {
+                                    if (partId === '_static') {
+                                        let fromMesh = pair[aKey][partId];
+                                        let toMesh = pair[bKey][partId];
+                                        if (fromMesh && toMesh) {
+                                            const bookEndTweenObject = {
+                                                isBookEnd: true,
+                                                tweenLength: this.tweenSteps,
+                                                id: name + '_' + partId,
+                                                group: name + '_' + partId,
+                                                fromMesh: fromMesh,
+                                                toMesh: toMesh,
+                                                fromKey: options[aKey],
+                                                toKey: options[bKey],
+                                                color: '#ff0000',// colors[name]
+                                            };
+                                            ans.push(bookEndTweenObject);
+                                        }
+                                        return;
+                                    }
+
                                     const logVerbose = false;//name + '_' + partId === 'Strength&Conditioning_2';
                                     const extrusion1 = speckleData.getExtrusion(pair[aKey][partId], logVerbose);
                                     const extrusion2 = speckleData.getExtrusion(pair[bKey][partId], logVerbose);//assumes matching objects
@@ -232,8 +281,8 @@ export default class ProgramTimelineDataHandler extends ADataHandler {
                                         if (logVerbose) {
                                             console.log(aKey + '->' + bKey + ' -- zPos: ' + tweenPathObject.fromZ + ' -> ' + tweenPathObject.toZ);
                                         }
-                                        tweenPathObject.fromKey = options[optionKeys[i]];
-                                        tweenPathObject.toKey = options[optionKeys[j]];
+                                        tweenPathObject.fromKey = options[aKey];
+                                        tweenPathObject.toKey = options[bKey];
                                         ans.push(tweenPathObject);
                                     } else {
                                         console.log(`Missing Extrusion in ${name} ${aKey} -> ${bKey} part ${partId}`);
@@ -253,7 +302,11 @@ export default class ProgramTimelineDataHandler extends ADataHandler {
                     groupLists[tweenObj.group].push(tweenObj.fromKey + ' -> ' + tweenObj.toKey);
                 });
 
-                const targetGroupLength = 10;
+                let targetGroupLength = 0;
+                for (let j = 0; j < Object.keys(options).length; j++) {
+                    targetGroupLength += j;
+                }
+                console.log(`targetGroupLength: ${targetGroupLength}`);
                 Object.keys(groupLists).forEach((k) => {
                     const groupList = groupLists[k];
                     if (groupList.length !== targetGroupLength) {

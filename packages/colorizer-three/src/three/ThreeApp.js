@@ -146,9 +146,27 @@ export default class ThreeApp extends Emitter {
 
                 const meshTweens = {};
                 extrudes.forEach((extrude, i) => {
-                    if (extrude.tweenPaths) {
-                        // console.log(extrude.group + ' -- tween extrude: ' + extrude.fromKey + ' -> ' + extrude.toKey);
+                    if (extrude.isBookEnd) {//bookend tweens can be used to add something static at either end of the tween without intermediate steps
+                        if (!meshTweens[extrude.group]) {
+                            meshTweens[extrude.group] = new MeshTween(this.scene, extrude.group);
+                            this.tweenObjects.push(meshTweens[extrude.group]);
+                        }
+                        const mat = this.getColoredMaterial(extrude.color, 1, extrude.properties);
+                        let fromMesh = Converter.getMesh(extrude.fromMesh, mat, false);
+                        let toMesh = Converter.getMesh(extrude.toMesh, mat, false);
 
+                        this.addMaterialObject(fromMesh, extrude.color, extrude.id);
+                        this.addMaterialObject(toMesh, extrude.color, extrude.id);
+
+                        const meshTween = meshTweens[extrude.group];
+                        meshTween.add(fromMesh, extrude.fromKey, extrude.toKey);
+                        //fill the array with empty meshes (hidden state)
+                        for (let j = 1; j < extrude.tweenLength; j++) {
+                            meshTween.add(null, extrude.fromKey, extrude.toKey);
+                        }
+                        meshTween.add(toMesh, extrude.fromKey, extrude.toKey);
+                    } else if (extrude.tweenPaths) {
+                        // console.log(extrude.group + ' -- tween extrude: ' + extrude.fromKey + ' -> ' + extrude.toKey);
                         if (!meshTweens[extrude.group]) {
                             meshTweens[extrude.group] = new MeshTween(this.scene, extrude.group);
                             this.tweenObjects.push(meshTweens[extrude.group]);
@@ -160,7 +178,7 @@ export default class ThreeApp extends Emitter {
                             let along = i / (extrude.tweenPaths.length - 1);
                             let depth = ThreeMath.lerp(extrude.fromDepth, extrude.toDepth, along);
                             let zPos = ThreeMath.lerp(extrude.fromZ, extrude.toZ, along);
-                            let shapeExtrude = new ShapeExtrude(path, depth + ((useOffset) ? extrude.offset : 0), this.getColoredMaterial(extrude.color, 1, extrude.hatch));
+                            let shapeExtrude = new ShapeExtrude(path, depth + ((useOffset) ? extrude.offset : 0), this.getColoredMaterial(extrude.color, 1, extrude.properties));
                             if (this.settings.useShadows) {
                                 shapeExtrude.mesh.castShadow = true;
                             }
@@ -169,10 +187,10 @@ export default class ThreeApp extends Emitter {
                             meshTween.add(shapeExtrude.mesh, extrude.fromKey, extrude.toKey);
                         });
                     } else if (extrude.path) {
-                        let shapeExtrude = new ShapeExtrude(extrude.path, extrude.depth, this.getColoredMaterial(extrude.color, 1, extrude.hatch));
+                        let shapeExtrude = new ShapeExtrude(extrude.path, extrude.depth, this.getColoredMaterial(extrude.color, 1, extrude.properties));
                         shapeExtrude.mesh.translateZ(extrude.z);
                         if (this.settings.useShadows) {
-                            shapeExtrude.mesh.castShadow = !extrude.hatch;
+                            shapeExtrude.mesh.castShadow = extrude.properties.useShadow;
                         }
                         if (extrude.option) {
                             this.optionObjects.push({object: shapeExtrude.mesh, option: extrude.option});
@@ -180,7 +198,8 @@ export default class ThreeApp extends Emitter {
                         this.scene.add(shapeExtrude.mesh);
 
                     } else if (extrude.type === 'mesh') {//TODO rename 'extrude' to something more generic
-                        let material = this.getColoredMaterial(extrude.color, 1, extrude.hatch);
+
+                        let material = this.getColoredMaterial(extrude.color, 1, extrude.properties);
                         let generateUvs = false;
                         if (extrude.properties && extrude.properties.texture) {
                             const texture = new TextureLoader().load(extrude.properties.texture);
@@ -194,6 +213,7 @@ export default class ThreeApp extends Emitter {
                         if (extrude.option) {
                             this.optionObjects.push({object: mesh, option: extrude.option});
                         }
+
 
                         this.scene.add(mesh);
                     } else if (extrude.type === 'curves') {
@@ -287,12 +307,18 @@ export default class ThreeApp extends Emitter {
         return this.coloredLineMaterials[matId];
     }
 
-    getColoredMaterial(color, opacity, hatch) {
+    getColoredMaterial(color, opacity, properties) {
         if (!this.coloredMaterials) this.coloredMaterials = {};
-        const matId = color + '_' + opacity + '_' + hatch;
+        if (!properties) properties = {};
+        const matId = color + '_' + opacity + '_' + JSON.stringify(properties);
         if (!this.coloredMaterials[matId]) {
-            if (hatch) {
+            if (properties.useHatch) {
                 this.coloredMaterials[matId] = new HatchShader({color: color, spacing: 4, darken: 0.8}).getMaterial();
+            } else if (properties.basicMaterial) {
+                this.coloredMaterials[matId] = new MeshBasicMaterial({
+                    color: color,
+                    side: DoubleSide
+                });
             } else {
                 const settings = {
                     color: color,
@@ -537,6 +563,10 @@ export default class ThreeApp extends Emitter {
     }
 
     addMaterialObject(mesh, color, id) {
+        if (!mesh) {
+            console.log('NO MESH PASSED');
+            return;
+        }
         const material = new MeshPhongMaterial({color: color});
         // const materialDim = new MeshBasicMaterial({
         //     color: color,
