@@ -29,31 +29,11 @@
           ]
         },
         {
-          "name": "Basketball Arena",
-          "properties": {
-            "asf": 24000,
-            "type": "Renovation",
-            "cost": 6000000
-          },
-          "startDate": {
-            "year": 2019,
-            "month": 9
-          },
-          "endDate": {
-            "year": 2021,
-            "month": 2
-          },
-          "moveIds": [
-            "Basketball Arena_1",
-            "Basketball Arena__static"
-          ]
-        },
-        {
           "name": "Strength & Conditioning",
           "properties": {
-            "asf": 20000,
+            "asf": 18000,
             "type": "New Construction",
-            "cost": 8000000
+            "cost": 7200000
           },
           "startDate": {
             "year": 2019,
@@ -166,9 +146,9 @@
         {
           "name": "Strength & Conditioning",
           "properties": {
-            "asf": 20000,
+            "asf": 18000,
             "type": "New Construction",
-            "cost": 8000000
+            "cost": 7200000
           },
           "startDate": {
             "year": 2019,
@@ -363,26 +343,6 @@
           ]
         },
         {
-          "name": "Office",
-          "properties": {
-            "asf": 25000,
-            "type": "New Construction",
-            "cost": 10000000
-          },
-          "startDate": {
-            "year": 2019,
-            "month": 9
-          },
-          "endDate": {
-            "year": 2021,
-            "month": 2
-          },
-          "moveIds": [
-            "Office-A_1",
-            "Office-A_2"
-          ]
-        },
-        {
           "name": "Strength & Conditioning",
           "properties": {
             "asf": 24100,
@@ -401,6 +361,26 @@
             "Strength & Conditioning_1",
             "Strength & Conditioning_2",
             "Strength & Conditioning_3"
+          ]
+        },
+        {
+          "name": "Office",
+          "properties": {
+            "asf": 25000,
+            "type": "New Construction",
+            "cost": 10000000
+          },
+          "startDate": {
+            "year": 2019,
+            "month": 9
+          },
+          "endDate": {
+            "year": 2021,
+            "month": 2
+          },
+          "moveIds": [
+            "Office-A_1",
+            "Office-A_2"
           ]
         }
       ]

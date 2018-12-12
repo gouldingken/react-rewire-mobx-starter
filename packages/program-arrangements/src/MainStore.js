@@ -50,7 +50,7 @@ export default class MainStore {
     }
 
     setHighlightProgram(val) {
-        console.log('setHighlightProgram: ' + val);
+        // console.log('setHighlightProgram: ' + val);
 
         this.highlightProgram = val;
     }

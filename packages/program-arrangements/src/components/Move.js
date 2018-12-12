@@ -37,7 +37,7 @@ export default class Move extends React.Component {
                      }
                  }}
                  onMouseLeave={(e) => {
-                     console.log('MOUSE LEAVE ' + e.target.className);//
+                     // console.log('MOUSE LEAVE ' + e.target.className);//
                      //bit of a hack to capture mouse leaving the Move element, but also the tag on the right...
                      if (e.target.className.indexOf('move-tag') === 0 || e.target.className === 'Move') {
                          store.setHighlightProgram(null)

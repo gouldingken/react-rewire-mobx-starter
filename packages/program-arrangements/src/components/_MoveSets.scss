@@ -8,6 +8,13 @@
     padding: 0 6px;
     @include h3;
   }
+
+  .bottom-total {
+    @include h6;
+    padding: 0 6px;
+    font-size: 1.2em;
+  }
+
   .sum-total {
     @include h4;
     color: $muted-blue;

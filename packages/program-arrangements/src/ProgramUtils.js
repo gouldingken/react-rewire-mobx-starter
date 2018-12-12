@@ -29,12 +29,15 @@ export default class ProgramUtils {
         });
     };
 
-    static getMoveSum(store) {
+    static getMoveSum(store, prop, predicate) {
+        predicate = predicate || ((move) => true);
         let sum = 0;
         store.moveSets.forEach((moveSet, i) => {
             moveSet.moves.forEach((move, i) => {
                 if (ProgramUtils.isMoved(store, move)) {
-                    sum += move.properties.cost;
+                    if (predicate(move)) {
+                        sum += move.properties[prop];
+                    }
                 }
             });
         });

@@ -13,11 +13,13 @@ export default class MoveSets extends React.Component {
     render() {
         const {moveSets, store, activeOption, showMoveButtons} = this.props;
         if (!moveSets || moveSets.length === 0) return null;
-        let movedSum = ProgramUtils.getMoveSum(store);
+        let movedSum = ProgramUtils.getMoveSum(store, 'cost');
+        let renovation = ProgramUtils.getMoveSum(store, 'asf', (m) => m.properties.type === 'Renovation');
+        let newConstruction = ProgramUtils.getMoveSum(store, 'asf', (m) => m.properties.type === 'New Construction');
 
         return (
             <div className="MoveSets" onMouseLeave={(e) => {
-                console.log('MOUSE LEAVE ' + e.target.className);//
+                // console.log('MOUSE LEAVE ' + e.target.className);//
                 //bit of a hack to capture mouse leaving the Move element, but also the tag on the right...
                 if (e.target.className === 'MoveSets') {
                     //TODO...
@@ -31,8 +33,11 @@ export default class MoveSets extends React.Component {
                         <MoveSet showMoveButtons={showMoveButtons} store={store} key={i} moveSet={moveSet}/>
                     )}
                 </div>
+
                 <div>
                     <If true={showMoveButtons}>
+                        <div className={'bottom-total'}>Renovation: <strong>{renovation.toLocaleString()}</strong></div>
+                        <div className={'bottom-total'}>New Construction: <strong>{newConstruction.toLocaleString()}</strong></div>
                         <button onClick={event => this.moveAll()}>Move All</button>
                     </If>
                 </div>
