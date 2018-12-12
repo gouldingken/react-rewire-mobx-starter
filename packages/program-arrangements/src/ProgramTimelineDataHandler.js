@@ -40,6 +40,21 @@ export default class ProgramTimelineDataHandler extends ADataHandler {
         return null;
     }
 
+    static colorStaticPartOverride(optionName, programName, partName) {
+        if (partName === 'arches') return '#707070';
+    }
+
+    static specificLineProperties(optionName, programName, partName) {
+        console.log('specificLineWidth', optionName, programName, partName);
+        if (optionName === 'Context') {
+            return {lineWidth: 0.7, opacity: 0.3}
+        }
+        if (optionName === 'Existing') {
+            return {lineWidth: 0.7, opacity: 0.6}
+        }
+        return {lineWidth: 1.3, opacity: 0.5};
+    }
+
 
     static colorProgram(name, returnDefault) {
         switch (name) {
@@ -124,7 +139,7 @@ export default class ProgramTimelineDataHandler extends ADataHandler {
 
         streams.forEach((stream, i) => {
 
-            let speckleData = new SpeckleData({scale: 0.1, useLocalStreamData: false}, stream);
+            let speckleData = new SpeckleData({scale: 0.1, useLocalStreamData: true}, stream);
             const ans = [];
 
             const objectPairs = {};
@@ -146,7 +161,7 @@ export default class ProgramTimelineDataHandler extends ADataHandler {
 
                 const colors = {};
                 layers.forEach((layer, i) => {
-                    console.log('LAYER: ' + layer.name);
+                    // console.log('LAYER: ' + layer.name);
                     // if (layer.name.indexOf('Wireframe') >= 0) {
                     //     console.log('LAYER: ' + layer.name);
                     // }
@@ -198,11 +213,10 @@ export default class ProgramTimelineDataHandler extends ADataHandler {
                             const mesh = speckleData.getMesh(obj);
                             if (mesh) {
                                 mesh.properties = properties;
-                                mesh.color = layer.color;
+                                // console.log(`Mesh on ${optionName} ${programName} ${partName}`);
+                                mesh.color = ProgramTimelineDataHandler.colorStaticPartOverride(optionName, programName, partName) || layer.color;
+                                if (isNew) mesh.option = optionName;
                                 if (isBookend) {
-                                    //TODO we also need to figure out how to manage multiple objects? or should we just union meshes in Rhino for this one?
-                                    //for some reason we're missing Existing -> M1 etc, but we do have M1 -> M2
-                                    console.log(`BOOKEND: ${optionName} ${programName} ${partName}`);
                                     addTweenPairObject(optionName, programName, partName, mesh);
                                 } else {
                                     ans.push(mesh);
@@ -213,9 +227,10 @@ export default class ProgramTimelineDataHandler extends ADataHandler {
                             if (curves) {
                                 let curveItem = {type: 'curves', curves: curves, color: layer.color};
                                 if (isNew) {
-                                    console.log('Curve on option layer: ' + optionName + ': ' + layer.name);
+                                    // console.log('Curve on option layer: ' + optionName + ': ' + layer.name);
                                     curveItem.option = optionName;
                                 }
+                                curveItem.properties = ProgramTimelineDataHandler.specificLineProperties(optionName, programName, partName);
 
                                 ans.push(curveItem);
                                 return;

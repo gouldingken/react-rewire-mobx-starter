@@ -218,7 +218,15 @@ export default class ThreeApp extends Emitter {
                         this.scene.add(mesh);
                     } else if (extrude.type === 'curves') {
                         extrude.curves.forEach((segment, i) => {
-                            let line = Converter.getLine(segment, this.getColoredLineMaterial(extrude.color, 0.1, 0.7));
+                            let lineWidth = 0.1;
+                            let lineOpacity = 0.7;
+                            if (extrude.properties && extrude.properties.lineWidth) {
+                                lineWidth *= extrude.properties.lineWidth;
+                            }
+                            if (extrude.properties && extrude.properties.opacity) {
+                                lineOpacity = extrude.properties.opacity;
+                            }
+                            let line = Converter.getLine(segment, this.getColoredLineMaterial(extrude.color, lineWidth, lineOpacity));
                             if (extrude.option) {
                                 this.optionObjects.push({object: line, option: extrude.option});
                             }
@@ -274,18 +282,22 @@ export default class ThreeApp extends Emitter {
         // }, 2000);
 
         this.restoreCameraPos({
-            "position": {"x": -45.19224822472235, "y": 34.294276851630464, "z": 30.518805139764638},
+            "position": {"x": -54.88025739780434, "y": 43.93280491518247, "z": 32.06726236431706},
             "rotation": {
-                "_x": -1.1899753288115706,
-                "_y": -0.46457214828903654,
-                "_z": -0.8415331745761527,
+                "_x": -1.4052524806518467,
+                "_y": -0.48316319948578157,
+                "_z": -1.225577868571765,
                 "_order": "XYZ"
             },
-            "controlCenter": {"x": -15.743692141546173, "y": -20.25728827042996, "z": 8.678267433754344}
+            "controlCenter": {"x": -17.39025992154747, "y": -26.549061135284763, "z": 20.291656899858687}
         });
     };
 
     getColoredLineMaterial(color, width, opacity = 1) {
+        if (!color) {
+            console.warn('MISSING COLOR');
+            color = '#ff0000';
+        }
         if (!this.coloredLineMaterials) this.coloredLineMaterials = {};
         const matId = color + '_' + width + '_' + opacity;
         if (!this.coloredLineMaterials[matId]) {
@@ -297,7 +309,7 @@ export default class ThreeApp extends Emitter {
                 settings.opacity = opacity;
             }
             if (width !== 0) {
-                settings.lineWidth = 0.1;
+                settings.lineWidth = width;
                 // settings.dashArray = [0.1, 0.2];//does this work?
                 this.coloredLineMaterials[matId] = new MeshLineMaterial(settings);
             } else {
