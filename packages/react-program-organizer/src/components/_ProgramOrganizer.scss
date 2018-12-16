@@ -1,0 +1,48 @@
+@import "../core";
+.ProgramOrganizer {
+  $width: 400px;
+  .ProgramCategory {
+    padding-top: 20px;
+    padding-left: 10px;
+    .title {
+      @include h4;
+    }
+    .ProgramBlock {
+      margin: 3px;
+      padding-top: 4px;
+      padding-bottom: 4px;
+      padding-left: 4px;
+      .title {
+        @include h5;
+      }
+      width: $width;
+      min-height: 80px;
+      border: 2px solid blue;
+      .ProgramDetail {
+        $top: 2px;
+        position: relative;
+        width: $width - 10px;
+        min-height: 30px;
+        border: 2px solid #9c9c9c;
+        background: #e1e1e1;
+        .title {
+          @include h6;
+          position: absolute;
+          top: $top + 2px;
+          left: 30px;
+        }
+        .count {
+          position: absolute;
+          top: $top;
+          left: 270px;
+        }
+        .area {
+          position: absolute;
+          top: $top;
+          left: 330px;
+        }
+      }
+    }
+
+  }
+}
