@@ -22,7 +22,7 @@ import {
     DirectionalLightHelper,
     CameraHelper,
     PCFSoftShadowMap,
-    MeshPhongMaterial, LineBasicMaterial, Color
+    MeshPhongMaterial, LineBasicMaterial, Color, PointsMaterial, Points, Geometry
 } from 'three';
 import {Math as ThreeMath} from 'three';
 import OrbitControls from 'orbit-controls-es6';
@@ -44,6 +44,7 @@ import MeshLineMaterial from "./core/MeshLineMaterial";
 export default class ThreeApp extends Emitter {
     constructor(holder, dataHandler, settings) {
         super();
+        window.threeAppInstance = this;//TODO HACK
         this.tweenObjects = [];
         this.materialObjects = [];
         this.optionObjects = [];
@@ -144,97 +145,7 @@ export default class ThreeApp extends Emitter {
         if (this.dataHandler.useExtrudes) {
             this.dataHandler.getExtrudeObjects((extrudes) => {
 
-                const meshTweens = {};
-                extrudes.forEach((extrude, i) => {
-                    if (extrude.isBookEnd) {//bookend tweens can be used to add something static at either end of the tween without intermediate steps
-                        if (!meshTweens[extrude.group]) {
-                            meshTweens[extrude.group] = new MeshTween(this.scene, extrude.group);
-                            this.tweenObjects.push(meshTweens[extrude.group]);
-                        }
-                        const mat = this.getColoredMaterial(extrude.properties.color, 1, extrude.properties);
-                        let fromMesh = Converter.getMesh(extrude.fromMesh, mat, false);
-                        let toMesh = Converter.getMesh(extrude.toMesh, mat, false);
-
-                        this.addMaterialObject(fromMesh, extrude.color, extrude.id, extrude.properties);
-                        this.addMaterialObject(toMesh, extrude.color, extrude.id, extrude.properties);
-
-                        const meshTween = meshTweens[extrude.group];
-                        meshTween.add(fromMesh, extrude.fromKey, extrude.toKey);
-                        //fill the array with empty meshes (hidden state)
-                        for (let j = 1; j < extrude.tweenLength; j++) {
-                            meshTween.add(null, extrude.fromKey, extrude.toKey);
-                        }
-                        meshTween.add(toMesh, extrude.fromKey, extrude.toKey);
-                    } else if (extrude.tweenPaths) {
-                        // console.log(extrude.group + ' -- tween extrude: ' + extrude.fromKey + ' -> ' + extrude.toKey);
-                        if (!meshTweens[extrude.group]) {
-                            meshTweens[extrude.group] = new MeshTween(this.scene, extrude.group);
-                            this.tweenObjects.push(meshTweens[extrude.group]);
-                        }
-                        const meshTween = meshTweens[extrude.group];
-
-                        extrude.tweenPaths.forEach((path, i) => {
-                            let useOffset = extrude.offset && i > 0 && i < extrude.tweenPaths.length - 1;
-                            let along = i / (extrude.tweenPaths.length - 1);
-                            let depth = ThreeMath.lerp(extrude.fromDepth, extrude.toDepth, along);
-                            let zPos = ThreeMath.lerp(extrude.fromZ, extrude.toZ, along);
-                            let shapeExtrude = new ShapeExtrude(path, depth + ((useOffset) ? extrude.offset : 0), this.getColoredMaterial(extrude.color, 1, extrude.properties));
-                            if (this.settings.useShadows) {
-                                shapeExtrude.mesh.castShadow = true;
-                            }
-                            this.addMaterialObject(shapeExtrude.mesh, extrude.color, extrude.id);
-                            shapeExtrude.mesh.translateZ(zPos);
-                            meshTween.add(shapeExtrude.mesh, extrude.fromKey, extrude.toKey);
-                        });
-                    } else if (extrude.path) {
-                        let shapeExtrude = new ShapeExtrude(extrude.path, extrude.depth, this.getColoredMaterial(extrude.color, 1, extrude.properties));
-                        shapeExtrude.mesh.translateZ(extrude.z);
-                        if (this.settings.useShadows) {
-                            shapeExtrude.mesh.castShadow = extrude.properties.useShadow;
-                        }
-                        if (extrude.option) {
-                            this.optionObjects.push({object: shapeExtrude.mesh, option: extrude.option});
-                        }
-                        this.scene.add(shapeExtrude.mesh);
-
-                    } else if (extrude.type === 'mesh') {//TODO rename 'extrude' to something more generic
-
-                        let material = this.getColoredMaterial(extrude.color, 1, extrude.properties);
-                        let generateUvs = false;
-                        if (extrude.properties && extrude.properties.texture) {
-                            const texture = new TextureLoader().load(extrude.properties.texture);
-                            material = new MeshPhongMaterial({map: texture});
-                            generateUvs = true;
-                        }
-                        let mesh = Converter.getMesh(extrude, material, generateUvs);
-                        if (extrude.properties && extrude.properties.receiveShadow) {
-                            mesh.receiveShadow = true;
-                        }
-                        if (extrude.option) {
-                            this.optionObjects.push({object: mesh, option: extrude.option});
-                        }
-
-
-                        this.scene.add(mesh);
-                    } else if (extrude.type === 'curves') {
-                        extrude.curves.forEach((segment, i) => {
-                            let lineWidth = 0.1;
-                            let lineOpacity = 0.7;
-                            if (extrude.properties && extrude.properties.lineWidth) {
-                                lineWidth *= extrude.properties.lineWidth;
-                            }
-                            if (extrude.properties && extrude.properties.opacity) {
-                                lineOpacity = extrude.properties.opacity;
-                            }
-                            let line = Converter.getLine(segment, this.getColoredLineMaterial(extrude.color, lineWidth, lineOpacity));
-                            if (extrude.option) {
-                                this.optionObjects.push({object: line, option: extrude.option});
-                            }
-                            this.scene.add(line);
-                        });
-
-                    }
-                });
+                this.addObjects(extrudes);
 
                 this.emit('objects-ready');
             });
@@ -262,9 +173,13 @@ export default class ThreeApp extends Emitter {
         }
 
 
-        // this.cube = new Mesh(geometry, materialA);
-        // this.cube.position.y = 2;
-        // this.scene.add(this.cube);
+        if (settings.useTestCube) {
+            const material = this.getColoredMaterial('#ffdf1c', 1);
+            const geometry = new CubeGeometry(1, 1, 1, 2, 2, 2);
+            this.cube = new Mesh(geometry, material);
+            this.cube.position.y = 2;
+            this.scene.add(this.cube);
+        }
 
 
         const controls = new OrbitControls(this.camera, this.renderer.domElement);
@@ -292,6 +207,114 @@ export default class ThreeApp extends Emitter {
             "controlCenter": {"x": -17.39025992154747, "y": -26.549061135284763, "z": 20.291656899858687}
         });
     };
+
+    addObjects(extrudes) {
+        const meshTweens = {};
+        extrudes.forEach((extrude, i) => {
+            if (extrude.isBookEnd) {//bookend tweens can be used to add something static at either end of the tween without intermediate steps
+                if (!meshTweens[extrude.group]) {
+                    meshTweens[extrude.group] = new MeshTween(this.scene, extrude.group);
+                    this.tweenObjects.push(meshTweens[extrude.group]);
+                }
+                const mat = this.getColoredMaterial(extrude.properties.color, 1, extrude.properties);
+                let fromMesh = Converter.getMesh(extrude.fromMesh, mat, false);
+                let toMesh = Converter.getMesh(extrude.toMesh, mat, false);
+
+                this.addMaterialObject(fromMesh, extrude.color, extrude.id, extrude.properties);
+                this.addMaterialObject(toMesh, extrude.color, extrude.id, extrude.properties);
+
+                const meshTween = meshTweens[extrude.group];
+                meshTween.add(fromMesh, extrude.fromKey, extrude.toKey);
+                //fill the array with empty meshes (hidden state)
+                for (let j = 1; j < extrude.tweenLength; j++) {
+                    meshTween.add(null, extrude.fromKey, extrude.toKey);
+                }
+                meshTween.add(toMesh, extrude.fromKey, extrude.toKey);
+            } else if (extrude.tweenPaths) {
+                // console.log(extrude.group + ' -- tween extrude: ' + extrude.fromKey + ' -> ' + extrude.toKey);
+                if (!meshTweens[extrude.group]) {
+                    meshTweens[extrude.group] = new MeshTween(this.scene, extrude.group);
+                    this.tweenObjects.push(meshTweens[extrude.group]);
+                }
+                const meshTween = meshTweens[extrude.group];
+
+                extrude.tweenPaths.forEach((path, i) => {
+                    let useOffset = extrude.offset && i > 0 && i < extrude.tweenPaths.length - 1;
+                    let along = i / (extrude.tweenPaths.length - 1);
+                    let depth = ThreeMath.lerp(extrude.fromDepth, extrude.toDepth, along);
+                    let zPos = ThreeMath.lerp(extrude.fromZ, extrude.toZ, along);
+                    let shapeExtrude = new ShapeExtrude(path, depth + ((useOffset) ? extrude.offset : 0), this.getColoredMaterial(extrude.color, 1, extrude.properties));
+                    if (this.settings.useShadows) {
+                        shapeExtrude.mesh.castShadow = true;
+                    }
+                    this.addMaterialObject(shapeExtrude.mesh, extrude.color, extrude.id);
+                    shapeExtrude.mesh.translateZ(zPos);
+                    meshTween.add(shapeExtrude.mesh, extrude.fromKey, extrude.toKey);
+                });
+            } else if (extrude.path) {
+                let shapeExtrude = new ShapeExtrude(extrude.path, extrude.depth, this.getColoredMaterial(extrude.color, 1, extrude.properties));
+                shapeExtrude.mesh.translateZ(extrude.z);
+                if (this.settings.useShadows) {
+                    shapeExtrude.mesh.castShadow = extrude.properties.useShadow;
+                }
+                if (extrude.option) {
+                    this.optionObjects.push({object: shapeExtrude.mesh, option: extrude.option});
+                }
+                this.scene.add(shapeExtrude.mesh);
+
+            } else if (extrude.type === 'mesh') {//TODO rename 'extrude' to something more generic
+
+                let material = this.getColoredMaterial(extrude.color, 1, extrude.properties);
+                let generateUvs = false;
+                if (extrude.properties && extrude.properties.texture) {
+                    const texture = new TextureLoader().load(extrude.properties.texture);
+                    material = new MeshPhongMaterial({map: texture});
+                    generateUvs = true;
+                }
+                let mesh = Converter.getMesh(extrude, material, generateUvs);
+                if (extrude.properties && extrude.properties.receiveShadow) {
+                    mesh.receiveShadow = true;
+                }
+                if (extrude.option) {
+                    this.optionObjects.push({object: mesh, option: extrude.option});
+                }
+
+
+                this.scene.add(mesh);
+            } else if (extrude.type === 'curves') {
+                extrude.curves.forEach((segment, i) => {
+                    let lineWidth = 0.1;
+                    let lineOpacity = 0.7;
+                    if (extrude.properties && extrude.properties.lineWidth) {
+                        lineWidth *= extrude.properties.lineWidth;
+                    }
+                    if (extrude.properties && extrude.properties.opacity) {
+                        lineOpacity = extrude.properties.opacity;
+                    }
+                    let line = Converter.getLine(segment, this.getColoredLineMaterial(extrude.color, lineWidth, lineOpacity));
+                    if (extrude.option) {
+                        this.optionObjects.push({object: line, option: extrude.option});
+                    }
+                    this.scene.add(line);
+                });
+
+            }
+        });
+    }
+
+    addPoints(points) {
+        //This will add a starfield to the background of a scene
+        var starsGeometry = new Geometry();
+        points.forEach((pt, i) => {
+            starsGeometry.vertices.push({x: pt[0], y: pt[1], z: pt[2]});
+        });
+
+        var starsMaterial = new PointsMaterial({color: 0x330099});
+
+        var starField = new Points(starsGeometry, starsMaterial);
+
+        this.scene.add(starField);
+    }
 
     getColoredLineMaterial(color, width, opacity = 1) {
         if (!color) {

@@ -1,5 +1,6 @@
 import {action, autorun, decorate, observable} from "mobx";
 import MainStore from "program-arrangements/src/MainStore";
+import InteractionStore from "./InteractionStore";
 
 /**
  * Creates a new instance of ProgramStore.
@@ -11,6 +12,7 @@ import MainStore from "program-arrangements/src/MainStore";
 export default class ProgramStore {
 
     programCategories = [];
+    interactionStore = new InteractionStore();
 
     constructor() {
         const reactToStuff = autorun(() => {
@@ -42,12 +44,13 @@ export default class ProgramStore {
 }
 
 decorate(MainStore, {
+    interactionStore: observable,
     programCategories: observable,
 
     setProgramCategories: action,
 });
 
-class CategoryStore {
+export class CategoryStore {
     blocks = [];
 
     constructor(title, key) {
@@ -68,7 +71,7 @@ decorate(CategoryStore, {
 });
 
 
-class BlockStore {
+export class BlockStore {
     details = [];
     sliderValue = 0;
 
@@ -107,7 +110,7 @@ decorate(BlockStore, {
     addDetail: action,
 });
 
-class DetailStore {
+export class DetailStore {
     count = 0;
     area = 0;
     priority = 1;
@@ -119,6 +122,10 @@ class DetailStore {
 
     setArea(val) {
         this.area = val;
+    }
+
+    setTitle(val) {
+        this.title = val;
     }
 
     setCount(val) {

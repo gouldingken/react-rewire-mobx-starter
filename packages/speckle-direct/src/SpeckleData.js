@@ -5,11 +5,9 @@
  * @example
  * var instance = new SpeckleData();
  */
-export default class SpeckleData {//TODO should extend SpeckleData class from speckle-direct and add stream support
+export default class SpeckleData {
 
-    constructor(settings, streamId) {
-
-        this.streamId = streamId || 'SkdH1zoRX';
+    constructor(settings) {
         this.settings = settings || {scale: 1};
     };
 
@@ -164,30 +162,6 @@ export default class SpeckleData {//TODO should extend SpeckleData class from sp
         return colour;
     }
 
-    getObjects() {
-        return new Promise((resolve, reject) => {
-            Promise.all([this.objectInfo(), this.streamInfo()]).catch(function (error) {
-                console.log(error);
-                reject(error);
-            }).then(() => {
-                const layers = [];
-                Object.keys(this.layers).forEach((k) => {
-                    const layerInfo = this.layers[k];
-                    layerInfo.objectIds.forEach((id, i) => {
-                        if (this.objectsById[id]) {
-                            layerInfo.objects.push(this.objectsById[id]);
-                        } else {
-                            console.warn('ID MISMATCH: ' + id);
-                        }
-                    });
-                    layers.push(layerInfo);
-                });
-                resolve(layers);
-            });
-        });
-
-    }
-
     getPolyline(profile) {
         if (profile.type === 'Polyline') {//TODO consolidate with getCurve
             const polyline = [];
@@ -264,6 +238,7 @@ export default class SpeckleData {//TODO should extend SpeckleData class from sp
                 return obj.segments.map((seg) => this.getLine(seg));
             }
         } else if (obj.type === 'Polyline') {
+            const curves = {type: 'curves', curves:[]};
             const vertices = [];
             for (let i = 2; i < obj.value.length; i += 3) {
                 let x = obj.value[i - 2] * this.settings.scale;
@@ -272,64 +247,16 @@ export default class SpeckleData {//TODO should extend SpeckleData class from sp
                 vertices.push([x, y, z]);
                 // z = profile.value[i] * this.settings.scale;
             }
-            const ans = [];
             for (let i = 0; i < vertices.length - 1; i++) {
                 const vertexA = vertices[i];
                 const vertexB = vertices[i + 1];
-                ans.push({type: 'line', vertices: [vertexA, vertexB]});
+                curves.curves.push({type: 'line', vertices: [vertexA, vertexB]});
             }
-            ans.push({type: 'line', vertices: [vertices[vertices.length - 1], vertices[0]]});
+            curves.curves.push({type: 'line', vertices: [vertices[vertices.length - 1], vertices[0]]});
 
-            return ans;
+            return curves;
         } else {
             console.log('Unsupported type: ' + obj.type);
         }
-    }
-
-    getStreamUrl() {
-        if (this.settings.useLocalStreamData) {
-            return `./assets/data/streams/${this.streamId}.json`;
-        } else {
-            return `http://142.93.245.213:3000/api/v1/streams/${this.streamId}`;
-        }
-    }
-    getStreamObjectsUrl() {
-        if (this.settings.useLocalStreamData) {
-            return `./assets/data/objects/${this.streamId}.json`;
-        } else {
-            return `http://142.93.245.213:3000/api/v1/streams/${this.streamId}/objects/`;
-        }
-    }
-
-    objectInfo() {
-        return fetch(this.getStreamObjectsUrl()).then((response) => {
-            return response.json();
-        }).then((objectInfo) => {
-            this.objectsById = {};
-            objectInfo.resources.forEach((resource, i) => {
-                this.objectsById[resource._id] = resource;
-            });
-        });
-    }
-
-    streamInfo() {
-        return fetch(this.getStreamUrl()).then((response) => {
-            return response.json();
-        }).then((streamInfo) => {
-            const orderedObjectIds = streamInfo.resource.objects.map((o) => o._id);
-            this.layers = {};
-            streamInfo.resource.layers.forEach((layer) => {
-                let layerInfo = {
-                    name: layer.name,
-                    objectIds: [],
-                    objects: [],
-                    color: this.forceHex(layer.properties.color.hex)
-                };
-                this.layers[layer.name] = layerInfo;
-                for (let i = layer.startIndex; i < layer.startIndex + layer.objectCount; i++) {
-                    layerInfo.objectIds.push(orderedObjectIds[i]);
-                }
-            });
-        });
     }
 }

@@ -1,6 +1,8 @@
 import React from 'react';
 import {observer} from "mobx-react";
 import ProgramCategory from "./ProgramCategory";
+import If from "sasaki-core/src/If";
+import EditDetails from "./edit/EditDetails";
 
 export default class ProgramOrganizer extends React.Component {
     constructor(props) {
@@ -14,6 +16,9 @@ export default class ProgramOrganizer extends React.Component {
                 {programCategories.map((category) =>
                     <ProgramCategory key={category.key} store={store} category={category}/>
                 )}
+                <If true={store.interactionStore.editingDetail}>
+                    <EditDetails store={store} details={store.interactionStore.editingDetail}/>
+                </If>
             </div>
         );
     }

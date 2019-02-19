@@ -5,6 +5,7 @@ import ProgramDetail from "./ProgramDetail";
 import Slider from 'react-rangeslider'
 // To include the default styles
 import 'react-rangeslider/lib/index.css'
+import {DetailStore} from "../store/ProgramStore";
 
 export default class ProgramBlock extends React.Component {
     constructor(props) {
@@ -28,8 +29,12 @@ export default class ProgramBlock extends React.Component {
                     }}
                 />
                 {block.details.map((details) =>
-                    <ProgramDetail key={details.key} details={details}/>
+                    <ProgramDetail key={details.key} store={store} details={details}/>
                 )}
+                <button onClick={() => {
+                    block.addDetail(new DetailStore('New Detail', 'd_' + Math.random()))
+                }}>Add Element
+                </button>
             </div>
         );
     }
