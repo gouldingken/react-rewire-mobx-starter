@@ -177,7 +177,7 @@ export default class ThreeApp extends Emitter {
             const material = this.getColoredMaterial('#ffdf1c', 1);
             const geometry = new CubeGeometry(1, 1, 1, 2, 2, 2);
             this.cube = new Mesh(geometry, material);
-            this.cube.position.y = 2;
+            this.cube.position.y = 0;
             this.scene.add(this.cube);
         }
 
@@ -312,7 +312,7 @@ export default class ThreeApp extends Emitter {
         var starsMaterial = new PointsMaterial({color: 0x330099});
 
         var starField = new Points(starsGeometry, starsMaterial);
-
+        starField.rotateX(-Math.PI / 2);
         this.scene.add(starField);
     }
 

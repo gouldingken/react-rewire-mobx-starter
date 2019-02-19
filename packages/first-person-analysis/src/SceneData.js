@@ -20,7 +20,7 @@ export default class SceneData {
         this.polyOffsets.forEach((polyOffset, i) => {
             const offsetPoints = polyOffset.calculateOffsetPoints(this.offsetAmount, this.intervalSpacing);
             window.threeAppInstance.addPoints(offsetPoints.map((pt)=> {
-                return [pt[0], polyOffset.zPos, pt[1]];
+                return [pt[0], pt[1], polyOffset.zPos];
             }));
         });
         window.threeAppInstance.addObjects(objectsToAdd);

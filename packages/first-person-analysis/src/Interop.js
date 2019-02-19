@@ -30,7 +30,7 @@ export default class Interop {
             }
         });
         this.sceneData.updateObjects(objectsToAdd);
-        this.sceneData.updateObjects(objectsToAdd);
+        // this.sceneData.updateObjects(objectsToAdd);
 
     }
 

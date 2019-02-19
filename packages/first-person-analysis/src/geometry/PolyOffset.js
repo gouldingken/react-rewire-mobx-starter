@@ -29,9 +29,12 @@ export default class PolyOffset {
     };
 
     calculateOffsetPoints(offsetAmount, intervalSpacing) {
-        const offset2d = new Offset();
-        // const points =  offset2d.data(this.points2d).margin(offsetAmount)[0];//.offsetLine(offsetAmount);
-        return interpolateLineRange(this.points2d, 100, offsetAmount, intervalSpacing);
+        const offset2d = new Offset(null, 3);
+        const loopPoints = this.points2d.slice(0);
+        loopPoints.push(this.points2d[0]);//uses repetition to define closed or not...
+        const points =  offset2d.data(loopPoints).margin(offsetAmount)[0];//.offsetLine(offsetAmount);
+        // return points;
+        return interpolateLineRange(points, 100, 0, intervalSpacing);
     }
 
     static test() {
