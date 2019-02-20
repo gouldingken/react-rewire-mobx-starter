@@ -18,15 +18,19 @@ export default class Interop {
     UpdateObjects(response, command) {
         const objectsToAdd = [];
         response.resources.forEach((resource, i) => {
-            const mesh = this.speckleData.getMesh(resource);
-            if (mesh) {
-                objectsToAdd.push(mesh);
+            if (command === 'mesh') {
+                const mesh = this.speckleData.getMesh(resource);
+                if (mesh) {
+                    objectsToAdd.push(mesh);
+                }
             }
-            const outline = this.speckleData.getCurves(resource);
-            if (outline) {
-                objectsToAdd.push(outline);
-                const polyOffset = new PolyOffset(outline);
-                this.sceneData.polyOffsets.push(polyOffset);
+            if (command === 'paths') {
+                const outline = this.speckleData.getCurves(resource);
+                if (outline) {
+                    objectsToAdd.push(outline);
+                    const polyOffset = new PolyOffset(outline);
+                    this.sceneData.polyOffsets.push(polyOffset);
+                }
             }
         });
         this.sceneData.updateObjects(objectsToAdd);

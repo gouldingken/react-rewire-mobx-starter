@@ -61,7 +61,7 @@ export default class Converter {
             }
         }
         geometry.computeFaceNormals();
-        geometry.computeVertexNormals();
+        // geometry.computeVertexNormals();
 
         if (generateUvs) {
             geometry.computeBoundingBox();

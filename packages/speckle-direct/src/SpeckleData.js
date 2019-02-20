@@ -210,7 +210,12 @@ export default class SpeckleData {
     getMesh(obj) {
         if (obj.type === 'Mesh') {
             if (obj.faces && obj.vertices) {
-                return {type: 'mesh', faces: obj.faces, vertices: obj.vertices.map((v) => v * this.settings.scale)};
+                return {
+                    type: 'mesh',
+                    color: obj.colors[0] || '#ff0000',
+                    faces: obj.faces,
+                    vertices: obj.vertices.map((v) => v * this.settings.scale)
+                };
             }
         }
         if (obj.type === 'Brep' && obj.displayValue) {
@@ -238,7 +243,7 @@ export default class SpeckleData {
                 return obj.segments.map((seg) => this.getLine(seg));
             }
         } else if (obj.type === 'Polyline') {
-            const curves = {type: 'curves', curves:[]};
+            const curves = {type: 'curves', curves: []};
             const vertices = [];
             for (let i = 2; i < obj.value.length; i += 3) {
                 let x = obj.value[i - 2] * this.settings.scale;
