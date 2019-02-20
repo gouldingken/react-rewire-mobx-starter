@@ -6,7 +6,7 @@
  * var instance = new HatchShader();
  */
 import CustomShader from "./CustomShader";
-import {Color, UniformsLib, UniformsUtils} from "three";
+import {Color, UniformsLib, UniformsUtils} from "three-full";
 
 export default class HatchShader extends CustomShader {
 

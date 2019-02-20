@@ -5,7 +5,7 @@
  * @example
  * var instance = new CustomRawShader();
  */
-import {RawShaderMaterial, DoubleSide} from "three";
+import {RawShaderMaterial, DoubleSide} from "three-full";
 
 export default class CustomRawShader {
 

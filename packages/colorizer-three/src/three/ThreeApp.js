@@ -22,10 +22,9 @@ import {
     DirectionalLightHelper,
     CameraHelper,
     PCFSoftShadowMap,
-    MeshPhongMaterial, LineBasicMaterial, Color, PointsMaterial, Points, Geometry
-} from 'three';
-import {Math as ThreeMath} from 'three';
-import OrbitControls from 'orbit-controls-es6';
+    MeshPhongMaterial, LineBasicMaterial, Color, PointsMaterial, Points, Geometry, OrbitControls
+} from 'three-full';
+import {Math as ThreeMath} from 'three-full';
 import OBJLoader from "./core/OBJLoader";
 import ShapeExtrude from "./ShapeExtrude";
 import MeshTween from "./MeshTween";

@@ -6,7 +6,6 @@
  * var instance = new AdderShaderPass();
  */
 import AShaderPass from "./AShaderPass";
-import {Color} from "three";
 
 export default class AdderShaderPass extends AShaderPass {
 

@@ -1,4 +1,4 @@
-import {Group} from "three";
+import {Group} from "three-full";
 import TweenSet from "./TweenSet";
 
 /**

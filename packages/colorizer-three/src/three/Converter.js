@@ -5,7 +5,7 @@
  * @example
  * var instance = new Converter();
  */
-import {Face3, Geometry, Line, Mesh, Vector2, Vector3} from "three";
+import {Face3, Geometry, Line, Mesh, Vector2, Vector3} from "three-full";
 import MeshLine from "./core/MeshLine";
 import Maf from "./core/Maf";
 

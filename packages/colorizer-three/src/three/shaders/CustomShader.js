@@ -5,7 +5,7 @@
  * @example
  * var instance = new CustomShader();
  */
-import {ShaderMaterial} from "three";
+import {ShaderMaterial} from "three-full";
 
 export default class CustomShader {
 

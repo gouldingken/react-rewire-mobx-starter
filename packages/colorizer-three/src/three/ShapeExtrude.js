@@ -1,4 +1,4 @@
-import {ExtrudeBufferGeometry, Mesh, MeshLambertMaterial, MeshPhongMaterial, Shape} from "three";
+import {ExtrudeBufferGeometry, Mesh, MeshLambertMaterial, MeshPhongMaterial, Shape} from "three-full";
 import HatchShader from "./shaders/HatchShader";
 
 /**

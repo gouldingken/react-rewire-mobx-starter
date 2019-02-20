@@ -1,12 +1,13 @@
 /**
- * Creates a new instance of PosterizeShaderPass.
+ * Creates a new instance of PosterizeShaderPass. This shader will take 3 specific colors and
+ * split them into exact RGB channels so they can be summed independently
  * @class
  * @returns An instance of PosterizeShaderPass.
  * @example
- * var instance = new PosterizeShaderPass();
+ * const posterizer = new ShaderPass(new PosterizeShaderPass());
  */
 import AShaderPass from "./AShaderPass";
-import {Color} from "three";
+import {Color} from "three-full";
 
 export default class PosterizeShaderPass extends AShaderPass {
 

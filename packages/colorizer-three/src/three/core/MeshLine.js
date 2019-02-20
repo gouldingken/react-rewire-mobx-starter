@@ -1,5 +1,5 @@
 //ported to ES6 from https://raw.githubusercontent.com/spite/MeshLine/master/src/MeshLine.js
-import {BufferAttribute, BufferGeometry, Geometry} from "three";
+import {BufferAttribute, BufferGeometry, Geometry} from "three-full";
 
 class MeshLine {
     constructor() {

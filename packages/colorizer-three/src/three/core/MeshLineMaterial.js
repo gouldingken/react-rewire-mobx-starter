@@ -1,4 +1,4 @@
-import {Color, Material, RawShaderMaterial, Vector2} from "three";
+import {Color, Material, RawShaderMaterial, Vector2} from "three-full";
 
 class MeshLineMaterial extends Material {
     constructor(parameters) {
