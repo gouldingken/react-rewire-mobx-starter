@@ -1,1 +1,46 @@
-//
+@import "../core";
+.SidePanel {
+  position: absolute;
+  width: $left-pane-width;
+  left: 0;
+  bottom: 0;
+  top: 0;
+  background: $lt-grey;
+
+  .action-btn {
+    @include ss-button;
+    background: $bright-blue;
+  }
+
+  .CollapsiblePane {
+    .header {
+      background: $dk-grey;
+      color: $wash;
+      text-align: center;
+      @include h4;
+    }
+    .content {
+      padding: 8px;
+    }
+  }
+
+  .PageStepper {
+    @include user-select-none;
+
+    .active-page {
+      @include h5;
+      font-size: 1.5em;
+    }
+  }
+
+  .TargetInfo {
+    .legend-color {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      background: #ffc2fc;
+      border: 1px solid $dk-grey;
+    }
+  }
+}
+

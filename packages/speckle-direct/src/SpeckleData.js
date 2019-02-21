@@ -213,6 +213,7 @@ export default class SpeckleData {
                 return {
                     type: 'mesh',
                     color: obj.colors[0] || '#ff0000',
+                    name: obj.name,
                     faces: obj.faces,
                     vertices: obj.vertices.map((v) => v * this.settings.scale)
                 };

@@ -90,6 +90,8 @@ export default class Converter {
         }
 
         let mesh = new Mesh(geometry, meshMaterial);
+        mesh.name = obj.name;
+        mesh.userData = {meta:obj};
         mesh.rotateX(-Math.PI / 2);
         return mesh;
     }

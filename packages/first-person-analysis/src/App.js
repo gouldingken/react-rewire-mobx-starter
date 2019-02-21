@@ -3,6 +3,7 @@ import {observer} from "mobx-react";
 import {ThreeContainer} from "colorizer-three";
 import ViewsDataHandler from "./ViewsDataHandler";
 import ThreeAppFirstPerson from "./three/ThreeAppFirstPerson";
+import SidePanel from "./components/SidePanel";
 
 class App extends Component {
     render() {
@@ -11,15 +12,8 @@ class App extends Component {
         const sketchup = window.sketchup;
         return (
             <div className="App">
-                <ThreeContainer dataHandler={new ViewsDataHandler()} useTestCube={true} ThreeAppClass={ThreeAppFirstPerson}/>
-                <div className={'button-holder'}>
-                    <button onClick={()=> {
-                        sketchup.getSelectedMesh();
-                    }}>GET SELECTED</button>
-                    <button onClick={()=> {
-                        sketchup.getSelectedPaths();
-                    }}>IMPORT FLOOR PLATES</button>
-                </div>
+                <ThreeContainer dataHandler={new ViewsDataHandler(store)} useTestCube={true} ThreeAppClass={ThreeAppFirstPerson}/>
+                <SidePanel store={store}/>
             </div>
         );
     }

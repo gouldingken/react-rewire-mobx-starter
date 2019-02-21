@@ -36,14 +36,9 @@ export default class ThreeAppFirstPerson extends ThreeApp {
     }
 
     getStudyPos() {
-        if (!this.incrementor) this.incrementor = 0;
-        this.incrementor++;
         if (this.studyPoints.length > 0) {
-            if (this.incrementor >= this.studyPoints.length) {
-                this.incrementor = 0;
-            }
-
-            return this.studyPoints[this.incrementor];
+            const index = this.dataHandler.updateStudyPos();
+            return this.studyPoints[index];
         }
         return new Vector3();
         // return new Vector3(10, 5 + 5 * Math.sin(this.incrementor / 100), 10);

@@ -207,6 +207,7 @@ export default class ThreeApp extends Emitter {
 
     addObjects(extrudes) {
         const meshTweens = {};
+        const objectsAdded = [];
         extrudes.forEach((extrude, i) => {
             if (extrude.isBookEnd) {//bookend tweens can be used to add something static at either end of the tween without intermediate steps
                 if (!meshTweens[extrude.group]) {
@@ -258,6 +259,7 @@ export default class ThreeApp extends Emitter {
                     this.optionObjects.push({object: shapeExtrude.mesh, option: extrude.option});
                 }
                 this.scene.add(shapeExtrude.mesh);
+                objectsAdded.push(shapeExtrude.mesh);
 
             } else if (extrude.type === 'mesh') {//TODO rename 'extrude' to something more generic
 
@@ -276,8 +278,8 @@ export default class ThreeApp extends Emitter {
                     this.optionObjects.push({object: mesh, option: extrude.option});
                 }
 
-
                 this.scene.add(mesh);
+                objectsAdded.push(mesh);
             } else if (extrude.type === 'curves') {
                 extrude.curves.forEach((segment, i) => {
                     let lineWidth = 0.1;
@@ -293,10 +295,11 @@ export default class ThreeApp extends Emitter {
                         this.optionObjects.push({object: line, option: extrude.option});
                     }
                     this.scene.add(line);
+                    objectsAdded.push(line);
                 });
-
             }
         });
+        return objectsAdded;
     }
 
     addPoints(points) {

@@ -7,15 +7,21 @@
  */
 export default class SceneData {
 
-    constructor() {
+    constructor(store) {
+        this.store = store;
         this.polyOffsets = [];
         this.offsetAmount = 1;
         this.intervalSpacing = 2;
         this.zOffset = 6;
     };
 
+    setViewTargets(objectsToAdd, targetId) {
+        const threeObjects = window.threeAppInstance.addObjects(objectsToAdd);
+        this.store.targetStore.setTargetObjects(targetId, threeObjects);
+    }
+
     updateObjects(objectsToAdd) {
-        // window.threeAppInstance.addObjects(objectsToAdd);
+        window.threeAppInstance.addObjects(objectsToAdd);
 
         this.polyOffsets.forEach((polyOffset, i) => {
             const offsetPoints = polyOffset.calculateOffsetPoints(this.offsetAmount, this.intervalSpacing);
@@ -23,8 +29,8 @@ export default class SceneData {
                 return [pt[0], pt[1], polyOffset.zPos + this.zOffset];
             }));
         });
-        window.threeAppInstance.addObjects(objectsToAdd);
 
+        this.store.uiStore.setStudyPointCount(window.threeAppInstance.studyPoints.length);
     }
 
 

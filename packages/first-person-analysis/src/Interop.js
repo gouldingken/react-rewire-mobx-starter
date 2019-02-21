@@ -15,7 +15,7 @@ export default class Interop {
         this.speckleData = new SpeckleData({scale: 0.1});
     };
 
-    UpdateObjects(response, command) {
+    UpdateObjects(response, command, params) {
         const objectsToAdd = [];
         response.resources.forEach((resource, i) => {
             if (command === 'mesh') {
@@ -33,7 +33,11 @@ export default class Interop {
                 }
             }
         });
-        this.sceneData.updateObjects(objectsToAdd);
+        if (params.mode === 'target') {
+            this.sceneData.setViewTargets(objectsToAdd, params.targetId);
+        } else {
+            this.sceneData.updateObjects(objectsToAdd);
+        }
         // this.sceneData.updateObjects(objectsToAdd);
 
     }
