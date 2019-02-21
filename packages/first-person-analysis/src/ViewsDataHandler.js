@@ -19,4 +19,10 @@ export default class ViewsDataHandler extends ADataHandler {
         }
         return this.store.uiStore.studyPoints.current;
     }
+    setStudyPosData(sensor) {
+        const index = this.store.uiStore.studyPoints.current;
+        this.store.readingsStore.setReading(index, sensor);
+        this.store.targetStore.setCurrentValues(sensor);
+
+    }
 }

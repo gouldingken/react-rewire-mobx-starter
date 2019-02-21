@@ -36,5 +36,13 @@ export default class SceneData {
         this.store.uiStore.setStudyPointCount(window.threeAppInstance.studyPoints.length);
     }
 
+    setViewBlockers(objectsToAdd) {
+        const objectsAdded = window.threeAppInstance.addObjects(objectsToAdd);
+        objectsAdded.forEach((mesh, i) => {
+            window.threeAppInstance.viewDataReader.addObstructionMesh(mesh);
+        });
+
+    }
+
 
 }

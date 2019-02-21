@@ -28,7 +28,7 @@ export default class CubemapReprojector {
         this.width = squareSize;
         this.height = squareSize;
         this.cylinderMode = cylinderMode;
-
+        this.posterize = posterize;
         this.enabled = true;
 
         this.storedTextures = {};
@@ -62,8 +62,14 @@ export default class CubemapReprojector {
             this.lambertCircle = new ShaderPass(new LambertCircleShaderPass());
         }
 
-        this.createEffectComposer(posterize, size);
+        this.createEffectComposer(this.posterize, size);
     };
+
+    updateChannels(channels) {
+        if (channels.channel1) this.posterizer.uniforms['targetColorR'].value = new Color(channels.channel1);
+        if (channels.channel2) this.posterizer.uniforms['targetColorG'].value = new Color(channels.channel2);
+        if (channels.channel3) this.posterizer.uniforms['targetColorB'].value = new Color(channels.channel3);
+    }
 
     get aspectRatio() {
         return this.width / this.height;

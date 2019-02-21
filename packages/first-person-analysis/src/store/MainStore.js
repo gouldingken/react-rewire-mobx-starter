@@ -7,11 +7,13 @@
  */
 import UiStore from "./UiStore";
 import TargetStore from "./TargetStore";
+import ReadingsStore from "./ReadingsStore";
 
 export default class MainStore {
 
     constructor() {
         this.uiStore = new UiStore();
         this.targetStore = new TargetStore();
+        this.readingsStore = new ReadingsStore();
     };
 }

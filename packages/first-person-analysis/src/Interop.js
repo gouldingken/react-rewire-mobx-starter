@@ -21,6 +21,10 @@ export default class Interop {
             if (command === 'mesh') {
                 const mesh = this.speckleData.getMesh(resource);
                 if (mesh) {
+                    if (params.mode === 'target') {
+                        if (!mesh.properties) mesh.properties = {};
+                        mesh.properties.basicMaterial = true;
+                    }
                     objectsToAdd.push(mesh);
                 }
             }
@@ -35,6 +39,8 @@ export default class Interop {
         });
         if (params.mode === 'target') {
             this.sceneData.setViewTargets(objectsToAdd, params.targetId);
+        } else if (params.mode === 'blocker') {
+            this.sceneData.setViewBlockers(objectsToAdd);
         } else {
             this.sceneData.updateObjects(objectsToAdd);
         }

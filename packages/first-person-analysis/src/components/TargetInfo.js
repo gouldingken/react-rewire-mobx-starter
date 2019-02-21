@@ -16,6 +16,8 @@ export default class TargetInfo extends React.Component {
             <div className="TargetInfo">
                 <div className={'legend-color'} style={{background: viewTarget.color}}/>
                 {viewTarget.name}
+                A: {Math.round(10000 * viewTarget.currentPoint.available)} |
+                O: {Math.round(10000 * viewTarget.currentPoint.occluded)}
                 <button className={'action-btn'} onClick={event => sketchup.getSelectedMesh({mode:'target', targetId:targetId})}>set</button>
             </div>
         );

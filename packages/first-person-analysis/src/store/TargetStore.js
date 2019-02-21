@@ -1,4 +1,4 @@
-import {action, autorun, decorate, observable} from "mobx";
+import {action, computed, decorate, observable} from "mobx";
 
 /**
  * Creates a new instance of TargetStore.
@@ -17,10 +17,16 @@ export default class TargetStore {
 
     getViewTarget(targetId) {
         if (!this.viewTargets[targetId]) {
-            this.viewTargets[targetId] = {id: targetId, name: 'none', color:'#cccccc', currentPoint: {available: 0, occluded: 0}};
+            this.viewTargets[targetId] = {
+                id: targetId,
+                name: 'none',
+                color: '#cccccc',
+                currentPoint: {available: 0, occluded: 0}
+            };
         }
         return this.viewTargets[targetId];
     }
+
     setTargetObjects(targetId, threeObjects) {
         const viewTarget = this.getViewTarget(targetId);
         viewTarget.threeObjects = threeObjects;
@@ -31,9 +37,27 @@ export default class TargetStore {
         }
 
     }
+
+    setCurrentValues(sensor) {
+        for (let i = 1; i <= 3; i++) {
+            let viewTarget = this.getViewTarget('target' + i);
+            viewTarget.currentPoint.available = sensor.values['c' + i].f;
+            viewTarget.currentPoint.occluded = sensor.values['c' + i].o;
+        }
+    }
+
+    get channels() {
+        return {
+            channel1: this.getViewTarget('target1').color,
+            channel2: this.getViewTarget('target2').color,
+            channel3: this.getViewTarget('target3').color,
+        };
+    }
 }
 
 
 decorate(TargetStore, {
     viewTargets: observable,
+    channels: computed,
+    setCurrentValues: action,
 });

@@ -91,7 +91,15 @@ export default class Converter {
 
         let mesh = new Mesh(geometry, meshMaterial);
         mesh.name = obj.name;
-        mesh.userData = {meta:obj};
+        mesh.userData = {
+            meta: {
+                "type": obj["type"],
+                "color":obj["color"],
+                "name": obj["name"],
+            }
+        };
+
+
         mesh.rotateX(-Math.PI / 2);
         return mesh;
     }

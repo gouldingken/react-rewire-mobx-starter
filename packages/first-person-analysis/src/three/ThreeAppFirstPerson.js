@@ -6,6 +6,7 @@
  * var instance = new ThreeAppFirstPerson();
  */
 import {ThreeApp} from "colorizer-three";
+import {autorun} from "mobx";
 import ViewDataReader from "./projections/ViewDataReader";
 import CubemapReprojector from "./projections/CubemapReprojector";
 import {BoxGeometry, Matrix4, Mesh, Vector3} from "three-full";
@@ -28,6 +29,13 @@ export default class ThreeAppFirstPerson extends ThreeApp {
         this.scene.add(this.cubeCamPos);
 
         this.reprojector = new CubemapReprojector(this.renderer, 512, channels, true, true);
+
+        const targetStore = dataHandler.store.targetStore;
+        const disposer = autorun(() => {
+            // console.log('AUTORUN '+JSON.stringify(targetStore.viewTargets))
+            this.reprojector.updateChannels(targetStore.channels);
+        });
+
     };
 
     updateScene() {
@@ -51,6 +59,7 @@ export default class ThreeAppFirstPerson extends ThreeApp {
         }
         const sensor = {position: this.getStudyPos()};
         this.viewDataReader.readSensors([sensor]);
+        this.dataHandler.setStudyPosData(sensor);
         // this.info.textContent = JSON.stringify(sensor.values);
     }
 
