@@ -123,11 +123,11 @@ export default class CubemapReprojector {
             this.composer = new EffectComposer(this.renderer, this.output);
             this.combinedComposer = new EffectComposer(this.renderer, this.combinedOutput);
 
-            // this.lambertCircle.renderToScreen = true;//TEMP
+            this.lambertCircle.renderToScreen = true;
             this.composer.addPass(this.lambertCircle);
 
             this.textureMaskPass = new ShaderPass(new MaskedTextureShaderPass());
-            // this.textureMaskPass.renderToScreen = true;//TEMP
+            this.textureMaskPass.renderToScreen = true;
             this.combinedComposer.addPass(this.textureMaskPass);
 
             if (this.numberOfReductions % 2 === 0) {

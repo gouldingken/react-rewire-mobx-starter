@@ -18,14 +18,12 @@ import {
     PlaneGeometry,
     BasicShadowMap,
     TextureLoader,
-    CubeGeometry,
     DirectionalLightHelper,
     CameraHelper,
     PCFSoftShadowMap,
-    MeshPhongMaterial, LineBasicMaterial, Color, PointsMaterial, Points, Geometry, OrbitControls
+    MeshPhongMaterial, LineBasicMaterial, Color, PointsMaterial, Points, Geometry, OrbitControls, OBJLoader
 } from 'three-full';
-import {Math as ThreeMath} from 'three-full';
-import OBJLoader from "./core/OBJLoader";
+import {_Math as ThreeMath} from 'three-full';
 import ShapeExtrude from "./ShapeExtrude";
 import MeshTween from "./MeshTween";
 import Converter from "./Converter";
@@ -174,7 +172,7 @@ export default class ThreeApp extends Emitter {
 
         if (settings.useTestCube) {
             const material = this.getColoredMaterial('#ffdf1c', 1);
-            const geometry = new CubeGeometry(1, 1, 1, 2, 2, 2);
+            const geometry = new BoxGeometry(1, 1, 1, 2, 2, 2);
             this.cube = new Mesh(geometry, material);
             this.cube.position.y = 0;
             this.scene.add(this.cube);
@@ -303,16 +301,17 @@ export default class ThreeApp extends Emitter {
 
     addPoints(points) {
         //This will add a starfield to the background of a scene
-        var starsGeometry = new Geometry();
+        const pointGeometry = new Geometry();
         points.forEach((pt, i) => {
-            starsGeometry.vertices.push({x: pt[0], y: pt[1], z: pt[2]});
+            pointGeometry.vertices.push({x: pt[0], y: pt[1], z: pt[2]});
         });
 
-        var starsMaterial = new PointsMaterial({color: 0x330099});
+        const pointsMaterial = new PointsMaterial({color: 0x330099});
 
-        var starField = new Points(starsGeometry, starsMaterial);
-        starField.rotateX(-Math.PI / 2);
-        this.scene.add(starField);
+        var pointCloud = new Points(pointGeometry, pointsMaterial);
+        pointCloud.rotateX(-Math.PI / 2);
+        this.scene.add(pointCloud);
+        return pointCloud;
     }
 
     getColoredLineMaterial(color, width, opacity = 1) {

@@ -12,7 +12,8 @@ export default class ThreeContainer extends React.Component {
         const width = this.mount.clientWidth;
         const height = this.mount.clientHeight;
 
-        this.threeApp = new ThreeApp(this.mount, dataHandler, {useShadows:useShadows, useTestCube:useTestCube});
+        const ThreeAppClass = this.props.ThreeAppClass || ThreeApp;
+        this.threeApp = new ThreeAppClass(this.mount, dataHandler, {useShadows:useShadows, useTestCube:useTestCube});
         this.threeApp.on('objects-ready', () => {
             const {previousOption, activeOption, inclusionList, highlightIds} = this.props;
             this.updateTweenObjects(inclusionList, previousOption, activeOption);
