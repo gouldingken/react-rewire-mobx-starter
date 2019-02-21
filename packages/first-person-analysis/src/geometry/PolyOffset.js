@@ -10,6 +10,8 @@ var interpolateLineRange = require( 'line-interpolate-points' )
  */
 export default class PolyOffset {
 
+    pointsAdded = false;
+
     constructor(polygon) {
         this.points = [];
         this.points2d = [];
@@ -25,7 +27,7 @@ export default class PolyOffset {
         });
         this.points2d = this.points.map((pt) => [pt[0], pt[1]]);
         this.zPos = this.points[0][2];
-        console.log(JSON.stringify(polygon));
+        // console.log(JSON.stringify(polygon));
     };
 
     calculateOffsetPoints(offsetAmount, intervalSpacing) {
