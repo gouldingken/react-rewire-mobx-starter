@@ -33,11 +33,12 @@ export default class ThreeAppFirstPerson extends ThreeApp {
     };
 
     updateScene() {
+        this.studyPos = this.nextStudyPos();
         this.cubeCamPos.position.copy(this.getStudyPos());
         this.readData();
     }
 
-    getStudyPos() {
+    nextStudyPos() {
         if (this.studyPoints.length > 0) {
             const index = this.dataHandler.updateStudyPos();
             if (this.studyPoints[index]) {
@@ -45,6 +46,11 @@ export default class ThreeAppFirstPerson extends ThreeApp {
             }
         }
         return new Vector3();
+        // return new Vector3(10, 5 + 5 * Math.sin(this.incrementor / 100), 10);
+    }
+
+    getStudyPos() {
+        return this.studyPos;
         // return new Vector3(10, 5 + 5 * Math.sin(this.incrementor / 100), 10);
     }
 

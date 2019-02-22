@@ -38,7 +38,8 @@ export default class SidePanel extends React.Component {
                     <button className={'action-btn'}
                             onClick={event => store.sceneData.clearViewBlockers()}>Clear
                     </button>
-                    <Checkbox label={'Show'} isChecked={store.uiStore.blockersVisible} onChange={(checked)=> store.uiStore.setBlockersVisible(checked)}/>
+                    <Checkbox label={'Show'} isChecked={store.uiStore.blockersVisible}
+                              onChange={(checked) => store.uiStore.setBlockersVisible(checked)}/>
                 </CollapsiblePane>
                 <CollapsiblePane store={store} title={'Analysis'} panelId={'analysis'}>
                     <button className={'action-btn'} onClick={event => store.uiStore.setIsPlaying(true)}>Run</button>
@@ -49,7 +50,16 @@ export default class SidePanel extends React.Component {
                     }}>Reset
                     </button>
                     <div>
-                        <button className={'action-btn'}>Save</button>
+                        {store.readingsStore.readingsCount} result generated out of {store.uiStore.studyPoints.count}
+                    </div>
+                    <div>
+                        <button className={'action-btn'}
+                                onClick={event => sketchup.saveTextToFile({
+                                    title: 'Save analysis points',
+                                    ext: 'json',
+                                    data: JSON.stringify(store.readingsStore.readings)
+                                })}>Save
+                        </button>
                     </div>
                 </CollapsiblePane>
             </div>
