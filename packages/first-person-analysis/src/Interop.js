@@ -42,7 +42,7 @@ export default class Interop {
         } else if (params.mode === 'blocker') {
             this.sceneData.setViewBlockers(objectsToAdd);
         } else {
-            this.sceneData.updateObjects(objectsToAdd);
+            this.sceneData.updateObjects(objectsToAdd, command);
         }
         // this.sceneData.updateObjects(objectsToAdd);
 

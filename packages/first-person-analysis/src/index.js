@@ -15,9 +15,8 @@ ReactDOM.render(<App store={store}/>, document.getElementById('root'));
 
 const sceneData = new SceneData(store);
 
-//TEMP
 setTimeout(() => {
-    // new MockCommands(window.Interop);
+    new MockCommands(window.Interop);
 }, 1000);
 
 // const offsetPoints = PolyOffset.test();

@@ -20,13 +20,17 @@ export default class SceneData {
         this.store.targetStore.setTargetObjects(targetId, threeObjects);
     }
 
-    updateObjects(objectsToAdd) {
-        window.threeAppInstance.addObjects(objectsToAdd);
+    updateObjects(objectsToAdd, type) {
+        const addedObjects = window.threeAppInstance.addObjects(objectsToAdd);
+
+        if (type === 'paths') {
+            window.threeAppInstance.addExtras(addedObjects);
+        }
 
         this.polyOffsets.forEach((polyOffset, i) => {
             if (!polyOffset.pointsAdded) {
                 const offsetPoints = polyOffset.calculateOffsetPoints(this.offsetAmount, this.intervalSpacing);
-                window.threeAppInstance.addPoints(offsetPoints.map((pt)=> {
+                window.threeAppInstance.addPoints(offsetPoints.map((pt) => {
                     return [pt[0], pt[1], polyOffset.zPos + this.zOffset];
                 }));
                 polyOffset.pointsAdded = true;

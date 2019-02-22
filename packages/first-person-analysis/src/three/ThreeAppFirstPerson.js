@@ -22,6 +22,7 @@ export default class ThreeAppFirstPerson extends ThreeApp {
         };
         this.studyPoints = [];
         this.pointClouds = [];
+        this.extras = [];
 
         const material = this.getColoredMaterial('#00ff00', 1);
         const camPosGeom = new BoxGeometry(10, 10, 10, 1, 1, 1);
@@ -67,7 +68,16 @@ export default class ThreeAppFirstPerson extends ThreeApp {
         this.pointClouds.forEach((pointCloud, i) => {
             pointCloud.visible = visible;
         });
+        this.extras.forEach((extra, i) => {
+            extra.visible = visible;
+        });
         this.cubeCamPos.visible = visible;
+    }
+
+    addExtras(extras) {
+        extras.forEach((extra, i) => {
+            this.extras.push(extra);
+        });
     }
 
     renderScene() {
