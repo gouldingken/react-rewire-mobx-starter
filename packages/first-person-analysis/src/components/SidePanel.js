@@ -3,6 +3,7 @@ import {observer} from "mobx-react";
 import CollapsiblePane from "./CollapsiblePane";
 import PageStepper from "./PageStepper";
 import TargetInfo from "./TargetInfo";
+import Checkbox from "sasaki-core/src/components/Checkbox";
 
 export default class SidePanel extends React.Component {
     constructor(props) {
@@ -18,7 +19,12 @@ export default class SidePanel extends React.Component {
                 <CollapsiblePane store={store} title={'Study Points'} panelId={'points'}>
                     <div className={'label'}>Current Point</div>
                     <PageStepper store={store}/>
-                    <button className={'action-btn'} onClick={event => sketchup.getSelectedPaths()}>Import</button>
+                    <button className={'action-btn'}
+                            onClick={event => sketchup.getSelectedPaths()}>Import
+                    </button>
+                    <button className={'action-btn'}
+                            onClick={event => store.sceneData.clearStudyPoints()}>Clear
+                    </button>
                 </CollapsiblePane>
                 <CollapsiblePane store={store} title={'View Targets'} panelId={'targets'}>
                     <TargetInfo store={store} targetId={'target1'}/>
@@ -29,6 +35,10 @@ export default class SidePanel extends React.Component {
                     <button className={'action-btn'}
                             onClick={event => sketchup.getSelectedMesh({mode: 'blocker'})}>Import
                     </button>
+                    <button className={'action-btn'}
+                            onClick={event => store.sceneData.clearViewBlockers()}>Clear
+                    </button>
+                    <Checkbox label={'Show'} isChecked={store.uiStore.blockersVisible} onChange={(checked)=> store.uiStore.setBlockersVisible(checked)}/>
                 </CollapsiblePane>
                 <CollapsiblePane store={store} title={'Analysis'} panelId={'analysis'}>
                     <button className={'action-btn'} onClick={event => store.uiStore.setIsPlaying(true)}>Run</button>

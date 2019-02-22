@@ -15,6 +15,10 @@ export default class ViewDataReader {
         this._obstructionVisibility = true;
     };
 
+    setObstructionVisibility(visible) {
+        this._obstructionVisibility = visible;
+    }
+
     addObstructionMesh(mesh) {
         this.obstructionMeshes.push(mesh);
     }

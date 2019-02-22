@@ -6,7 +6,6 @@
  * var instance = new ThreeAppFirstPerson();
  */
 import {ThreeApp} from "colorizer-three";
-import {autorun} from "mobx";
 import ViewDataReader from "./projections/ViewDataReader";
 import CubemapReprojector from "./projections/CubemapReprojector";
 import {BoxGeometry, Matrix4, Mesh, Vector3} from "three-full";
@@ -30,13 +29,7 @@ export default class ThreeAppFirstPerson extends ThreeApp {
         this.scene.add(this.cubeCamPos);
 
         this.reprojector = new CubemapReprojector(this.renderer, 512, channels, true, true);
-
-        const targetStore = dataHandler.store.targetStore;
-        const disposer = autorun(() => {
-            // console.log('AUTORUN '+JSON.stringify(targetStore.viewTargets))
-            this.reprojector.updateChannels(targetStore.channels);
-        });
-
+        this.viewDataReader = new ViewDataReader(this.scene, this.reprojector);
     };
 
     updateScene() {
@@ -47,17 +40,15 @@ export default class ThreeAppFirstPerson extends ThreeApp {
     getStudyPos() {
         if (this.studyPoints.length > 0) {
             const index = this.dataHandler.updateStudyPos();
-            return this.studyPoints[index];
+            if (this.studyPoints[index]) {
+                return this.studyPoints[index];
+            }
         }
         return new Vector3();
         // return new Vector3(10, 5 + 5 * Math.sin(this.incrementor / 100), 10);
     }
 
     readData() {
-        if (!this.viewDataReader) {
-            this.viewDataReader = new ViewDataReader(this.scene, this.reprojector);
-            // this.viewDataReader.addObstructionMesh(this.obstructor);
-        }
         const sensor = {position: this.getStudyPos()};
         this.viewDataReader.readSensors([sensor]);
         this.dataHandler.setStudyPosData(sensor);

@@ -302,6 +302,12 @@ export default class ThreeApp extends Emitter {
         return objectsAdded;
     }
 
+    removeObjects(objectsToRemove) {
+        objectsToRemove.forEach((obj, i) => {
+            this.scene.remove(obj);
+        });
+    }
+
     addPoints(points) {
         //This will add a starfield to the background of a scene
         const pointGeometry = new Geometry();

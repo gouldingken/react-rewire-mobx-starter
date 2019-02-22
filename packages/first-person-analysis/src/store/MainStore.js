@@ -10,7 +10,7 @@ import TargetStore from "./TargetStore";
 import ReadingsStore from "./ReadingsStore";
 
 export default class MainStore {
-
+    sceneData;
     constructor() {
         this.uiStore = new UiStore();
         this.targetStore = new TargetStore();

@@ -20,7 +20,7 @@ export default class TargetInfo extends React.Component {
         const availableW = fullW * available / max;
         const occludedW = fullW * (available - occluded) / max;
 
-        const perc = Math.round(1000 * (1 - (occluded / available))) / 10;
+        const perc = Math.round(1000 * (occluded / available)) / 10;
 
         return (
             <div className="TargetInfo">
@@ -40,7 +40,7 @@ export default class TargetInfo extends React.Component {
                     <div className={'bar'}>
                         <div className={'bar-bg'} style={{background: viewTarget.color, width: availableW}}/>
                         <If true={occludedW > 0}>
-                            <div className={'bar-over'} style={{width: occludedW}}/>
+                            <div className={'bar-over'} style={{left:availableW - occludedW - 1, width: occludedW}}/>
                         </If>
                     </div>
                 </div>

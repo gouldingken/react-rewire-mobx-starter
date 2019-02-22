@@ -13,23 +13,11 @@ import MockCommands from "./mocks/MockCommands";
 const store = new MainStore();
 ReactDOM.render(<App store={store}/>, document.getElementById('root'));
 
-const sceneData = new SceneData(store);
+store.sceneData = new SceneData(store);
 
-setTimeout(() => {
-    new MockCommands(window.Interop);
-}, 1000);
+window.Interop = new Interop(store.sceneData);
 
-// const offsetPoints = PolyOffset.test();
-// window.threeAppInstance.addPoints(offsetPoints.map((pt)=> {
-//     return [pt[0], pt[1], polyOffset.zPos];
-// }));
+// new MockCommands(window.Interop);
 
-window.Interop = new Interop(sceneData);
-
-
-
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: http://bit.ly/CRA-PWA
 serviceWorker.unregister();
 
