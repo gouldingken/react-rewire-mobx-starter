@@ -12,8 +12,6 @@ export default class SceneData {
     constructor(store) {
         this.store = store;
         this.polyOffsets = [];
-        this.offsetAmount = 1;
-        this.intervalSpacing = 2;
         this.zOffset = 6;
         this.viewBlockers = [];
         this.studyPointClouds = [];
@@ -52,9 +50,16 @@ export default class SceneData {
             });
         }
 
+        this.addPolyOffsets();
+
+        this.store.uiStore.setStudyPointCount(this.threeApp.studyPoints.length);
+    }
+
+    addPolyOffsets() {
+        const {offset, spacing} = this.store.uiStore.pointOptions;
         this.polyOffsets.forEach((polyOffset, i) => {
             if (!polyOffset.pointsAdded) {
-                const offsetPoints = polyOffset.calculateOffsetPoints(this.offsetAmount, this.intervalSpacing);
+                const offsetPoints = polyOffset.calculateOffsetPoints(offset, spacing);
                 const pointCloud = this.threeApp.addPoints(offsetPoints.map((pt) => {
                     return [pt[0], pt[1], polyOffset.zPos + this.zOffset];
                 }));
@@ -62,18 +67,31 @@ export default class SceneData {
                 polyOffset.pointsAdded = true;
             }
         });
+    }
 
+    updatePoints() {
+        this.clearPoints();
+        this.polyOffsets.forEach((polyOffset, i) => {
+            polyOffset.pointsAdded = false;
+        });
+        this.addPolyOffsets();
         this.store.uiStore.setStudyPointCount(this.threeApp.studyPoints.length);
     }
 
     clearStudyPoints() {
-        this.threeApp.removeObjects(this.studyPointClouds);
-        this.threeApp.studyPoints.length = 0;
-        this.studyPointClouds.length = 0;
+        this.clearPoints();
+
+        this.polyOffsets.length = 0;
 
         this.threeApp.removeObjects(this.studyPointPaths);
         this.studyPointPaths.length = 0;
         this.store.uiStore.setStudyPointCount(this.threeApp.studyPoints.length);
+    }
+
+    clearPoints() {
+        this.threeApp.removeObjects(this.studyPointClouds);
+        this.threeApp.studyPoints.length = 0;
+        this.studyPointClouds.length = 0;
     }
 
     clearViewBlockers() {

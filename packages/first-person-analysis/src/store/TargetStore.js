@@ -27,6 +27,14 @@ export default class TargetStore {
         return this.viewTargets[targetId];
     }
 
+    get maxVisibleValue() {
+        let max = 0;
+        Object.keys(this.viewTargets).forEach((k) => {
+            max = Math.max(max,  this.viewTargets[k].currentPoint.available);
+        });
+        return max;
+    }
+
     setTargetObjects(targetId, threeObjects) {
         const viewTarget = this.getViewTarget(targetId);
         viewTarget.threeObjects = threeObjects;

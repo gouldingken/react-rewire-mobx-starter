@@ -13,6 +13,9 @@ export default class UiStore {
     studyPoints = {current: 0, count: 0};
     isPlaying = false;
     blockersVisible = true;
+    targetChartMultiplier = 10000;//TODO use 'sols'
+    targetChartMax = 250 / 10000;
+    pointOptions = {spacing: 5, offset: 1};
 
     constructor() {
     };
@@ -54,6 +57,16 @@ export default class UiStore {
     setBlockersVisible(val) {
         this.blockersVisible = val;
     }
+
+    setTargetChartMax(val) {
+        this.targetChartMax = val;
+    }
+
+    setPointOptions(updates) {
+        Object.keys(updates).forEach((k) => {
+            this.pointOptions[k] = updates[k];
+        });
+    }
 }
 
 
@@ -62,9 +75,13 @@ decorate(UiStore, {
     studyPoints: observable,
     panelStates: observable,
     blockersVisible: observable,
+    targetChartMax: observable,
+    pointOptions: observable,
     setCurrentStudyPoint: action,
     setStudyPointCount: action,
     togglePanelCollapsed: action,
     setIsPlaying: action,
     setBlockersVisible: action,
+    setTargetChartMax: action,
+    setPointOptions: action,
 });

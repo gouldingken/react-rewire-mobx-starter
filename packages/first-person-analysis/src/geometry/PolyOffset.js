@@ -36,7 +36,7 @@ export default class PolyOffset {
         loopPoints.push(this.points2d[0]);//uses repetition to define closed or not...
         const points =  offset2d.data(loopPoints).margin(offsetAmount)[0];//.offsetLine(offsetAmount);
         // return points;
-        return interpolateLineRange(points, 100, 0, intervalSpacing);
+        return interpolateLineRange(points, 500, 0, intervalSpacing);
     }
 
     static test() {

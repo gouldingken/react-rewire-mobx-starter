@@ -3,7 +3,8 @@ import {observer} from "mobx-react";
 import CollapsiblePane from "./CollapsiblePane";
 import PageStepper from "./PageStepper";
 import TargetInfo from "./TargetInfo";
-import Checkbox from "sasaki-core/src/components/Checkbox";
+import {Checkbox} from "sasaki-core";
+import {RangeInput} from "sasaki-core";
 
 export default class SidePanel extends React.Component {
     constructor(props) {
@@ -25,11 +26,26 @@ export default class SidePanel extends React.Component {
                     <button className={'action-btn'}
                             onClick={event => store.sceneData.clearStudyPoints()}>Clear
                     </button>
+                    <RangeInput label={'Spacing'} min={3} max={20} step={1} value={store.uiStore.pointOptions.spacing}
+                                onChange={(value) => {
+                                    store.uiStore.setPointOptions({spacing: value});
+                                }}/>
+                    <RangeInput label={'Offset'} min={0.1} max={2} step={0.1} value={store.uiStore.pointOptions.offset}
+                                onChange={(value) => {
+                                    store.uiStore.setPointOptions({offset: value});
+                                }}/>
+                    <button className={'action-btn'}
+                            onClick={event => store.sceneData.updatePoints()}>Update Points
+                    </button>
                 </CollapsiblePane>
                 <CollapsiblePane store={store} title={'View Targets'} panelId={'targets'}>
                     <TargetInfo store={store} targetId={'target1'}/>
                     <TargetInfo store={store} targetId={'target2'}/>
                     <TargetInfo store={store} targetId={'target3'}/>
+                    <button className={'action-btn'}
+                            onClick={event => store.uiStore.setTargetChartMax(store.targetStore.maxVisibleValue)}>Set
+                        Max
+                    </button>
                 </CollapsiblePane>
                 <CollapsiblePane store={store} title={'View Blockers'} panelId={'blockers'}>
                     <button className={'action-btn'}

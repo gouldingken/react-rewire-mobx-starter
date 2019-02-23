@@ -13,10 +13,11 @@ export default class TargetInfo extends React.Component {
         const viewTarget = store.targetStore.getViewTarget(targetId);
         const sketchup = window.sketchup;
 
-        const available = 10000 * viewTarget.currentPoint.available;
-        const occluded = 10000 * viewTarget.currentPoint.occluded;
-        const max = 200;
-        const fullW = 220;
+        const multiplier = store.uiStore.targetChartMultiplier;
+        const available = multiplier * viewTarget.currentPoint.available;
+        const occluded = multiplier * viewTarget.currentPoint.occluded;
+        const max = store.uiStore.targetChartMax * multiplier;
+        const fullW = 180;
         const availableW = fullW * available / max;
         const occludedW = fullW * (available - occluded) / max;
 
