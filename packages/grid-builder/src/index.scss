@@ -1,0 +1,22 @@
+@import "./components/index";
+@import "~colorizer-three/src/index";
+
+@import "App";
+
+//NOTE: override of colorizer-three
+.ThreeContainer {
+  position: absolute;
+  left: $left-pane-width;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  width: auto;
+  height: auto;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+  overflow-y: scroll;
+}

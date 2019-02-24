@@ -16,7 +16,7 @@ import {
     Shape,
     AmbientLight,
     PlaneGeometry,
-    BasicShadowMap,
+    Raycaster,
     TextureLoader,
     DirectionalLightHelper,
     CameraHelper,
@@ -186,6 +186,8 @@ export default class ThreeApp extends Emitter {
         this.controls = controls;
 
         this.size = {width: 0, height: 0};
+
+        this.mouse = {x: 0, y: 0};
 
         this.start();
 
@@ -442,6 +444,7 @@ export default class ThreeApp extends Emitter {
     animate() {
         this.checkSizeChange();
         this.updateScene();
+        this.updateInteractions();
         this.renderScene();
         this.frameId = requestAnimationFrame(this.animate.bind(this));
     }
@@ -466,6 +469,44 @@ export default class ThreeApp extends Emitter {
 
     renderScene() {
         this.renderer.render(this.scene, this.camera);
+    }
+
+    enableMouseInteraction() {
+        this.raycaster = new Raycaster();
+
+        document.addEventListener('mousemove', (e) => this.onDocumentMouseMove(e), false);
+        document.addEventListener('mousedown', (e) => this.onDocumentMouseDown(e), false);
+    }
+
+    onDocumentMouseMove(event) {
+        event.preventDefault();
+
+        this.mouse.x = (event.offsetX / this.size.width) * 2 - 1;
+        this.mouse.y = -(event.offsetY / this.size.height) * 2 + 1;
+
+    }
+
+    onDocumentMouseDown(event) {
+        event.preventDefault();
+
+        this.mouse.downEvent = true;
+
+    }
+
+    updateInteractions() {
+        if (!this.raycaster) return;
+        this.raycaster.setFromCamera(this.mouse, this.camera);
+
+        const intersects = this.raycaster.intersectObjects(this.scene.children);
+
+        if (intersects.length > 0) {
+            this.onInteraction(intersects);
+        }
+        this.mouse.downEvent = false;//downEvent can be used in onInteraction then cleared before next call
+    }
+
+    onInteraction(intersects) {
+        // console.log('HIT', intersects);
     }
 
     checkSizeChange() {
