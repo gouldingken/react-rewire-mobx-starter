@@ -16,6 +16,6 @@ export default class MainStore {
         this.uiStore = new UiStore();
         this.targetStore = new TargetStore();
         this.optionsStore = new OptionsStore();
-        this.readingsStore = new ReadingsStore(this.optionsStore);
+        this.readingsStore = new ReadingsStore(this.optionsStore, this.targetStore);
     };
 }

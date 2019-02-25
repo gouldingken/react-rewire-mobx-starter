@@ -1,0 +1,32 @@
+@import "../core";
+
+.OptionsTabs {
+  position: absolute;
+  left: $left-pane-width;
+  right: 0;
+  bottom: 0;
+  height: $tab-ht;
+  background: #9c9c9c;
+
+  .OptionTab {
+    background: #e1e1e1;
+    display: inline-block;
+    padding: 10px;
+    border: 1px solid #999999;
+    cursor: pointer;
+    &.selected {
+      background: #333333;
+      color: #cccccc;
+
+    }
+  }
+
+  .NewTabButton {
+    background: #e1e1e1;
+    display: inline-block;
+    padding: 10px;
+    border-radius: 12px;
+    border: 1px solid #999999;
+    cursor: pointer;
+  }
+}

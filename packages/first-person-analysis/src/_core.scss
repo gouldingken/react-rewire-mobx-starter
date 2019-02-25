@@ -18,3 +18,13 @@ $tab-ht: 40px;
   padding: 5px 10px;
   border-radius: 3px;
 }
+
+@mixin main-pane {
+  position: absolute;
+  left: $left-pane-width;
+  right: 0;
+  bottom: $tab-ht;
+  top: 0;
+  width: auto;
+  height: auto;
+}

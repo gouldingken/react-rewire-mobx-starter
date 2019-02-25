@@ -27,10 +27,11 @@ export default class ThreeContainer extends React.Component {
     }
 
     render() {
-        const {store, previousOption, activeOption, inclusionList, highlightIds, dataHandler} = this.props;
+        const {store, previousOption, activeOption, inclusionList, highlightIds, dataHandler, visible} = this.props;
         if (this.threeApp) {
             this.updateTweenObjects(inclusionList, previousOption, activeOption);
             this.updateHighlightObjects(highlightIds);
+            this.threeApp.renderer.domElement.style.display = visible ? 'initial' : 'none';
         }
         return (
             <div ref={(mount) => {

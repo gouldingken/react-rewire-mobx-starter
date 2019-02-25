@@ -9,6 +9,7 @@ import {action, autorun, decorate, observable} from "mobx";
  */
 export default class UiStore {
 
+    mode = 'analyze';
     panelStates = {};
     studyPoints = {current: 0, count: 0};
     isPlaying = false;
@@ -67,10 +68,15 @@ export default class UiStore {
             this.pointOptions[k] = updates[k];
         });
     }
+
+    setMode(val) {
+        this.mode = val;
+    }
 }
 
 
 decorate(UiStore, {
+    mode: observable,
     isPlaying: observable,
     studyPoints: observable,
     panelStates: observable,
@@ -84,4 +90,5 @@ decorate(UiStore, {
     setBlockersVisible: action,
     setTargetChartMax: action,
     setPointOptions: action,
+    setMode: action,
 });

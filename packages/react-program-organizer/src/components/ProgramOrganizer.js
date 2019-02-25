@@ -1,7 +1,7 @@
 import React from 'react';
 import {observer} from "mobx-react";
 import ProgramCategory from "./ProgramCategory";
-import If from "sasaki-core/src/If";
+import {If} from "sasaki-core";;
 import EditDetails from "./edit/EditDetails";
 
 export default class ProgramOrganizer extends React.Component {

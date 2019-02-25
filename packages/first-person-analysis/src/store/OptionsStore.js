@@ -8,15 +8,22 @@ import {action, computed, decorate, observable} from "mobx";
  * var instance = new OptionsStore();
  */
 export default class OptionsStore {
-
-    options = [{name: 'Option 1', key: 'option-1', selected: true}];
+    static chartColorIndex = 0;
+    static chartColors = [
+        "#79a5ce",
+        "#cb566d",
+        "#c3803b",
+        "#5f5ea5",
+        "#65c09c"
+    ];
+    options = [{name: 'Option 1', key: 'option-1', selected: true, chartColor: OptionsStore.nextColor()}];
 
     constructor() {
     };
 
     addOption() {
         const num = this.options.length + 1;
-        const newOption = {name: `Option ${num}`, key: `option-${num}`};
+        const newOption = {name: `Option ${num}`, key: `option-${num}`, chartColor: OptionsStore.nextColor()};
         this.options.push(newOption);
     }
 
@@ -38,6 +45,14 @@ export default class OptionsStore {
                 option.selected = (option.key === key);
             }
         });
+    }
+
+    static nextColor() {
+        OptionsStore.chartColorIndex++;
+        if (OptionsStore.chartColorIndex >= OptionsStore.chartColors.length) {
+            OptionsStore.chartColorIndex = 0;
+        }
+        return OptionsStore.chartColors[OptionsStore.chartColorIndex];
     }
 }
 

@@ -1,3 +1,4 @@
+@import "core";
 @import "./components/index";
 @import "~colorizer-three/src/index";
 
@@ -5,13 +6,7 @@
 
 //NOTE: override of colorizer-three
 .ThreeContainer {
-  position: absolute;
-  left: $left-pane-width;
-  right: 0;
-  bottom: $tab-ht;
-  top: 0;
-  width: auto;
-  height: auto;
+  @include main-pane;
 }
 
 html, body {

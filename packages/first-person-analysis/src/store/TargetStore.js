@@ -54,6 +54,13 @@ export default class TargetStore {
         }
     }
 
+    getIdForChannel(c) {
+        for (let i = 1; i <= 3; i++) {
+            if (c === 'c' + i) return 'target' + i;
+        }
+        return 'missing';
+    }
+
     get channels() {
         return {
             channel1: this.getViewTarget('target1').color,

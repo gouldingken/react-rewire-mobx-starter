@@ -1,0 +1,10 @@
+@import "../core";
+.ComparePane {
+  @include main-pane;
+  overflow-y: scroll;
+  overflow-x: hidden;
+
+  .compare-group {
+    padding: 16px;
+  }
+}
