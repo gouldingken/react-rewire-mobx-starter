@@ -1,4 +1,5 @@
 import {action, autorun, decorate, observable} from "mobx";
+import ReadingsStore from "./ReadingsStore";
 
 /**
  * Creates a new instance of UiStore.
@@ -14,8 +15,9 @@ export default class UiStore {
     studyPoints = {current: 0, count: 0};
     isPlaying = false;
     blockersVisible = true;
-    targetChartMultiplier = 10000;//TODO use 'sols'
-    targetChartMax = 250 / 10000;
+
+    targetChartMultiplier =  1 / ReadingsStore.sunAreaOfFullSphere;
+    targetChartMax = 5000;
     pointOptions = {spacing: 10, offset: 1};
 
     constructor() {

@@ -16,18 +16,18 @@ export default class TargetInfo extends React.Component {
 
         const fullW = 180;
         const available = viewTarget.currentPoint.available;
-        const occluded = viewTarget.currentPoint.occluded;
+        const unobstructed = viewTarget.currentPoint.unobstructed;
 
         return (
             <div className="TargetInfo">
                 <div className={'legend-color'} style={{background: viewTarget.color}}/>
                 <div className={'legend-title'}>{viewTarget.name}</div>
                 {/*A: {Math.round(10000 * viewTarget.currentPoint.available)} |*/}
-                {/*O: {Math.round(10000 * viewTarget.currentPoint.occluded)}*/}
+                {/*O: {Math.round(10000 * viewTarget.currentPoint.unobstructed)}*/}
                 <button className={'set-btn'}
                         onClick={event => sketchup.getSelectedMesh({mode: 'target', targetId: targetId})}>set
                 </button>
-                <TargetBars fullWidth={fullW} store={store} viewTarget={viewTarget} available={available} occluded={occluded}/>
+                <TargetBars fullWidth={fullW} store={store} viewTarget={viewTarget} available={available} unobstructed={unobstructed}/>
 
             </div>
         );

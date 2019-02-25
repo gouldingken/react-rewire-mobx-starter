@@ -1,4 +1,5 @@
 import {action, computed, decorate, observable} from "mobx";
+import ReadingsStore from "./ReadingsStore";
 
 /**
  * Creates a new instance of TargetStore.
@@ -21,7 +22,7 @@ export default class TargetStore {
                 id: targetId,
                 name: 'none',
                 color: '#cccccc',
-                currentPoint: {available: 0, occluded: 0}
+                currentPoint: {available: 0, unobstructed: 0}
             };
         }
         return this.viewTargets[targetId];
@@ -49,8 +50,8 @@ export default class TargetStore {
     setCurrentValues(sensor) {
         for (let i = 1; i <= 3; i++) {
             let viewTarget = this.getViewTarget('target' + i);
-            viewTarget.currentPoint.available = sensor.values['c' + i].f;
-            viewTarget.currentPoint.occluded = sensor.values['c' + i].o;
+            viewTarget.currentPoint.available = sensor.values['c' + i].f / ReadingsStore.sunAreaOfFullSphere;
+            viewTarget.currentPoint.unobstructed = sensor.values['c' + i].o / ReadingsStore.sunAreaOfFullSphere;
         }
     }
 

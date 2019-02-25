@@ -92,7 +92,7 @@ export default class SidePanel extends React.Component {
                                     {store.readingsStore.readingsCount} result generated out
                                     of {store.uiStore.studyPoints.count}
                                 </div>
-                                <If true={store.uiStore.mode === 'analyze'}>
+                                <If true={store.uiStore.mode === 'analyze' || store.uiStore.mode === 'compare'}>
                                     <button className={'action-btn'}
                                             onClick={event => store.uiStore.setIsPlaying(true)}>Run
                                     </button>

@@ -8,15 +8,14 @@ export default class TargetBars extends React.Component {
     }
 
     render() {
-        const {store, viewTarget, fullWidth, available, occluded, label, color} = this.props;
-        const multiplier = store.uiStore.targetChartMultiplier;
-        const max = store.uiStore.targetChartMax * multiplier;
-        const availableM = available * multiplier;
-        const occludedM = occluded * multiplier;
+        const {store, viewTarget, fullWidth, available, unobstructed, label, color} = this.props;
+        const max = store.uiStore.targetChartMax;
+        const availableM = available;// * multiplier;
+        const unobstructedM = unobstructed;// * multiplier;
         const availableW = fullWidth * availableM / max;
-        const occludedW = fullWidth * (availableM - occludedM) / max;
+        const occludedW = fullWidth * (availableM - unobstructedM) / max;
 
-        const perc = Math.round(1000 * (occludedM / availableM)) / 10;
+        const perc = Math.round(1000 * (unobstructedM / availableM)) / 10;
         return (
             <div className="TargetBars">
                 <If true={availableM > 0}>
@@ -25,13 +24,15 @@ export default class TargetBars extends React.Component {
                     </div>
                 </If>
                 <div className={'bar'}>
-                    <div className={'bar-bg'} style={{background: color || viewTarget.color, width: availableW}}/>
+                    <div className={'bar-bg'} style={{background: color || viewTarget.color, width: availableW}}
+                         title={`Visible Sols: ${Math.round(unobstructed).toLocaleString()} of ${Math.round(available).toLocaleString()}`}/>
                     <If true={occludedW > 0}>
-                        <div className={'bar-over'} style={{left:availableW - occludedW - 1, width: occludedW}}/>
+                        <div className={'bar-over'} style={{left: availableW - occludedW - 1, width: occludedW}}
+                             title={`Obstructed Sols: ${Math.round(available - unobstructed).toLocaleString()} of ${Math.round(available).toLocaleString()}`}/>
                     </If>
                 </div>
                 <If true={label}>
-                    <div className={'bar-label'} style={{left:availableW + 55}}>
+                    <div className={'bar-label'} style={{left: availableW + 55}}>
                         {label}
                     </div>
                 </If>

@@ -9,6 +9,9 @@ import {action, computed, decorate, observable} from "mobx";
  */
 export default class ReadingsStore {
 
+    //185,185 sols in full sphere
+    static sunAreaOfFullSphere = 5.4e-6;//http://www.mersenneforum.org/showthread.php?t=11612
+
     readingSets = {};
 
     constructor(optionsStore, targetStore) {
@@ -108,7 +111,7 @@ class ReadingsSet {
     }
 
     summarize() {
-        const summary = {sums: {available: {}, occluded: {}}, sorted: {available: {}, occluded: {}}, count: 0};
+        const summary = {sums: {available: {}, unobstructed: {}}, sorted: {available: {}, unobstructed: {}}, count: 0};
         Object.keys(this.readings).forEach((k) => {
             let reading = this.readings[k];
             summary.count++;
@@ -116,14 +119,14 @@ class ReadingsSet {
                 const channelId = this.targetStore.getIdForChannel(c);
                 const val = this.readings[k].values[c];
                 if (!summary.sums.available[channelId]) summary.sums.available[channelId] = 0;
-                summary.sums.available[channelId] += val.f;
-                if (!summary.sums.occluded[channelId]) summary.sums.occluded[channelId] = 0;
-                summary.sums.occluded[channelId] += val.o;
+                summary.sums.available[channelId] += val.f / ReadingsStore.sunAreaOfFullSphere;
+                if (!summary.sums.unobstructed[channelId]) summary.sums.unobstructed[channelId] = 0;
+                summary.sums.unobstructed[channelId] += val.o / ReadingsStore.sunAreaOfFullSphere;
 
                 if (!summary.sorted.available[channelId]) summary.sorted.available[channelId] = [];
-                summary.sorted.available[channelId].push(val.f);
-                if (!summary.sorted.occluded[channelId]) summary.sorted.occluded[channelId] = [];
-                summary.sorted.occluded[channelId].push(val.o);
+                summary.sorted.available[channelId].push(val.f / ReadingsStore.sunAreaOfFullSphere);
+                if (!summary.sorted.unobstructed[channelId]) summary.sorted.unobstructed[channelId] = [];
+                summary.sorted.unobstructed[channelId].push(val.o / ReadingsStore.sunAreaOfFullSphere);
             });
         });
 
