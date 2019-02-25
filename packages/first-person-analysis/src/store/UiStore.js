@@ -11,6 +11,8 @@ import ReadingsStore from "./ReadingsStore";
 export default class UiStore {
 
     mode = 'analyze';
+    selectedReviewTarget = 'target1';
+
     panelStates = {};
     studyPoints = {current: 0, count: 0};
     isPlaying = false;
@@ -74,11 +76,16 @@ export default class UiStore {
     setMode(val) {
         this.mode = val;
     }
+
+    setSelectedReviewTarget(val) {
+        this.selectedReviewTarget = val;
+    }
 }
 
 
 decorate(UiStore, {
     mode: observable,
+    selectedReviewTarget: observable,
     isPlaying: observable,
     studyPoints: observable,
     panelStates: observable,
@@ -93,4 +100,5 @@ decorate(UiStore, {
     setTargetChartMax: action,
     setPointOptions: action,
     setMode: action,
+    setSelectedReviewTarget: action,
 });

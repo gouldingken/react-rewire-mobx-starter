@@ -18,16 +18,27 @@ export default class TargetInfo extends React.Component {
         const available = viewTarget.currentPoint.available;
         const unobstructed = viewTarget.currentPoint.unobstructed;
 
+        let className = 'TargetInfo';
+
+        if (store.uiStore.mode === 'review' && store.uiStore.selectedReviewTarget === targetId) {
+            className += ' selected';
+        }
+
+        let select = () => {
+            store.uiStore.setSelectedReviewTarget(targetId);
+        };
         return (
-            <div className="TargetInfo">
-                <div className={'legend-color'} style={{background: viewTarget.color}}/>
-                <div className={'legend-title'}>{viewTarget.name}</div>
-                {/*A: {Math.round(10000 * viewTarget.currentPoint.available)} |*/}
-                {/*O: {Math.round(10000 * viewTarget.currentPoint.unobstructed)}*/}
-                <button className={'set-btn'}
-                        onClick={event => sketchup.getSelectedMesh({mode: 'target', targetId: targetId})}>set
-                </button>
-                <TargetBars fullWidth={fullW} store={store} viewTarget={viewTarget} available={available} unobstructed={unobstructed}/>
+            <div className={className}>
+                <div className={'legend-color'} style={{background: viewTarget.color}} onClick={select}/>
+                <div className={'legend-title'} onClick={select}>{viewTarget.name}</div>
+
+                <If true={store.uiStore.mode === 'analyze'}>
+                    <button className={'set-btn'}
+                            onClick={event => sketchup.getSelectedMesh({mode: 'target', targetId: targetId})}>set
+                    </button>
+                </If>
+                <TargetBars fullWidth={fullW} store={store} viewTarget={viewTarget} available={available}
+                            unobstructed={unobstructed}/>
 
             </div>
         );

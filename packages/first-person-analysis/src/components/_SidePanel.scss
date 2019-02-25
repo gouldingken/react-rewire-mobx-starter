@@ -42,6 +42,12 @@
     height: 40px;
     padding: 10px;
 
+    &.selected {
+      .legend-title {
+        font-weight: bold;
+      }
+    }
+
     .set-btn {
       @include ss-button;
       background: #b0b0b0;
@@ -60,6 +66,7 @@
     }
 
     .legend-title {
+      cursor: pointer;
       display: inline-block;
       margin-left: 12px;
       width: $left-pane-width - 85px;

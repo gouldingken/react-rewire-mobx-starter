@@ -124,16 +124,17 @@ class ReadingsSet {
                 summary.sums.unobstructed[channelId] += val.o / ReadingsStore.sunAreaOfFullSphere;
 
                 if (!summary.sorted.available[channelId]) summary.sorted.available[channelId] = [];
-                summary.sorted.available[channelId].push(val.f / ReadingsStore.sunAreaOfFullSphere);
+                summary.sorted.available[channelId].push({v:val.f / ReadingsStore.sunAreaOfFullSphere, i:+k});
                 if (!summary.sorted.unobstructed[channelId]) summary.sorted.unobstructed[channelId] = [];
-                summary.sorted.unobstructed[channelId].push(val.o / ReadingsStore.sunAreaOfFullSphere);
+                summary.sorted.unobstructed[channelId].push({v:val.o / ReadingsStore.sunAreaOfFullSphere, i:+k});
+
             });
         });
 
         Object.keys(summary.sorted).forEach((k) => {
             Object.keys(summary.sorted[k]).forEach((channelId) => {
                 const arr = summary.sorted[k][channelId];
-                arr.sort((a, b) => b - a);
+                arr.sort((a, b) => b.v - a.v);
             });
         });
 

@@ -2,6 +2,12 @@ import React from 'react';
 import {observer} from "mobx-react";
 
 export default class LineChart extends React.Component {
+    static defaultProps = {
+        width: 400,
+        height: 300,
+        background: '#ffffff'
+    };
+
     constructor(props) {
         super(props);
         this.padding = {top: 2, bottom: 10, left: 10, right: 2};
@@ -14,23 +20,24 @@ export default class LineChart extends React.Component {
     }
 
     render() {
-        const {data} = this.props;
+        const {data, background, width, height} = this.props;
 
         this.drawData(data);
-        return (<canvas ref={(e) => this.canvas = e} width={400} height={300}/>);
+        return (<canvas ref={(e) => this.canvas = e} style={{background: background}} width={width} height={height}/>);
     }
 
     drawData(data) {
         if (!data) return;
         if (!this.ctx) return;
-        const size = {w: 400, h: 300};
+        const {width, height, selectedSeriesId} = this.props;
+        const size = {w: width, h: height};
         this.ctx.clearRect(0, 0, size.w, size.h);
 
         this.calcMax(data);
 
         this.drawYLines(size);
         data.forEach((series, i) => {
-            this.drawSeries(series.data, size, series.color);
+            this.drawSeries(series.data, size, series.color, series.id === selectedSeriesId, series.selectedX);
         });
     }
 
@@ -58,10 +65,12 @@ export default class LineChart extends React.Component {
         };
     }
 
-    drawSeries(data, size, color) {
+    drawSeries(data, size, color, highlight, selectedX) {
         const plot = this.plotter(size);
+        this.ctx.save();
         this.ctx.beginPath();
         let pos;
+        const circles = [];
         data.forEach((datum, i) => {
             pos = plot(datum[0], datum[1]);
             if (i === 0) {
@@ -69,12 +78,28 @@ export default class LineChart extends React.Component {
             } else {
                 this.ctx.lineTo(pos.x, pos.y);
             }
+            if (datum[0] === selectedX) {
+                circles.push({cx: pos.x, cy: pos.y, r: (highlight) ? 4 : 2});
+            }
         });
         if (this.endLineTick && pos) {
             this.ctx.lineTo(pos.x, pos.y + this.endLineTick.size);
         }
+        if (highlight) {
+            this.ctx.lineWidth = 3;
+        }
         this.ctx.strokeStyle = color;
         this.ctx.stroke();
+
+        circles.forEach((circle, i) => {
+            this.ctx.beginPath();
+            this.ctx.arc(circle.cx, circle.cy, circle.r, 0, 2 * Math.PI);
+            this.ctx.fillStyle = "white";
+            this.ctx.fill();
+            this.ctx.stroke();
+        });
+
+        this.ctx.restore();
     }
 
     drawText(text, pos) {

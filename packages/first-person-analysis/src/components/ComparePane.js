@@ -8,6 +8,35 @@ export default class ComparePane extends React.Component {
         super(props);
     }
 
+    static getOptionData(allReadings, targetId, optionsStore) {
+        return allReadings.map((data, i) => {
+            const option = optionsStore.getOption(data.option);
+            return {
+                option: option,
+                unobstructed: data.values.sums.unobstructed[targetId] / data.values.count,
+                available: data.values.sums.available[targetId] / data.values.count,
+                unobstructedPoints: data.values.sorted.unobstructed[targetId]
+            };
+        });
+    }
+
+    static structureChartData(optionData, selectedIndex) {
+        const chartData = [];
+        optionData.forEach((optionDatum, i) => {
+            const chartXYs = [];
+            let selectedX = -1;
+            optionDatum.unobstructedPoints.forEach((p, i) => {
+                if (selectedIndex != null && p.i === selectedIndex) {
+                    selectedX = i;
+                }
+                chartXYs.push([i, p.v]);
+            });
+            let option = optionDatum.option;
+            chartData.push({label: option.name, id:option.key, color: option.chartColor, data: chartXYs, selectedX:selectedX});
+        });
+        return chartData;
+    }
+
     render() {
         const {store} = this.props;
         const viewTarget1 = store.targetStore.getViewTarget('target1');
@@ -17,15 +46,7 @@ export default class ComparePane extends React.Component {
         const allReadings = store.readingsStore.summarizeReadings();
 
         const getOptionData = (targetId) => {
-            return allReadings.map((data, i) => {
-                const option = store.optionsStore.getOption(data.option);
-                return {
-                    option: option,
-                    unobstructed: data.values.sums.unobstructed[targetId] / data.values.count,
-                    available: data.values.sums.available[targetId] / data.values.count,
-                    unobstructedPoints: data.values.sorted.unobstructed[targetId]
-                };
-            });
+            return ComparePane.getOptionData(allReadings, targetId, store.optionsStore)
         };
 
         return (
@@ -47,15 +68,6 @@ class CompareGroup extends React.Component {
     render() {
         const {store, viewTarget, optionData} = this.props;
 
-        const chartData = [];
-        optionData.forEach((optionDatum, i) => {
-            const chartXYs = [];
-            optionDatum.unobstructedPoints.forEach((val, i) => {
-                chartXYs.push([i, val]);
-            });
-            chartData.push({label: optionDatum.name, color: optionDatum.option.chartColor, data: chartXYs});
-        });
-
         return (
             <div className={'compare-group'}>
                 <div>{viewTarget.name}</div>
@@ -73,7 +85,7 @@ class CompareGroup extends React.Component {
                     }}
                 >
                     <LineChart
-                        data={chartData}
+                        data={ComparePane.structureChartData(optionData)}
                     />
                 </div>
             </div>

@@ -6,6 +6,9 @@ import TargetInfo from "./TargetInfo";
 import {Checkbox} from "sasaki-core";
 import {RangeInput} from "sasaki-core";
 import {If} from "sasaki-core";
+import TargetBars from "./TargetBars";
+import ComparePane from "./ComparePane";
+import LineChart from "./charts/LineChart";
 
 export default class SidePanel extends React.Component {
     constructor(props) {
@@ -64,11 +67,18 @@ export default class SidePanel extends React.Component {
                         <TargetInfo store={store} targetId={'target1'}/>
                         <TargetInfo store={store} targetId={'target2'}/>
                         <TargetInfo store={store} targetId={'target3'}/>
-                        <button className={'action-btn'}
-                                onClick={event => store.uiStore.setTargetChartMax(store.targetStore.maxVisibleValue)}>Set
-                            Max
-                        </button>
+                        <If true={store.uiStore.mode === 'analyze'}>
+                            <button className={'action-btn'}
+                                    onClick={event => store.uiStore.setTargetChartMax(store.targetStore.maxVisibleValue)}>Set
+                                Max
+                            </button>
+                        </If>
                     </CollapsiblePane>
+                    <If true={store.uiStore.mode === 'review'}>
+                        <CollapsiblePane store={store} title={'Charts'} panelId={'charts'}>
+                            <ReviewChart store={store} width={270}/>
+                        </CollapsiblePane>
+                    </If>
                     <CollapsiblePane store={store} title={'View Blockers'} panelId={'blockers'}>
                         <If true={store.uiStore.mode === 'analyze'}>
                             <button className={'action-btn'}
@@ -123,4 +133,45 @@ export default class SidePanel extends React.Component {
     }
 }
 
+class ReviewChart extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+
+    render() {
+        const {store, width} = this.props;
+
+        const allReadings = store.readingsStore.summarizeReadings();
+
+        const optionData = ComparePane.getOptionData(allReadings, store.uiStore.selectedReviewTarget, store.optionsStore);
+
+        let selectedOption = null;
+        if (store.optionsStore.selectedOptions.length === 1) {
+            selectedOption = store.optionsStore.selectedOptions[0];
+        }
+
+        return (
+            <div className={'compare-group'}>
+                <div
+                    style={{
+                        width: width,
+                        height: "300px"
+                    }}
+                >
+                    <LineChart
+                        width={width}
+                        background={'#ffffff'}
+                        selectedSeriesId={selectedOption}
+                        data={ComparePane.structureChartData(optionData, store.uiStore.studyPoints.current)}
+                    />
+                </div>
+                <button className={'action-btn'}
+                        onClick={event => store.uiStore.TODO()}>Scan
+                </button>
+            </div>
+        );
+    }
+}
+
+observer(ReviewChart);
 observer(SidePanel);
