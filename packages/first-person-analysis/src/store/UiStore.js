@@ -15,7 +15,7 @@ export default class UiStore {
     blockersVisible = true;
     targetChartMultiplier = 10000;//TODO use 'sols'
     targetChartMax = 250 / 10000;
-    pointOptions = {spacing: 5, offset: 1};
+    pointOptions = {spacing: 10, offset: 1};
 
     constructor() {
     };

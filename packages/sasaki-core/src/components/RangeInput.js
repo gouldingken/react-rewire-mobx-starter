@@ -22,13 +22,14 @@ export default class RangeInput extends React.Component {
     }
 
     render() {
-        const {min, max, step, label, onChange, onInput} = this.props;
+        const {min, max, step, label, onChange} = this.props;
+        const change = (e) => {
+            this.setState({value: e.target.value});
+            onChange(e.target.value);
+        };
         return (
             <div className="RangeInput">
-                <label><input type="range" min={min} max={max} value={this.state.value} step={step} onChange={(e) => {
-                    this.setState({value: e.target.value});
-                    onChange(this.state.value);
-                }}/>{label}: {this.state.value}</label>
+                <label><input type="range" min={min} max={max} value={this.state.value} step={step} onChange={change} onInput={change}/>{label}: {this.state.value}</label>
             </div>
         );
     }

@@ -63,10 +63,10 @@ export default class ThreeAppFirstPerson extends ThreeApp {
 
     showExtras(visible) {
         this.pointClouds.forEach((pointCloud, i) => {
-            pointCloud.visible = visible;
+            pointCloud.visible = visible && !pointCloud.userData.excluded;
         });
         this.extras.forEach((extra, i) => {
-            extra.visible = visible;
+            extra.visible = visible  && !extra.userData.excluded;
         });
         this.cubeCamPos.visible = visible;
     }

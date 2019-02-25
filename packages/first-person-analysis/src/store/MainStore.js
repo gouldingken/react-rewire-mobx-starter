@@ -8,12 +8,14 @@
 import UiStore from "./UiStore";
 import TargetStore from "./TargetStore";
 import ReadingsStore from "./ReadingsStore";
+import OptionsStore from "./OptionsStore";
 
 export default class MainStore {
     sceneData;
     constructor() {
         this.uiStore = new UiStore();
         this.targetStore = new TargetStore();
-        this.readingsStore = new ReadingsStore();
+        this.optionsStore = new OptionsStore();
+        this.readingsStore = new ReadingsStore(this.optionsStore);
     };
 }

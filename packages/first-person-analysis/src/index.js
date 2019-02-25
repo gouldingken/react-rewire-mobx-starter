@@ -17,7 +17,7 @@ store.sceneData = new SceneData(store);
 
 window.Interop = new Interop(store.sceneData);
 
-new MockCommands(window.Interop);
+new MockCommands(store, window.Interop);
 
 serviceWorker.unregister();
 

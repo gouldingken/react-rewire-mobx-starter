@@ -4,6 +4,7 @@ import {ThreeContainer} from "colorizer-three";
 import ViewsDataHandler from "./ViewsDataHandler";
 import ThreeAppFirstPerson from "./three/ThreeAppFirstPerson";
 import SidePanel from "./components/SidePanel";
+import OptionsTabs from "./components/OptionsTabs";
 
 class App extends Component {
     render() {
@@ -14,6 +15,7 @@ class App extends Component {
             <div className="App">
                 <ThreeContainer dataHandler={new ViewsDataHandler(store)} useTestCube={true} ThreeAppClass={ThreeAppFirstPerson}/>
                 <SidePanel store={store}/>
+                <OptionsTabs store={store}/>
             </div>
         );
     }

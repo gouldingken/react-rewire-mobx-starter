@@ -32,8 +32,7 @@ export default class Interop {
                 const outline = this.speckleData.getCurves(resource);
                 if (outline) {
                     objectsToAdd.push(outline);
-                    const polyOffset = new PolyOffset(outline);
-                    this.sceneData.polyOffsets.push(polyOffset);
+                    this.sceneData.addOutline(outline);
                 }
             }
         });

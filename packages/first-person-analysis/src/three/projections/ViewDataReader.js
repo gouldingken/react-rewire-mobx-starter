@@ -26,7 +26,7 @@ export default class ViewDataReader {
     showObstructionMeshes(visible) {
         if (!this.obstructionMeshes) return;
         this.obstructionMeshes.forEach(function (mesh, i) {
-            mesh.visible = visible;
+            mesh.visible = visible && !mesh.userData.excluded;;
         });
 
     }
