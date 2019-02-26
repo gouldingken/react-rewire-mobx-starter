@@ -9,15 +9,19 @@ import Interop from "./Interop";
 import SceneData from "./SceneData";
 import MainStore from "./store/MainStore";
 import MockCommands from "./mocks/MockCommands";
+import ViewsDataHandler from "./ViewsDataHandler";
 
 const store = new MainStore();
-ReactDOM.render(<App store={store}/>, document.getElementById('root'));
+const dataHandler = new ViewsDataHandler(store);
 
-store.sceneData = new SceneData(store);
+store.sceneData = new SceneData(store, dataHandler);
 
 window.Interop = new Interop(store.sceneData);
 
-new MockCommands(store, window.Interop);
+new MockCommands(store, window.Interop, dataHandler);
+
+ReactDOM.render(<App store={store} dataHandler={dataHandler}/>, document.getElementById('root'));
+
 //load 'C:\Users\kgoulding\Documents\Development\Ruby\SpeckleRuby\speckle_ruby_sketchup_direct\ui\speckle_view.rb'
 
 serviceWorker.unregister();

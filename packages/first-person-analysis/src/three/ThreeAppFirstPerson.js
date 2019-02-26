@@ -9,6 +9,7 @@ import {ThreeApp} from "colorizer-three";
 import ViewDataReader from "./projections/ViewDataReader";
 import CubemapReprojector from "./projections/CubemapReprojector";
 import {BoxGeometry, Matrix4, Mesh, Vector3} from "three-full";
+import AnimatedParticles from "./AnimatedParticles";
 
 export default class ThreeAppFirstPerson extends ThreeApp {
 
@@ -30,12 +31,34 @@ export default class ThreeAppFirstPerson extends ThreeApp {
 
         this.reprojector = new CubemapReprojector(this.renderer, 512, channels, true, true);
         this.viewDataReader = new ViewDataReader(this.scene, this.reprojector);
+
+
+        this.animatedPointCloud = new AnimatedParticles(10000);//TODO dynamic points length??
+        let animatePointCloudObject = this.animatedPointCloud.getObject();
+        this.addToScene(animatePointCloudObject);
+
+        this.dataHandler.initialize(this);
     };
+
+    updatePoints(pointProperties) {
+        this.animatedPointCloud.setProperties(pointProperties);
+    }
+
+    addToScene(objects) {
+        objects.forEach((o, i) => {
+            this.scene.add(o);
+        });
+    }
 
     updateScene() {
         this.studyPos = this.nextStudyPos();
         this.cubeCamPos.position.copy(this.getStudyPos());
         this.readData();
+
+        if (this.animatedPointCloud) {
+            let animationSpeed = 0.1;
+            this.animatedPointCloud.step(animationSpeed);
+        }
     }
 
     nextStudyPos() {
@@ -62,6 +85,7 @@ export default class ThreeAppFirstPerson extends ThreeApp {
     }
 
     showExtras(visible) {
+        this.animatedPointCloud.particles.visible = visible && !this.animatedPointCloud.particles.userData.excluded;
         this.pointClouds.forEach((pointCloud, i) => {
             pointCloud.visible = visible && !pointCloud.userData.excluded;
         });

@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "chroma-js": "^2.0.3",
     "colorizer-three": "0.1.0",
     "line-interpolate-points": "^1.0.5",
     "polygon-offset": "^0.3.1",

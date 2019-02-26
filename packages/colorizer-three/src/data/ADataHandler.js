@@ -1,4 +1,6 @@
 'use strict';
+import Emitter from "sasaki-core/src/Emitter";
+
 /**
  * Creates a new instance of ADataHandler.
  * @class
@@ -6,9 +8,10 @@
  * @example
  * var instance = new ADataHandler();
  */
-export default class ADataHandler {
+export default class ADataHandler extends Emitter {
 
     constructor() {
+        super();
     };
 
     getColor(id) {

@@ -7,13 +7,15 @@
  */
 export default class MockCommands {
 
-    constructor(store, Interop) {
+    constructor(store, Interop, dataHandler) {
         this.store = store;
         this.Interop = Interop;
-        setTimeout(() => {
-            this.addAll();
-        }, 1000);
 
+        dataHandler.on('ThreeAppReady', (threeApp) => {
+            setTimeout(() => {
+                this.addAll();
+            }, 100);
+        });
     };
 
     addAll() {

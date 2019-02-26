@@ -12,6 +12,7 @@ export default class UiStore {
 
     mode = 'analyze';
     selectedReviewTarget = 'target1';
+    valueRampMultiplier = 1;
 
     panelStates = {};
     studyPoints = {current: 0, count: 0};
@@ -80,12 +81,17 @@ export default class UiStore {
     setSelectedReviewTarget(val) {
         this.selectedReviewTarget = val;
     }
+
+    setValueRampMultiplier(val) {
+        this.valueRampMultiplier = val;
+    }
 }
 
 
 decorate(UiStore, {
     mode: observable,
     selectedReviewTarget: observable,
+    valueRampMultiplier: observable,
     isPlaying: observable,
     studyPoints: observable,
     panelStates: observable,
@@ -101,4 +107,5 @@ decorate(UiStore, {
     setPointOptions: action,
     setMode: action,
     setSelectedReviewTarget: action,
+    setValueRampMultiplier: action,
 });

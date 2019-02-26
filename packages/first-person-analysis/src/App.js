@@ -10,12 +10,12 @@ import ComparePane from "./components/ComparePane";
 
 class App extends Component {
     render() {
-        const {store} = this.props;
+        const {store, dataHandler} = this.props;
         //TODO ThreeContainer and ThreeApp instance doesn't currently persist if unmounted and remounted
         //HACK is to use visible property and simply hide the DOM element
         return (
             <div className="App">
-                <ThreeContainer dataHandler={new ViewsDataHandler(store)} useTestCube={true} ThreeAppClass={ThreeAppFirstPerson} visible={store.uiStore.mode !== 'compare'}/>
+                <ThreeContainer dataHandler={dataHandler} useTestCube={true} ThreeAppClass={ThreeAppFirstPerson} visible={store.uiStore.mode !== 'compare'}/>
                 <If true={store.uiStore.mode === 'compare'}>
                     <ComparePane store={store}/>
                 </If>
