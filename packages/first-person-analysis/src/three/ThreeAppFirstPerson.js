@@ -38,7 +38,44 @@ export default class ThreeAppFirstPerson extends ThreeApp {
         this.addToScene(animatePointCloudObject);
 
         this.dataHandler.initialize(this);
+
+        this.enableMouseInteraction(2);
     };
+
+    updateInteractions() {
+        this.interactableObjects.forEach((o, i) => {
+            o.visible = true;
+        });
+        super.updateInteractions();
+    }
+
+    get interactableObjects() {
+        //Note we don't need to include animatedPointCloud.particles because even when hidden, we can
+        // use the regular static point clouds for hit testing
+        return this.pointClouds;
+    }
+
+    setStudyCubeColor(color) {
+        this.cubeCamPos.material = this.getColoredMaterial(color, 1);
+    }
+
+    onInteraction(intersects) {
+        if (this.mouse.downEvent) {
+            let hitPoint = false;
+            intersects.forEach((hit, i) => {
+                if (hitPoint) return;
+                if (hit.point) {
+                    hitPoint = hit.point;
+                    console.log(`POINT NUM ${hit.index} dist: ${hit.distance}`);
+
+                    return false;
+                }
+            });
+            if (hitPoint) {
+                this.emit('point-hit', hitPoint);
+            }
+        }
+    }
 
     updatePoints(pointProperties) {
         this.animatedPointCloud.setProperties(pointProperties);
@@ -90,7 +127,7 @@ export default class ThreeAppFirstPerson extends ThreeApp {
             pointCloud.visible = visible && !pointCloud.userData.excluded;
         });
         this.extras.forEach((extra, i) => {
-            extra.visible = visible  && !extra.userData.excluded;
+            extra.visible = visible && !extra.userData.excluded;
         });
         this.cubeCamPos.visible = visible;
     }
@@ -101,9 +138,14 @@ export default class ThreeAppFirstPerson extends ThreeApp {
         });
     }
 
+    get mousePane() {
+        const topPaneHeight = this.size.width / this.reprojector.aspectRatio;
+        return {x: 0, y: topPaneHeight, width: this.size.width, height: this.size.height - topPaneHeight};
+    }
+
     renderScene() {
-        const bottomPaneHeight = this.size.width / this.reprojector.aspectRatio;
-        const split = 1 - bottomPaneHeight / this.size.height;
+        const topPaneHeight = this.size.width / this.reprojector.aspectRatio;
+        const split = 1 - topPaneHeight / this.size.height;
 
         // this.renderer.render(this.scene, this.camera);
         const camera = this.camera;
@@ -166,4 +208,12 @@ export default class ThreeAppFirstPerson extends ThreeApp {
         this.pointClouds.push(pointCloud);
         return pointCloud;
     }
+
+    // removePoints(points) {
+    //     const index = this.pointClouds.indexOf(points);
+    //     if (index >= 0) {
+    //         this.pointClouds.splice(index, 1);
+    //     }
+    //     this.scene.remove(points);
+    // }
 }

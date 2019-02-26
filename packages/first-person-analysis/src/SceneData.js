@@ -34,6 +34,13 @@ export default class SceneData {
     setupWatchers() {
         const {targetStore, uiStore, optionsStore, readingsStore} = this.store;
 
+        this.threeApp.on('point-hit', (point) => {
+            const index = this.findNearestPoint(point);
+            if (index >= 0) {
+                uiStore.setCurrentStudyPoint(index);
+            }
+        });
+
         autorun(() => {
             // console.log('AUTORUN '+JSON.stringify(targetStore.viewTargets))
             this.threeApp.reprojector.updateChannels(targetStore.channels);
@@ -58,6 +65,30 @@ export default class SceneData {
             // console.log('AUTORUN '+JSON.stringify(targetStore.viewTargets))
             this.setReadings(readingsStore.readingSets, uiStore.selectedReviewTarget, optionsStore.selectedOptions, uiStore.valueRampMultiplier);
         });
+
+        autorun(() => {
+            this.updateStudyPoint(uiStore.studyPoints.current, uiStore.selectedReviewTarget, uiStore.valueRampMultiplier);
+        });
+
+    }
+
+    findNearestPoint(position) {
+        const nearest = {distance: Number.MAX_VALUE, index: -1};
+        this.threeApp.studyPoints.forEach((point, i) => {
+            const dist = point.distanceTo(position);
+            if (dist < nearest.distance) {
+                nearest.distance = dist;
+                nearest.index = i;
+            }
+        });
+        return nearest.index;
+    }
+
+    updateStudyPoint(index, selectedReviewTarget, valueRampMultiplier) {
+        const {targetStore, uiStore, optionsStore, readingsStore} = this.store;
+        const viewTarget = targetStore.viewTargets[selectedReviewTarget];
+        const ramp = this.getRamp(selectedReviewTarget, valueRampMultiplier);
+        this.threeApp.setStudyCubeColor(ramp(viewTarget.currentPoint.unobstructed));
     }
 
     setViewTargets(objectsToAdd, targetId) {
@@ -68,6 +99,22 @@ export default class SceneData {
         this.store.targetStore.setTargetObjects(targetId, threeObjects);
     }
 
+    getRamp(selectedReviewTarget, valueRampMultiplier) {
+        const {targetStore} = this.store;
+        const rampColor = targetStore.viewTargets[selectedReviewTarget].color;
+
+        const positiveScale = chroma.scale([
+            '#333333',
+            chroma(rampColor).darken(1.5).hex(),
+            rampColor,
+            chroma(rampColor).brighten(1.5).hex(),
+        ]).mode('lch');
+
+        return (v) => {
+            return positiveScale((v / 2000) * valueRampMultiplier).hex();
+        };
+    }
+
     setReadings(readingSets, selectedReviewTarget, selectedOptions, valueRampMultiplier) {
         const pointProperties = [];
         const {targetStore, uiStore, optionsStore, readingsStore} = this.store;
@@ -76,17 +123,7 @@ export default class SceneData {
 
         const selectedOption = selectedOptions[0];
 
-        const positiveScale = chroma.scale([
-            '#f1fffd',
-            '#a4e2ff',
-            '#006eff',
-            '#272d4e',
-        ]).mode('lch');
-
-        const ramp = (v) => {
-            return positiveScale((v / 2000) * valueRampMultiplier).hex();
-
-        };
+        const ramp = this.getRamp(selectedReviewTarget, valueRampMultiplier);
 
         Object.keys(readingSets).forEach((k) => {
             if (k !== selectedOption) return;
@@ -178,9 +215,11 @@ export default class SceneData {
     addPolyOffsets() {
         const {offset, spacing} = this.store.uiStore.pointOptions;
 
+        console.log('# polyOffsets: ' + this.polyOffsets.length);
         this.polyOffsets.forEach((polyOffset, i) => {
             if (!polyOffset.pointsAdded) {
                 const offsetPoints = polyOffset.calculateOffsetPoints(offset, spacing);
+                offsetPoints.pop();//last point is a duplicate of the first
                 const pointCloud = this.threeApp.addPoints(offsetPoints.map((pt) => {
                     return [pt[0], pt[1], polyOffset.zPos + this.zOffset];
                 }));
@@ -215,6 +254,7 @@ export default class SceneData {
     clearPoints() {
         this.threeApp.removeObjects(this.studyPointClouds);
         this.threeApp.studyPoints.length = 0;
+        this.threeApp.pointClouds.length = 0;
         this.studyPointClouds.length = 0;
     }
 

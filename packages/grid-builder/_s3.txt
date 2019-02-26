@@ -1,0 +1,2 @@
+http://misc-tools.s3-website-us-east-1.amazonaws.com/testbed/grid-builder/
+aws s3 sync "build" s3://misc-tools/testbed/grid-builder --dryrun

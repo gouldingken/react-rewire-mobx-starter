@@ -85,6 +85,7 @@ export default class UiStore {
     setValueRampMultiplier(val) {
         this.valueRampMultiplier = val;
     }
+
 }
 
 
@@ -99,6 +100,7 @@ decorate(UiStore, {
     targetChartMax: observable,
     pointOptions: observable,
     setCurrentStudyPoint: action,
+    selectNearestStudyPoint: action,
     setStudyPointCount: action,
     togglePanelCollapsed: action,
     setIsPlaying: action,

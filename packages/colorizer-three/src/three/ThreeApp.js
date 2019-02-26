@@ -471,18 +471,24 @@ export default class ThreeApp extends Emitter {
         this.renderer.render(this.scene, this.camera);
     }
 
-    enableMouseInteraction() {
+    enableMouseInteraction(pointHitThreshold = 5) {
         this.raycaster = new Raycaster();
+        this.raycaster.params.Points.threshold = pointHitThreshold;
 
         document.addEventListener('mousemove', (e) => this.onDocumentMouseMove(e), false);
         document.addEventListener('mousedown', (e) => this.onDocumentMouseDown(e), false);
     }
 
+    get mousePane() {
+        return {x: 0, y: 0, width: this.size.width, height: this.size.height};
+    }
+
     onDocumentMouseMove(event) {
         event.preventDefault();
 
-        this.mouse.x = (event.offsetX / this.size.width) * 2 - 1;
-        this.mouse.y = -(event.offsetY / this.size.height) * 2 + 1;
+        const mPane = this.mousePane;
+        this.mouse.x = ((event.offsetX - mPane.x) / mPane.width) * 2 - 1;
+        this.mouse.y = -((event.offsetY - mPane.y) / mPane.height) * 2 + 1;
 
     }
 
@@ -493,11 +499,16 @@ export default class ThreeApp extends Emitter {
 
     }
 
+    get interactableObjects() {
+        return this.scene.children;
+    }
+
     updateInteractions() {
         if (!this.raycaster) return;
         this.raycaster.setFromCamera(this.mouse, this.camera);
+        // console.log(this.mouse);
 
-        const intersects = this.raycaster.intersectObjects(this.scene.children);
+        const intersects = this.raycaster.intersectObjects(this.interactableObjects);
 
         if (intersects.length > 0) {
             this.onInteraction(intersects);

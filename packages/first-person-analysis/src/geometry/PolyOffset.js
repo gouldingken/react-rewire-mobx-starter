@@ -1,5 +1,5 @@
 const Offset = require('polygon-offset');
-var interpolateLineRange = require( 'line-interpolate-points' )
+const interpolateLineRange = require('line-interpolate-points');
 
 /**
  * Creates a new instance of PolyOffset.
@@ -35,9 +35,31 @@ export default class PolyOffset {
         const offset2d = new Offset(null, 3);
         const loopPoints = this.points2d.slice(0);
         loopPoints.push(this.points2d[0]);//uses repetition to define closed or not...
-        const points =  offset2d.data(loopPoints).margin(offsetAmount)[0];//.offsetLine(offsetAmount);
+        const points = offset2d.data(loopPoints).margin(offsetAmount)[0];//.offsetLine(offsetAmount);
+        let perimeter = 0;
+        for (let i = 0; i < points.length - 1; i++) {
+            const point1 = points[i];
+            const point2 = points[i + 1];
+            perimeter += PolyOffset.distance(point1, point2);
+        }
+        const numPoints = Math.round(perimeter / intervalSpacing);
         // return points;
-        return interpolateLineRange(points, 500, 0, intervalSpacing);
+        return interpolateLineRange(points, numPoints, 0);
+        //if last point and first point are closer than tolerance, remove last point
+        // if (pointRing.length > 3) {
+        //     //Note that last point and first point are duplicates of each other, so we must look at penultimate point
+        //     if (PolyOffset.distance(pointRing[0], pointRing[pointRing.length - 2]) < intervalSpacing * 0.1) {
+        //         pointRing.splice(-2, 1);
+        //     }
+        // }
+        // return pointRing;
+    }
+
+    static distance(pt1, pt2) {
+        const a = pt1[0] - pt2[0];
+        const b = pt1[1] - pt2[1];
+
+        return Math.sqrt(a * a + b * b);
     }
 
     static test() {

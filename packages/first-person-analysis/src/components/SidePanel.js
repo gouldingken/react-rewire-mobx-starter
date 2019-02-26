@@ -9,6 +9,7 @@ import {If} from "sasaki-core";
 import TargetBars from "./TargetBars";
 import ComparePane from "./ComparePane";
 import LineChart from "./charts/LineChart";
+import Slider from 'react-rangeslider'
 
 export default class SidePanel extends React.Component {
     constructor(props) {
@@ -46,18 +47,27 @@ export default class SidePanel extends React.Component {
                             <button className={'action-btn'}
                                     onClick={event => store.sceneData.clearStudyPoints()}>Clear
                             </button>
-                            <RangeInput label={'Spacing'} min={3} max={20} step={1}
-                                        value={store.uiStore.pointOptions.spacing}
-                                        onChange={(value) => {
-                                            store.uiStore.setPointOptions({spacing: value});
-                                            console.log('Spacing: ', value);
-                                        }}/>
-                            <RangeInput label={'Offset'} min={0.1} max={2} step={0.1}
-                                        value={store.uiStore.pointOptions.offset}
-                                        onChange={(value) => {
-                                            console.log('Offset: ', value);
-                                            store.uiStore.setPointOptions({offset: value});
-                                        }}/>
+                            <div className={'slider-label'}>Spacing: {store.uiStore.pointOptions.spacing}</div>
+                            <Slider
+                                min={3}
+                                max={20}
+                                step={1}
+                                value={store.uiStore.pointOptions.spacing}
+                                onChange={(v) => {
+                                    store.uiStore.setPointOptions({spacing: v});
+                                }}
+                            />
+                            <div className={'slider-label'}>Offset: {store.uiStore.pointOptions.offset}</div>
+                            <Slider
+                                min={0.1}
+                                max={2}
+                                step={0.1}
+                                value={store.uiStore.pointOptions.offset}
+                                onChange={(v) => {
+                                    const nearest = Math.round(v * 10) / 10;//prevent floating point weirdness
+                                    store.uiStore.setPointOptions({offset: nearest});
+                                }}
+                            />
                             <button className={'action-btn'}
                                     onClick={event => store.sceneData.updatePoints()}>Update Points
                             </button>
@@ -102,19 +112,17 @@ export default class SidePanel extends React.Component {
                                     {store.readingsStore.readingsCount} result generated out
                                     of {store.uiStore.studyPoints.count}
                                 </div>
-                                <If true={store.uiStore.mode === 'analyze' || store.uiStore.mode === 'compare'}>
-                                    <button className={'action-btn'}
-                                            onClick={event => store.uiStore.setIsPlaying(true)}>Run
-                                    </button>
-                                    <button className={'action-btn'}
-                                            onClick={event => store.uiStore.setIsPlaying(false)}>Pause
-                                    </button>
-                                    <button className={'action-btn'} onClick={event => {
-                                        store.uiStore.setCurrentStudyPoint(0);
-                                        store.uiStore.setIsPlaying(false)
-                                    }}>Reset
-                                    </button>
-                                </If>
+                                <button className={'action-btn'}
+                                        onClick={event => store.uiStore.setIsPlaying(true)}>Run
+                                </button>
+                                <button className={'action-btn'}
+                                        onClick={event => store.uiStore.setIsPlaying(false)}>Pause
+                                </button>
+                                <button className={'action-btn'} onClick={event => {
+                                    store.uiStore.setCurrentStudyPoint(0);
+                                    store.uiStore.setIsPlaying(false)
+                                }}>Reset
+                                </button>
                             </If>
                         </div>
                         <div>
@@ -159,9 +167,16 @@ class ReviewChart extends React.Component {
         });
 
 
-        const shift = (amt) => {
+        const shift = (e, amt) => {
             if (selectedMetaData.length === 0) return;
-            selectedIndex += amt;
+            let n = amt;
+            if (e.ctrlKey) {
+                n *= 10;
+            }
+            if (e.shiftKey) {
+                n *= 10;
+            }
+            selectedIndex += n;
             selectedIndex = Math.max(0, Math.min(selectedIndex, selectedMetaData.length - 1));
             store.uiStore.setCurrentStudyPoint(selectedMetaData[selectedIndex].idx);
         };
@@ -177,10 +192,10 @@ class ReviewChart extends React.Component {
                     />
                 </div>
                 <button className={'action-btn'}
-                        onClick={event => shift(-1)}>Up
+                        onClick={e => shift(e,-1)}>Up
                 </button>
                 <button className={'action-btn'}
-                        onClick={event => shift(1)}>Down
+                        onClick={e => shift(e,1)}>Down
                 </button>
             </div>
         );
