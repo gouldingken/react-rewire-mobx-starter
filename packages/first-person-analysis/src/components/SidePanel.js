@@ -149,24 +149,38 @@ class ReviewChart extends React.Component {
         if (store.optionsStore.selectedOptions.length === 1) {
             selectedOption = store.optionsStore.selectedOptions[0];
         }
+        let selectedMetaData = [];
+        let structuredChartData = ComparePane.structureChartData(optionData, store.uiStore.studyPoints.current);
+        let selectedIndex = -1;
+        structuredChartData.forEach((series, i) => {
+            if (selectedOption !== series.id) return;
+            selectedMetaData = series.metaData;
+            selectedIndex = series.selectedX;
+        });
+
+
+        const shift = (amt) => {
+            if (selectedMetaData.length === 0) return;
+            selectedIndex += amt;
+            selectedIndex = Math.max(0, Math.min(selectedIndex, selectedMetaData.length - 1));
+            store.uiStore.setCurrentStudyPoint(selectedMetaData[selectedIndex].idx);
+        };
 
         return (
             <div className={'compare-group'}>
-                <div
-                    style={{
-                        width: width,
-                        height: "300px"
-                    }}
-                >
+                <div style={{width: width, height: "300px"}}>
                     <LineChart
                         width={width}
                         background={'#ffffff'}
                         selectedSeriesId={selectedOption}
-                        data={ComparePane.structureChartData(optionData, store.uiStore.studyPoints.current)}
+                        data={structuredChartData}
                     />
                 </div>
                 <button className={'action-btn'}
-                        onClick={event => store.uiStore.TODO()}>Scan
+                        onClick={event => shift(-1)}>Up
+                </button>
+                <button className={'action-btn'}
+                        onClick={event => shift(1)}>Down
                 </button>
             </div>
         );

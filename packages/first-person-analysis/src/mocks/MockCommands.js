@@ -18,6 +18,7 @@ export default class MockCommands {
 
     addAll() {
         this.store.optionsStore.addOption();
+        this.store.uiStore.pointOptions.spacing = 20;
         //generated from 'puts js_command' in send_response_to_view in SpeckleView
 
         //View Targets

@@ -24,15 +24,24 @@ export default class ComparePane extends React.Component {
         const chartData = [];
         optionData.forEach((optionDatum, i) => {
             const chartXYs = [];
+            const metaData = [];
             let selectedX = -1;
             optionDatum.unobstructedPoints.forEach((p, i) => {
                 if (selectedIndex != null && p.i === selectedIndex) {
                     selectedX = i;
                 }
+                metaData.push({idx: p.i});
                 chartXYs.push([i, p.v]);
             });
             let option = optionDatum.option;
-            chartData.push({label: option.name, id:option.key, color: option.chartColor, data: chartXYs, selectedX:selectedX});
+            chartData.push({
+                label: option.name,
+                id: option.key,
+                color: option.chartColor,
+                data: chartXYs,
+                metaData: metaData,
+                selectedX: selectedX
+            });
         });
         return chartData;
     }
