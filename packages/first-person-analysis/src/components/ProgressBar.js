@@ -10,8 +10,13 @@ export default class ProgressBar extends React.Component {
     render() {
         const {fullWidth, total, progress, color} = this.props;
 
-        const perc = Math.round(100 * progress / total);
-        const fillW = fullWidth * progress / total;
+        let perc = 0;
+        let fillW = 0;
+        if (total > 0) {
+            perc = Math.round(100 * progress / total);
+            fillW = fullWidth * progress / total;
+        }
+
         return (
             <div className="ProgressBar">
                 <If true={progress > 0}>

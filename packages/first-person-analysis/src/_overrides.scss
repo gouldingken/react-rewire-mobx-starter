@@ -1,0 +1,7 @@
+//NOTE that this gets loaded AFTER the imports for components
+
+//overrider for Slider from "react-rangeslider" repo
+.rangeslider-horizontal .rangeslider__handle {
+  width: 28px !important;
+  height: 28px !important;
+}
