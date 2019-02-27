@@ -39,7 +39,7 @@ export default class ThreeAppFirstPerson extends ThreeApp {
 
         this.dataHandler.initialize(this);
 
-        this.enableMouseInteraction(2);
+        this.enableMouseInteraction(4);
     };
 
     updateInteractions() {

@@ -63,7 +63,7 @@ export default class SceneData {
 
         autorun(() => {
             // console.log('AUTORUN '+JSON.stringify(targetStore.viewTargets))
-            this.setReadings(readingsStore.readingSets, uiStore.selectedReviewTarget, optionsStore.selectedOptions, uiStore.valueRampMultiplier);
+            this.setReadings(uiStore.mode, readingsStore.readingSets, uiStore.selectedReviewTarget, optionsStore.selectedOptions, uiStore.valueRampMultiplier);
         });
 
         autorun(() => {
@@ -115,7 +115,8 @@ export default class SceneData {
         };
     }
 
-    setReadings(readingSets, selectedReviewTarget, selectedOptions, valueRampMultiplier) {
+    setReadings(mode, readingSets, selectedReviewTarget, selectedOptions, valueRampMultiplier) {
+        if (mode !== 'review') return;//optimization since we can't see the point cloud
         const pointProperties = [];
         const {targetStore, uiStore, optionsStore, readingsStore} = this.store;
 
@@ -203,6 +204,8 @@ export default class SceneData {
 
         this.addPolyOffsets();
 
+        //TODO support studyPoints from different options
+        //filter the studyPoints array for current scenarios only (and keep the active array on SceneData rather than ThreeApp...)
         this.store.uiStore.setStudyPointCount(this.threeApp.studyPoints.length);
     }
 
@@ -219,6 +222,7 @@ export default class SceneData {
         this.polyOffsets.forEach((polyOffset, i) => {
             if (!polyOffset.pointsAdded) {
                 const offsetPoints = polyOffset.calculateOffsetPoints(offset, spacing);
+                if (!offsetPoints) return;
                 offsetPoints.pop();//last point is a duplicate of the first
                 const pointCloud = this.threeApp.addPoints(offsetPoints.map((pt) => {
                     return [pt[0], pt[1], polyOffset.zPos + this.zOffset];

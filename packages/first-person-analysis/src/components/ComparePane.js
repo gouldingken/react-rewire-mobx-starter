@@ -23,6 +23,7 @@ export default class ComparePane extends React.Component {
     static structureChartData(optionData, selectedIndex) {
         const chartData = [];
         optionData.forEach((optionDatum, i) => {
+            if (!optionDatum.unobstructedPoints) return;
             const chartXYs = [];
             const metaData = [];
             let selectedX = -1;

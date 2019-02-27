@@ -33,8 +33,13 @@ export default class PolyOffset {
 
     calculateOffsetPoints(offsetAmount, intervalSpacing) {
         const offset2d = new Offset(null, 3);
-        const loopPoints = this.points2d.slice(0);
+        const loopPoints = this.points2d.slice(0);//clone
+        if (loopPoints.length < 3) {
+            return null;
+        }
         loopPoints.push(this.points2d[0]);//uses repetition to define closed or not...
+
+        console.log('loopPoints: '+loopPoints.length);
         const points = offset2d.data(loopPoints).margin(offsetAmount)[0];//.offsetLine(offsetAmount);
         let perimeter = 0;
         for (let i = 0; i < points.length - 1; i++) {

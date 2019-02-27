@@ -88,6 +88,19 @@ export default class SidePanel extends React.Component {
                         <CollapsiblePane store={store} title={'Charts'} panelId={'charts'}>
                             <ReviewChart store={store} width={270}/>
                         </CollapsiblePane>
+                        <CollapsiblePane store={store} title={'Color Ramp'} panelId={'color-ramp'}>
+                            <div className={'slider-label'}>Intensity: {store.uiStore.valueRampMultiplier}</div>
+                            <Slider
+                                min={0.1}
+                                max={4}
+                                step={0.1}
+                                value={store.uiStore.valueRampMultiplier}
+                                onChange={(v) => {
+                                    const nearest = Math.round(v * 10) / 10;//prevent floating point weirdness
+                                    store.uiStore.setValueRampMultiplier(nearest);
+                                }}
+                            />
+                        </CollapsiblePane>
                     </If>
                     <CollapsiblePane store={store} title={'View Blockers'} panelId={'blockers'}>
                         <If true={store.uiStore.mode === 'analyze'}>
