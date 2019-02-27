@@ -18,6 +18,9 @@ export default class Interop {
     UpdateObjects(response, command, params) {
         const objectsToAdd = [];
         response.resources.forEach((resource, i) => {
+            if (command === 'view') {
+                this.sceneData.setCameraView(resource);
+            }
             if (command === 'mesh') {
                 const mesh = this.speckleData.getMesh(resource);
                 if (mesh) {
@@ -36,12 +39,14 @@ export default class Interop {
                 }
             }
         });
-        if (params.mode === 'target') {
-            this.sceneData.setViewTargets(objectsToAdd, params.targetId);
-        } else if (params.mode === 'blocker') {
-            this.sceneData.setViewBlockers(objectsToAdd);
-        } else {
-            this.sceneData.updateObjects(objectsToAdd, command);
+        if (command !== 'view') {
+            if (params.mode === 'target') {
+                this.sceneData.setViewTargets(objectsToAdd, params.targetId);
+            } else if (params.mode === 'blocker') {
+                this.sceneData.setViewBlockers(objectsToAdd);
+            } else {
+                this.sceneData.updateObjects(objectsToAdd, command);
+            }
         }
         // this.sceneData.updateObjects(objectsToAdd);
 

@@ -21,7 +21,7 @@ export default class UiStore {
 
     targetChartMultiplier =  1 / ReadingsStore.sunAreaOfFullSphere;
     targetChartMax = 5000;
-    pointOptions = {spacing: 10, offset: 1};
+    pointOptions = {spacing: 25, offset: 1};
 
     constructor() {
     };

@@ -1,0 +1,43 @@
+@import "../core";
+
+.ProgressBar {
+  position: relative;
+  margin-top: 6px;
+  height: 16px;
+
+  $percentW: 47px;
+
+  .percent {
+    @include h4;
+    font-size: 0.85em;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: $percentW;
+  }
+
+  .bar {
+    position: absolute;
+    left: $percentW;
+    top: 3px;
+
+    .bar-bg {
+      position: absolute;
+      background: #ffc2fc;
+      left: 0;
+      top: 1px;
+      width: 20px; //set by code
+      height: 9px;
+    }
+
+    .bar-outline {
+      position: absolute;
+      //background: rgba(0, 0, 0, 0.2);
+      border: 1px solid $dk-grey;
+      left: 0;
+      top: 0;
+      width: 20px; //set by code
+      height: 8px;
+    }
+  }
+}

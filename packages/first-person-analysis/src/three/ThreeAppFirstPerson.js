@@ -10,6 +10,7 @@ import ViewDataReader from "./projections/ViewDataReader";
 import CubemapReprojector from "./projections/CubemapReprojector";
 import {BoxGeometry, Matrix4, Mesh, Vector3} from "three-full";
 import AnimatedParticles from "./AnimatedParticles";
+import ViewsDataHandler from "../ViewsDataHandler";
 
 export default class ThreeAppFirstPerson extends ThreeApp {
 
@@ -20,7 +21,6 @@ export default class ThreeAppFirstPerson extends ThreeApp {
             channel2: '#d16cff',
             channel3: '#50d0d3',
         };
-        this.studyPoints = [];
         this.pointClouds = [];
         this.extras = [];
 
@@ -33,7 +33,7 @@ export default class ThreeAppFirstPerson extends ThreeApp {
         this.viewDataReader = new ViewDataReader(this.scene, this.reprojector);
 
 
-        this.animatedPointCloud = new AnimatedParticles(10000);//TODO dynamic points length??
+        this.animatedPointCloud = new AnimatedParticles(ViewsDataHandler.ANIMATED_POINTS_COUNT);
         let animatePointCloudObject = this.animatedPointCloud.getObject();
         this.addToScene(animatePointCloudObject);
 
@@ -99,14 +99,7 @@ export default class ThreeAppFirstPerson extends ThreeApp {
     }
 
     nextStudyPos() {
-        if (this.studyPoints.length > 0) {
-            const index = this.dataHandler.updateStudyPos();
-            if (this.studyPoints[index]) {
-                return this.studyPoints[index];
-            }
-        }
-        return new Vector3();
-        // return new Vector3(10, 5 + 5 * Math.sin(this.incrementor / 100), 10);
+        return this.dataHandler.nextStudyPos();
     }
 
     getStudyPos() {
@@ -200,13 +193,14 @@ export default class ThreeAppFirstPerson extends ThreeApp {
         const pointCloud = super.addPoints(points);
         const axis = new Vector3(1, 0, 0);
         const angle = -Math.PI / 2;
+        const v3Arr = [];
         points.forEach((pt, i) => {
             const v = new Vector3(pt[0], pt[1], pt[2]);
             v.applyAxisAngle(axis, angle);
-            this.studyPoints.push(v);
+            v3Arr.push(v);
         });
         this.pointClouds.push(pointCloud);
-        return pointCloud;
+        return {pointCloud:pointCloud, points:v3Arr};
     }
 
     // removePoints(points) {

@@ -10,6 +10,7 @@ import TargetBars from "./TargetBars";
 import ComparePane from "./ComparePane";
 import LineChart from "./charts/LineChart";
 import Slider from 'react-rangeslider'
+import ProgressBar from "./ProgressBar";
 
 export default class SidePanel extends React.Component {
     constructor(props) {
@@ -36,6 +37,9 @@ export default class SidePanel extends React.Component {
                             <label><input type="radio" name="mode" checked={store.uiStore.mode === 'compare'}
                                           onClick={() => store.uiStore.setMode('compare')}/>Compare</label>
                         </div>
+                        {/*<button className={'action-btn'}*/}
+                        {/*onClick={event => sketchup.getActiveView()}>Get View*/}
+                        {/*</button>*/}
                     </CollapsiblePane>
                     <CollapsiblePane store={store} title={'Study Points'} panelId={'points'}>
                         <div className={'label'}>Current Point</div>
@@ -48,28 +52,23 @@ export default class SidePanel extends React.Component {
                                     onClick={event => store.sceneData.clearStudyPoints()}>Clear
                             </button>
                             <div className={'slider-label'}>Spacing: {store.uiStore.pointOptions.spacing}</div>
-                            <Slider
-                                min={3}
-                                max={20}
-                                step={1}
-                                value={store.uiStore.pointOptions.spacing}
-                                onChange={(v) => {
-                                    store.uiStore.setPointOptions({spacing: v});
-                                }}
+                            <Slider min={3} max={30} step={1} value={store.uiStore.pointOptions.spacing}
+                                    onChange={(v) => {
+                                        store.uiStore.setPointOptions({spacing: v});
+                                    }}
                             />
                             <div className={'slider-label'}>Offset: {store.uiStore.pointOptions.offset}</div>
-                            <Slider
-                                min={0.1}
-                                max={2}
-                                step={0.1}
-                                value={store.uiStore.pointOptions.offset}
-                                onChange={(v) => {
-                                    const nearest = Math.round(v * 10) / 10;//prevent floating point weirdness
-                                    store.uiStore.setPointOptions({offset: nearest});
-                                }}
+                            <Slider min={0.1} max={2} step={0.1} value={store.uiStore.pointOptions.offset}
+                                    onChange={(v) => {
+                                        const nearest = Math.round(v * 10) / 10;//prevent floating point weirdness
+                                        store.uiStore.setPointOptions({offset: nearest});
+                                    }}
                             />
                             <button className={'action-btn'}
                                     onClick={event => store.sceneData.updatePoints()}>Update Points
+                            </button>
+                            <button className={'action-btn'}
+                                    onClick={event => store.sceneData.centerView()}>Center View
                             </button>
                         </If>
                     </CollapsiblePane>
@@ -90,15 +89,11 @@ export default class SidePanel extends React.Component {
                         </CollapsiblePane>
                         <CollapsiblePane store={store} title={'Color Ramp'} panelId={'color-ramp'}>
                             <div className={'slider-label'}>Intensity: {store.uiStore.valueRampMultiplier}</div>
-                            <Slider
-                                min={0.1}
-                                max={4}
-                                step={0.1}
-                                value={store.uiStore.valueRampMultiplier}
-                                onChange={(v) => {
-                                    const nearest = Math.round(v * 10) / 10;//prevent floating point weirdness
-                                    store.uiStore.setValueRampMultiplier(nearest);
-                                }}
+                            <Slider min={0.1} max={4} step={0.1} value={store.uiStore.valueRampMultiplier}
+                                    onChange={(v) => {
+                                        const nearest = Math.round(v * 10) / 10;//prevent floating point weirdness
+                                        store.uiStore.setValueRampMultiplier(nearest);
+                                    }}
                             />
                         </CollapsiblePane>
                     </If>
@@ -120,22 +115,26 @@ export default class SidePanel extends React.Component {
                                 Multiple Options Selected
                             </If>
                             <If true={store.optionsStore.selectedOptions.length === 1}>
+                                <div>{store.optionsStore.getOption(store.optionsStore.selectedOptions[0]).name}</div>
                                 <div>
-                                    {store.optionsStore.getOption(store.optionsStore.selectedOptions[0]).name}:
                                     {store.readingsStore.readingsCount} result generated out
                                     of {store.uiStore.studyPoints.count}
                                 </div>
-                                <button className={'action-btn'}
-                                        onClick={event => store.uiStore.setIsPlaying(true)}>Run
-                                </button>
-                                <button className={'action-btn'}
-                                        onClick={event => store.uiStore.setIsPlaying(false)}>Pause
-                                </button>
-                                <button className={'action-btn'} onClick={event => {
-                                    store.uiStore.setCurrentStudyPoint(0);
-                                    store.uiStore.setIsPlaying(false)
-                                }}>Reset
-                                </button>
+                                <ProgressBar color={'#666666'} fullWidth={200} total={store.uiStore.studyPoints.count}
+                                             progress={store.readingsStore.readingsCount}/>
+                                <div style={{marginTop: 8}}>
+                                    <button className={'action-btn'}
+                                            onClick={event => store.uiStore.setIsPlaying(true)}>Run
+                                    </button>
+                                    <button className={'action-btn'}
+                                            onClick={event => store.uiStore.setIsPlaying(false)}>Pause
+                                    </button>
+                                    <button className={'action-btn'} onClick={event => {
+                                        store.uiStore.setCurrentStudyPoint(0);
+                                        store.uiStore.setIsPlaying(false)
+                                    }}>Reset
+                                    </button>
+                                </div>
                             </If>
                         </div>
                         <div>
@@ -205,10 +204,10 @@ class ReviewChart extends React.Component {
                     />
                 </div>
                 <button className={'action-btn'}
-                        onClick={e => shift(e,-1)}>Up
+                        onClick={e => shift(e, -1)}>Up
                 </button>
                 <button className={'action-btn'}
-                        onClick={e => shift(e,1)}>Down
+                        onClick={e => shift(e, 1)}>Down
                 </button>
             </div>
         );

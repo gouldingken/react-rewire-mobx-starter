@@ -431,6 +431,17 @@ export default class ThreeApp extends Emitter {
         this.controls.update();
     }
 
+    setCameraPos(position, target, up, fov) {
+        this.camera.fov = fov;
+        this.camera.position.set(position[0], position[1], position[2]);
+        console.log(position);
+        // console.log(this.camera);
+        // this.camera.rotation.set(savedState.rotation._x, savedState.rotation._y, savedState.rotation._z);
+
+        this.controls.center.set(target[0], target[1], target[2]);
+        this.controls.update();
+    }
+
     start() {
         if (!this.frameId) {
             this.frameId = requestAnimationFrame(this.animate.bind(this))

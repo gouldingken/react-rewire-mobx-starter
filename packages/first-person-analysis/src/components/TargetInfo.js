@@ -20,7 +20,7 @@ export default class TargetInfo extends React.Component {
 
         let className = 'TargetInfo';
 
-        if (store.uiStore.mode === 'review' && store.uiStore.selectedReviewTarget === targetId) {
+        if (store.uiStore.selectedReviewTarget === targetId) {//store.uiStore.mode === 'review' &&
             className += ' selected';
         }
 

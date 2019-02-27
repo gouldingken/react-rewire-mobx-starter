@@ -1,7 +1,9 @@
 import {autorun} from "mobx";
 import PolyOffset from "./geometry/PolyOffset";
 import ReadingsStore from "./store/ReadingsStore";
+import ViewsDataHandler from "./ViewsDataHandler";
 import * as chroma from 'chroma-js';
+import {Vector3} from "three-full";
 
 /**
  * Creates a new instance of SceneData.
@@ -20,9 +22,11 @@ export default class SceneData {
         this.zOffset = 6;
         this.viewBlockers = [];
         this.studyPointClouds = [];
+        this.studyPointSets = [];
         this.studyPointPaths = [];
         this.optionsObjects = [];
         this.controlledObjects = [];
+        this.lastPickedPoint = null;
 
         this.dataHandler.on('ThreeAppReady', (threeApp) => {
             this.threeApp = threeApp;
@@ -35,7 +39,8 @@ export default class SceneData {
         const {targetStore, uiStore, optionsStore, readingsStore} = this.store;
 
         this.threeApp.on('point-hit', (point) => {
-            const index = this.findNearestPoint(point);
+            this.lastPickedPoint = point;
+            const index = this.dataHandler.findNearestPoint(point);
             if (index >= 0) {
                 uiStore.setCurrentStudyPoint(index);
             }
@@ -72,23 +77,13 @@ export default class SceneData {
 
     }
 
-    findNearestPoint(position) {
-        const nearest = {distance: Number.MAX_VALUE, index: -1};
-        this.threeApp.studyPoints.forEach((point, i) => {
-            const dist = point.distanceTo(position);
-            if (dist < nearest.distance) {
-                nearest.distance = dist;
-                nearest.index = i;
-            }
-        });
-        return nearest.index;
-    }
 
     updateStudyPoint(index, selectedReviewTarget, valueRampMultiplier) {
         const {targetStore, uiStore, optionsStore, readingsStore} = this.store;
         const viewTarget = targetStore.viewTargets[selectedReviewTarget];
         const ramp = this.getRamp(selectedReviewTarget, valueRampMultiplier);
         this.threeApp.setStudyCubeColor(ramp(viewTarget.currentPoint.unobstructed));
+        console.log(this.threeApp.getStudyPos());
     }
 
     setViewTargets(objectsToAdd, targetId) {
@@ -149,6 +144,17 @@ export default class SceneData {
             });
 
         });
+        while (pointProperties.length < ViewsDataHandler.ANIMATED_POINTS_COUNT) {
+            pointProperties.push({
+                'x': 0,
+                'y': 0,
+                'z': 0,
+                'a': 0,
+                'color': '#00000',
+                'size': 1,
+            });
+        }
+
         this.threeApp.updatePoints(pointProperties);
     }
 
@@ -203,10 +209,6 @@ export default class SceneData {
         }
 
         this.addPolyOffsets();
-
-        //TODO support studyPoints from different options
-        //filter the studyPoints array for current scenarios only (and keep the active array on SceneData rather than ThreeApp...)
-        this.store.uiStore.setStudyPointCount(this.threeApp.studyPoints.length);
     }
 
     addOutline(outline) {
@@ -218,21 +220,25 @@ export default class SceneData {
     addPolyOffsets() {
         const {offset, spacing} = this.store.uiStore.pointOptions;
 
+        this.studyPointSets.length = 0;
         console.log('# polyOffsets: ' + this.polyOffsets.length);
         this.polyOffsets.forEach((polyOffset, i) => {
             if (!polyOffset.pointsAdded) {
                 const offsetPoints = polyOffset.calculateOffsetPoints(offset, spacing);
                 if (!offsetPoints) return;
                 offsetPoints.pop();//last point is a duplicate of the first
-                const pointCloud = this.threeApp.addPoints(offsetPoints.map((pt) => {
+                const {pointCloud, points} = this.threeApp.addPoints(offsetPoints.map((pt) => {
                     return [pt[0], pt[1], polyOffset.zPos + this.zOffset];
                 }));
+                this.studyPointSets.push({points: points, options: polyOffset.options});
                 pointCloud.userData.options = polyOffset.options;
                 this.addOptionObject(pointCloud);
                 this.studyPointClouds.push(pointCloud);
                 polyOffset.pointsAdded = true;
             }
         });
+
+        this.updateActiveStudyPoints(this.store.optionsStore.selectedOptions);
     }
 
     updatePoints() {
@@ -241,8 +247,6 @@ export default class SceneData {
             polyOffset.pointsAdded = false;
         });
         this.addPolyOffsets();
-        this.store.uiStore.setStudyPointCount(this.threeApp.studyPoints.length);
-        this.store.readingsStore.reset();
     }
 
     clearStudyPoints() {
@@ -252,19 +256,38 @@ export default class SceneData {
 
         this.threeApp.removeObjects(this.studyPointPaths);
         this.studyPointPaths.length = 0;
-        this.store.uiStore.setStudyPointCount(this.threeApp.studyPoints.length);
+        // this.store.uiStore.setStudyPointCount(this.activeStudyPoints.length);
     }
 
     clearPoints() {
         this.threeApp.removeObjects(this.studyPointClouds);
-        this.threeApp.studyPoints.length = 0;
+        // this.activeStudyPoints.length = 0;
         this.threeApp.pointClouds.length = 0;
         this.studyPointClouds.length = 0;
+        this.updateActiveStudyPoints([]);
     }
 
     clearViewBlockers() {
         this.threeApp.removeObjects(this.viewBlockers);
         this.viewBlockers.length = 0;
+    }
+
+    setCameraView(camera) {
+        // const example = {
+        //     "eye": [-2317.502253000506, 67889.3669697359, 12554.280586923],
+        //     "target": [25676.671238304432, 31970.13494484759, -3213.8691468145475],
+        //     "up": [0.20113160968421956, -0.25807130751799795, 0.9449578169536383],
+        //     "fov": 35,
+        //     "type": "Camera",
+        // };
+        // console.log(JSON.stringify(camera));
+        this.threeApp.setCameraPos(camera.eye, camera.target, camera.up, camera.fov);
+    }
+
+
+    centerView() {
+        const studyPos = this.threeApp.getStudyPos();
+        this.threeApp.setCameraPos([studyPos.x, studyPos.y + 300, studyPos.z + 200], [studyPos.x, studyPos.y, studyPos.z], [0, 0, 1], 90);
     }
 
     setViewBlockers(objectsToAdd) {
@@ -290,17 +313,28 @@ export default class SceneData {
         });
     }
 
-    setOptionVisibility(selectedOptions) {
-        this.optionsObjects.forEach((o, i) => {
-            if (o.userData.options) {
-                let include = false;
-                selectedOptions.forEach((option, i) => {
-                    if (o.userData.options.indexOf(option) >= 0) {
-                        include = true;
-                    }
-                });
-                o.userData.hiddenByOption = !include;
+    updateActiveStudyPoints(selectedOptions) {
+        const activeStudyPoints = [];
+        this.studyPointSets.forEach((studyPoints, i) => {
+            if (SceneData.optionsMatch(studyPoints.options, selectedOptions)) {
+                [].push.apply(activeStudyPoints, studyPoints.points)
             }
+        });
+        this.dataHandler.setActiveStudyPoints(activeStudyPoints);
+
+        if (this.lastPickedPoint) {
+            const index = this.dataHandler.findNearestPoint(this.lastPickedPoint);
+            if (index >= 0) {
+                this.store.uiStore.setCurrentStudyPoint(index);
+            }
+        }
+    }
+
+    setOptionVisibility(selectedOptions) {
+        this.updateActiveStudyPoints(selectedOptions);
+
+        this.optionsObjects.forEach((o, i) => {
+            o.userData.hiddenByOption = !SceneData.optionsMatch(o.userData.options, selectedOptions);
         });
         this.setVisibility();
     }
@@ -309,4 +343,16 @@ export default class SceneData {
         this.optionsObjects.push(obj);
         this.controlledObjects.push(obj);
     }
+
+    static optionsMatch(options, selectedOptions) {
+        if (!options) return false;
+        let match = false;
+        selectedOptions.forEach((option, i) => {
+            if (options.indexOf(option) >= 0) {
+                match = true;
+            }
+        });
+        return match;
+    }
+
 }
