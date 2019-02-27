@@ -839,10 +839,10 @@
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
-"@sasaki-dev/design-system@^2.1.1":
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/@sasaki-dev/design-system/-/design-system-2.1.1.tgz#7e709ff52f87b9db3abf7f5294ae7f7784d36469"
-  integrity sha512-q9CJJvl1BW/vf1AaRNCovDwuSHdJ8CDB8pc1esn3KS4grzeQBIj/jy1w0rHhb7zNOPWKRjjGs9x3iNsR6Ytaxg==
+"@sasaki-dev/design-system@^2.1.4":
+  version "2.1.4"
+  resolved "https://registry.yarnpkg.com/@sasaki-dev/design-system/-/design-system-2.1.4.tgz#4a083db1766400ebdfe4f01f3c2c48eefa148a45"
+  integrity sha512-Q8aHdVO1lNHNWfXGzvfDQ8/Tp1brpcCLYMrFHolfx7T9BhZ3IVXJLkh09y3tyWl2H5ss612NTwtA+rziYT4+CA==
 
 "@svgr/core@^2.4.1":
   version "2.4.1"

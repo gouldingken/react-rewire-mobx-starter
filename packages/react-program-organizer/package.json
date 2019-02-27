@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@sasaki-dev/design-system": "^2.1.1",
+    "@sasaki-dev/design-system": "^2.1.4",
     "mobx": "^5.5.1",
     "mobx-react": "^5.3.4",
     "react": "^16.6.3",
