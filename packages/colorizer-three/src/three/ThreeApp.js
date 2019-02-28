@@ -314,7 +314,7 @@ export default class ThreeApp extends Emitter {
         //This will add a starfield to the background of a scene
         const pointGeometry = new Geometry();
         points.forEach((pt, i) => {
-            pointGeometry.vertices.push({x: pt[0], y: pt[1], z: pt[2]});
+            pointGeometry.vertices.push(pt);
         });
 
         const pointsMaterial = new PointsMaterial({color: 0x330099});

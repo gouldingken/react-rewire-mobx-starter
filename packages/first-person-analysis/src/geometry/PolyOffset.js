@@ -1,3 +1,5 @@
+import PointGenerator from "./PointGenerator";
+
 const Offset = require('polygon-offset');
 const interpolateLineRange = require('line-interpolate-points');
 
@@ -8,12 +10,10 @@ const interpolateLineRange = require('line-interpolate-points');
  * @example
  * var instance = new PolyOffset();
  */
-export default class PolyOffset {
-
-    pointsAdded = false;
-    options = [];
+export default class PolyOffset extends PointGenerator {
 
     constructor(polygon) {
+        super();
         this.points = [];
         this.points2d = [];
         const used = {};
@@ -30,6 +30,10 @@ export default class PolyOffset {
         this.zPos = this.points[0][2];
         // console.log(JSON.stringify(polygon));
     };
+
+    get type() {
+        return 'PolyOffset';
+    }
 
     calculateOffsetPoints(offsetAmount, intervalSpacing) {
         const offset2d = new Offset(null, 3);

@@ -195,7 +195,7 @@ export default class ThreeAppFirstPerson extends ThreeApp {
         const angle = -Math.PI / 2;
         const v3Arr = [];
         points.forEach((pt, i) => {
-            const v = new Vector3(pt[0], pt[1], pt[2]);
+            const v = pt.clone();
             v.applyAxisAngle(axis, angle);
             v3Arr.push(v);
         });

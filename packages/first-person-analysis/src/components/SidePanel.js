@@ -44,31 +44,64 @@ export default class SidePanel extends React.Component {
                     <CollapsiblePane store={store} title={'Study Points'} panelId={'points'}>
                         <div className={'label'}>Current Point</div>
                         <PageStepper store={store}/>
+                        <button className={'action-btn'}
+                                onClick={event => store.sceneData.centerView()}>Center View
+                        </button>
                         <If true={store.uiStore.mode === 'analyze'}>
-                            <button className={'action-btn'}
-                                    onClick={event => sketchup.getSelectedPaths()}>Import
-                            </button>
-                            <button className={'action-btn'}
-                                    onClick={event => store.sceneData.clearStudyPoints()}>Clear
-                            </button>
-                            <div className={'slider-label'}>Spacing: {store.uiStore.pointOptions.spacing}</div>
-                            <Slider min={3} max={30} step={1} value={store.uiStore.pointOptions.spacing}
-                                    onChange={(v) => {
-                                        store.uiStore.setPointOptions({spacing: v});
-                                    }}
-                            />
-                            <div className={'slider-label'}>Offset: {store.uiStore.pointOptions.offset}</div>
-                            <Slider min={0.1} max={2} step={0.1} value={store.uiStore.pointOptions.offset}
-                                    onChange={(v) => {
-                                        const nearest = Math.round(v * 10) / 10;//prevent floating point weirdness
-                                        store.uiStore.setPointOptions({offset: nearest});
-                                    }}
-                            />
+                            <CollapsiblePane backgroundColor={'#666666'} store={store} title={'Outlines'}
+                                             panelId={'points-outlines'}>
+                                <button className={'action-btn'}
+                                        onClick={event => sketchup.getSelectedPaths()}>Import Paths
+                                </button>
+                                <button className={'action-btn'}
+                                        onClick={event => store.sceneData.clearStudyPoints()}>Clear Paths
+                                </button>
+                                <div className={'slider-label'}>Spacing: {store.uiStore.pointOptions.spacing}</div>
+                                <Slider min={3} max={30} step={1} value={store.uiStore.pointOptions.spacing}
+                                        onChange={(v) => {
+                                            store.uiStore.setPointOptions({spacing: v});
+                                        }}
+                                />
+                                <div className={'slider-label'}>Offset: {store.uiStore.pointOptions.offset}</div>
+                                <Slider min={0.1} max={2} step={0.1} value={store.uiStore.pointOptions.offset}
+                                        onChange={(v) => {
+                                            const nearest = Math.round(v * 10) / 10;//prevent floating point weirdness
+                                            store.uiStore.setPointOptions({offset: nearest});
+                                        }}
+                                />
+                                <div className={'slider-label'}>Height: {store.uiStore.pointOptions.height}</div>
+                                <Slider min={0} max={10} step={0.5} value={store.uiStore.pointOptions.height}
+                                        onChange={(v) => {
+                                            const nearest = Math.round(v * 2) / 2;//prevent floating point weirdness
+                                            store.uiStore.setPointOptions({height: nearest});
+                                        }}
+                                />
+                            </CollapsiblePane>
+                            <CollapsiblePane backgroundColor={'#666666'} store={store} title={'Surface'}
+                                             panelId={'points-surface'}>
+                                <button className={'action-btn'}
+                                        onClick={event => sketchup.getSelectedMesh({mode: 'mesh-points'})}>Import Surfaces
+                                </button>
+                                <button className={'action-btn'}
+                                        onClick={event => store.sceneData.clearStudyPoints()}>Clear Surfaces
+                                </button>
+                                <div className={'slider-label'}>Density: {store.uiStore.surfaceOptions.density}</div>
+                                <Slider min={5} max={250} step={5} value={store.uiStore.surfaceOptions.density}
+                                        onChange={(v) => {
+                                            const nearest = Math.round(v);
+                                            store.uiStore.setSurfaceOptions({density: nearest});
+                                        }}
+                                />
+                                <div className={'slider-label'}>Height: {store.uiStore.surfaceOptions.height}</div>
+                                <Slider min={0} max={10} step={0.5} value={store.uiStore.surfaceOptions.height}
+                                        onChange={(v) => {
+                                            const nearest = Math.round(v * 2) / 2;//prevent floating point weirdness
+                                            store.uiStore.setSurfaceOptions({height: nearest});
+                                        }}
+                                />
+                            </CollapsiblePane>
                             <button className={'action-btn'}
                                     onClick={event => store.sceneData.updatePoints()}>Update Points
-                            </button>
-                            <button className={'action-btn'}
-                                    onClick={event => store.sceneData.centerView()}>Center View
                             </button>
                         </If>
                     </CollapsiblePane>

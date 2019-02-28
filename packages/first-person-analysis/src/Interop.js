@@ -28,7 +28,12 @@ export default class Interop {
                         if (!mesh.properties) mesh.properties = {};
                         mesh.properties.basicMaterial = true;
                     }
-                    objectsToAdd.push(mesh);
+                    if (params.mode === 'mesh-points') {
+                        this.sceneData.addPointsMesh(mesh);
+
+                    } else {
+                        objectsToAdd.push(mesh);
+                    }
                 }
             }
             if (command === 'paths') {

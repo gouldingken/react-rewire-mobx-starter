@@ -4,6 +4,7 @@ import ReadingsStore from "./store/ReadingsStore";
 import ViewsDataHandler from "./ViewsDataHandler";
 import * as chroma from 'chroma-js';
 import {Vector3} from "three-full";
+import MeshPoints from "./geometry/MeshPoints";
 
 /**
  * Creates a new instance of SceneData.
@@ -18,8 +19,7 @@ export default class SceneData {
     constructor(store, dataHandler) {
         this.store = store;
         this.dataHandler = dataHandler;
-        this.polyOffsets = [];
-        this.zOffset = 6;
+        this.pointGenerators = [];
         this.viewBlockers = [];
         this.studyPointClouds = [];
         this.studyPointSets = [];
@@ -208,33 +208,55 @@ export default class SceneData {
             });
         }
 
-        this.addPolyOffsets();
+        this.addGeneratedPoints();
     }
 
     addOutline(outline) {
         const polyOffset = new PolyOffset(outline);
         polyOffset.options = this.store.optionsStore.selectedOptions;
-        this.polyOffsets.push(polyOffset);
+        this.pointGenerators.push(polyOffset);
     }
 
-    addPolyOffsets() {
-        const {offset, spacing} = this.store.uiStore.pointOptions;
+    addPointsMesh(mesh) {
+        const meshPoints = new MeshPoints(mesh);
+        meshPoints.options = this.store.optionsStore.selectedOptions;
+        this.pointGenerators.push(meshPoints);
+    }
+
+    addGeneratedPoints() {
 
         this.studyPointSets.length = 0;
-        console.log('# polyOffsets: ' + this.polyOffsets.length);
-        this.polyOffsets.forEach((polyOffset, i) => {
-            if (!polyOffset.pointsAdded) {
-                const offsetPoints = polyOffset.calculateOffsetPoints(offset, spacing);
-                if (!offsetPoints) return;
-                offsetPoints.pop();//last point is a duplicate of the first
-                const {pointCloud, points} = this.threeApp.addPoints(offsetPoints.map((pt) => {
-                    return [pt[0], pt[1], polyOffset.zPos + this.zOffset];
-                }));
-                this.studyPointSets.push({points: points, options: polyOffset.options});
-                pointCloud.userData.options = polyOffset.options;
+        console.log('# polyOffsets: ' + this.pointGenerators.length);
+        this.pointGenerators.forEach((pointGenerator, i) => {
+            if (!pointGenerator.pointsAdded) {
+                let generatedPoints;
+                let height = 0;
+                if (pointGenerator.type === 'PolyOffset') {
+                    const {offset, spacing} = this.store.uiStore.pointOptions;
+                    height = this.store.uiStore.pointOptions.height;
+                    const points2D = pointGenerator.calculateOffsetPoints(offset, spacing);
+
+                    if (points2D) {
+                        points2D.pop();//last point is a duplicate of the first
+                        generatedPoints = points2D.map((pt) => {
+                            return new Vector3(pt[0], pt[1], pointGenerator.zPos + height);
+                        });
+                    }
+
+                }
+                if (pointGenerator.type === 'MeshPoints') {
+                    height = this.store.uiStore.surfaceOptions.height;
+                    const {density} = this.store.uiStore.surfaceOptions;
+                    generatedPoints = pointGenerator.calculateRandomOnSurface(density, new Vector3(0, 0, height));
+                }
+
+                if (!generatedPoints) return;
+                const {pointCloud, points} = this.threeApp.addPoints(generatedPoints);
+                this.studyPointSets.push({points: points, options: pointGenerator.options});
+                pointCloud.userData.options = pointGenerator.options;
                 this.addOptionObject(pointCloud);
                 this.studyPointClouds.push(pointCloud);
-                polyOffset.pointsAdded = true;
+                pointGenerator.pointsAdded = true;
             }
         });
 
@@ -243,16 +265,17 @@ export default class SceneData {
 
     updatePoints() {
         this.clearPoints();
-        this.polyOffsets.forEach((polyOffset, i) => {
-            polyOffset.pointsAdded = false;
+        this.pointGenerators.forEach((pointGenerator, i) => {
+            pointGenerator.pointsAdded = false;
         });
-        this.addPolyOffsets();
+        this.addGeneratedPoints();
     }
 
     clearStudyPoints() {
         this.clearPoints();
 
-        this.polyOffsets.length = 0;
+        this.pointGenerators.length = 0;
+        this.meshPoints.length = 0;
 
         this.threeApp.removeObjects(this.studyPointPaths);
         this.studyPointPaths.length = 0;

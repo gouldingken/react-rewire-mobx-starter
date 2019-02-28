@@ -19,9 +19,10 @@ export default class UiStore {
     isPlaying = false;
     blockersVisible = true;
 
-    targetChartMultiplier =  1 / ReadingsStore.sunAreaOfFullSphere;
+    // targetChartMultiplier =  1 / ReadingsStore.sunAreaOfFullSphere;
     targetChartMax = 5000;
-    pointOptions = {spacing: 25, offset: 1};
+    pointOptions = {spacing: 25, offset: 1, height: 5};
+    surfaceOptions = {density: 50, height: 5};
 
     constructor() {
     };
@@ -74,6 +75,12 @@ export default class UiStore {
         });
     }
 
+    setSurfaceOptions(updates) {
+        Object.keys(updates).forEach((k) => {
+            this.surfaceOptions[k] = updates[k];
+        });
+    }
+
     setMode(val) {
         this.mode = val;
     }
@@ -99,6 +106,7 @@ decorate(UiStore, {
     blockersVisible: observable,
     targetChartMax: observable,
     pointOptions: observable,
+    surfaceOptions: observable,
     setCurrentStudyPoint: action,
     selectNearestStudyPoint: action,
     setStudyPointCount: action,
@@ -107,6 +115,7 @@ decorate(UiStore, {
     setBlockersVisible: action,
     setTargetChartMax: action,
     setPointOptions: action,
+    setSurfaceOptions: action,
     setMode: action,
     setSelectedReviewTarget: action,
     setValueRampMultiplier: action,
