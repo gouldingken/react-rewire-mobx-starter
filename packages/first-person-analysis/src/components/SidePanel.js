@@ -46,9 +46,10 @@ export default class SidePanel extends React.Component {
                             Multiple Options Selected
                         </If>
                         <If true={store.optionsStore.selectedOptions.length === 1}>
-                            <TextInput text={store.optionsStore.getOption(store.optionsStore.selectedOptions[0]).name} onChange={(text)=> {
-                                store.optionsStore.updateOption(store.optionsStore.selectedOptions[0], {name: text});
-                            }}/>
+                            <TextInput text={store.optionsStore.getOption(store.optionsStore.selectedOptions[0]).name}
+                                       onChange={(text) => {
+                                           store.optionsStore.updateOption(store.optionsStore.selectedOptions[0], {name: text});
+                                       }}/>
                             <button className={'action-btn'}
                                     onClick={event => store.sceneData.deleteActiveOption()}>Delete Option
                             </button>
@@ -93,7 +94,8 @@ export default class SidePanel extends React.Component {
                             <CollapsiblePane backgroundColor={'#666666'} store={store} title={'Surface'}
                                              panelId={'points-surface'} initCollapsed={true}>
                                 <button className={'action-btn'}
-                                        onClick={event => sketchup.getSelectedMesh({mode: 'mesh-points'})}>Import Surfaces
+                                        onClick={event => sketchup.getSelectedMesh({mode: 'mesh-points'})}>Import
+                                    Surfaces
                                 </button>
                                 <button className={'action-btn'}
                                         onClick={event => store.sceneData.clearStudyPoints()}>Clear Surfaces
@@ -131,7 +133,7 @@ export default class SidePanel extends React.Component {
                     </CollapsiblePane>
                     <If true={store.uiStore.mode === 'review'}>
                         <CollapsiblePane store={store} title={'Charts'} panelId={'charts'}>
-                            <ReviewChart store={store} width={270}/>
+                            <ReviewChart dataHandler={dataHandler} store={store} width={270}/>
                         </CollapsiblePane>
                         <CollapsiblePane store={store} title={'Color Ramp'} panelId={'color-ramp'}>
                             <div className={'slider-label'}>Intensity: {store.uiStore.valueRampMultiplier}</div>
@@ -163,24 +165,28 @@ export default class SidePanel extends React.Component {
                             <If true={store.optionsStore.selectedOptions.length === 1}>
                                 <div>{store.optionsStore.getOption(store.optionsStore.selectedOptions[0]).name}</div>
                                 <div>
-                                    {store.readingsStore.readingsCount} result generated out
+                                    {store.readingsStore.readingsCount} result{(store.readingsStore.readingsCount !== 1) ? 's' : ''} generated
+                                    out
                                     of {store.uiStore.studyPoints.count}
                                 </div>
-                                <ProgressBar color={'#666666'} fullWidth={200} total={store.uiStore.studyPoints.count}
-                                             progress={store.readingsStore.readingsCount}/>
-                                <div style={{marginTop: 8}}>
-                                    <button className={'action-btn'}
-                                            onClick={event => store.uiStore.setIsPlaying(true)}>Run
-                                    </button>
-                                    <button className={'action-btn'}
-                                            onClick={event => store.uiStore.setIsPlaying(false)}>Pause
-                                    </button>
-                                    <button className={'action-btn'} onClick={event => {
-                                        store.uiStore.setCurrentStudyPoint(0);
-                                        store.uiStore.setIsPlaying(false)
-                                    }}>Reset
-                                    </button>
-                                </div>
+                                <If true={store.uiStore.mode === 'analyze'}>
+                                    <ProgressBar color={'#666666'} fullWidth={200}
+                                                 total={store.uiStore.studyPoints.count}
+                                                 progress={store.readingsStore.readingsCount}/>
+                                    <div style={{marginTop: 8}}>
+                                        <button className={'action-btn'}
+                                                onClick={event => store.uiStore.setIsPlaying(true)}>Run
+                                        </button>
+                                        <button className={'action-btn'}
+                                                onClick={event => store.uiStore.setIsPlaying(false)}>Pause
+                                        </button>
+                                        <button className={'action-btn'} onClick={event => {
+                                            store.uiStore.setCurrentStudyPoint(0);
+                                            store.uiStore.setIsPlaying(false)
+                                        }}>Reset
+                                        </button>
+                                    </div>
+                                </If>
                             </If>
                         </div>
                         <div>
@@ -204,7 +210,7 @@ class ReviewChart extends React.Component {
     }
 
     render() {
-        const {store, width} = this.props;
+        const {store, width, dataHandler} = this.props;
 
         const allReadings = store.readingsStore.summarizeReadings();
 
@@ -231,11 +237,13 @@ class ReviewChart extends React.Component {
                 n *= 10;
             }
             if (e.shiftKey) {
-                n *= 10;
+                n *= 50;
             }
             selectedIndex += n;
             selectedIndex = Math.max(0, Math.min(selectedIndex, selectedMetaData.length - 1));
-            store.uiStore.setCurrentStudyPoint(selectedMetaData[selectedIndex].idx);
+            let pointPos = selectedMetaData[selectedIndex].idx;
+            store.uiStore.setLastPickedPoint(dataHandler.getStudyPoint(pointPos));//treat like a user click so it persists
+            store.uiStore.setCurrentStudyPoint(pointPos);
         };
 
         return (
@@ -249,10 +257,10 @@ class ReviewChart extends React.Component {
                     />
                 </div>
                 <button className={'action-btn'}
-                        onClick={e => shift(e, -1)}>Up
+                        onClick={(e) => shift(e, -1)}>Up
                 </button>
                 <button className={'action-btn'}
-                        onClick={e => shift(e, 1)}>Down
+                        onClick={(e) => shift(e, 1)}>Down
                 </button>
             </div>
         );

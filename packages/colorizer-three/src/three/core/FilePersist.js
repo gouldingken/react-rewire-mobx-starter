@@ -21,7 +21,7 @@ export default class FilePersist {
         };
         gltfExporter.parse(scene, function (result) {
             const output = JSON.stringify(result, null, 2);
-            console.log(output);
+            // console.log(output);
             FilePersist.saveString(output, filename);
         }, options);
     }

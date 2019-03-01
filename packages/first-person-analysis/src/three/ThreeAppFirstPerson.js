@@ -191,7 +191,6 @@ export default class ThreeAppFirstPerson extends ThreeApp {
 
     addPoints(points) {
         const pointCloud = super.addPoints(points);
-        pointCloud.name = 'ThreeAppFirstPerson pointCloud';//for debug
         const axis = new Vector3(1, 0, 0);
         const angle = -Math.PI / 2;
         const v3Arr = [];

@@ -65,7 +65,7 @@ export default class MeshPoints extends PointGenerator {
             });
             let sample;
             while ((sample = sampler()) && points.length < numPoints) {
-                console.log('x, y:', sample[0], sample[1]);
+                // console.log('x, y:', sample[0], sample[1]);
                 let contained = false;
                 const pt = new Vector3(sample[0], sample[1], z);
                 this.triangles.forEach((triangle, i) => {

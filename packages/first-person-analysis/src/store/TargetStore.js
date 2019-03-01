@@ -60,7 +60,9 @@ export default class TargetStore {
     }
 
     setCurrentValues(sensor) {
+        if (!sensor || !sensor.values) return;
         for (let i = 1; i <= 3; i++) {
+            if (!sensor.values['c' + i]) continue;
             let viewTarget = this.getViewTarget('target' + i);
             viewTarget.currentPoint.available = sensor.values['c' + i].f / ReadingsStore.sunAreaOfFullSphere;
             viewTarget.currentPoint.unobstructed = sensor.values['c' + i].o / ReadingsStore.sunAreaOfFullSphere;

@@ -33,7 +33,13 @@ export default class ReadingsStore {
 
     setReading(index, data) {
         if (!this.activeReadingSet) return;
+        // console.log('SET READING: ' + index + ' : ' + JSON.stringify(data));
         this.activeReadingSet.setReading(index, data);
+    }
+
+    getReading(index) {
+        if (!this.activeReadingSet) return null;
+        return this.activeReadingSet.getReading(index);
     }
 
     summarizeReadings() {
@@ -116,7 +122,7 @@ class ReadingsSet {
 
     setReading(index, data) {
         let reading = this.getReading(index);
-        //TODO this updates every frame and creates overhead... we should trigger updates only if a value changes
+        //this updates every frame so compare and update only if a value changes
         if (!this.compare(reading.values, data.values)) {
             reading.values = data.values;
         }

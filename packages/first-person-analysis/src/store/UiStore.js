@@ -16,6 +16,8 @@ export default class UiStore {
 
     panelStates = {};
     studyPoints = {current: 0, count: 0};
+    lastPickedPoint = null;
+
     isPlaying = false;
     blockersVisible = true;
 
@@ -48,6 +50,10 @@ export default class UiStore {
             this.isPlaying = false;//TODO is there a case where we don't want this behavior (should it loop if playing?)
         }
         this.studyPoints.current = pos;
+    }
+
+    setLastPickedPoint(val) {
+        this.lastPickedPoint = val;
     }
 
     setStudyPointCount(count) {
@@ -136,4 +142,5 @@ decorate(UiStore, {
     setMode: action,
     setSelectedReviewTarget: action,
     setValueRampMultiplier: action,
+    setLastPickedPoint: action,
 });

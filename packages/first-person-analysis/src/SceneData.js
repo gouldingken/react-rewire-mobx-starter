@@ -27,7 +27,7 @@ export default class SceneData {
         this.studyPointPaths = [];
         this.optionsObjects = [];
         this.controlledObjects = [];
-        this.lastPickedPoint = null;
+        // this.lastPickedPoint = null;
 
         this.dataHandler.on('ThreeAppReady', (threeApp) => {
             this.threeApp = threeApp;
@@ -48,7 +48,7 @@ export default class SceneData {
         const {targetStore, uiStore, optionsStore, readingsStore} = this.store;
 
         this.threeApp.on('point-hit', (point) => {
-            this.lastPickedPoint = point;
+            uiStore.setLastPickedPoint(point);
             const index = this.dataHandler.findNearestPoint(point);
             if (index >= 0) {
                 uiStore.setCurrentStudyPoint(index);
@@ -89,10 +89,11 @@ export default class SceneData {
 
     updateStudyPoint(index, selectedReviewTarget, valueRampMultiplier) {
         const {targetStore, uiStore, optionsStore, readingsStore} = this.store;
+        targetStore.setCurrentValues(readingsStore.getReading(index));
         const viewTarget = targetStore.viewTargets[selectedReviewTarget];
         const ramp = this.getRamp(selectedReviewTarget, valueRampMultiplier);
         this.threeApp.setStudyCubeColor(ramp(viewTarget.currentPoint.unobstructed));
-        console.log(this.threeApp.getStudyPos());
+        // console.log(this.threeApp.getStudyPos());
     }
 
     setViewTargets(objectsToAdd, targetId) {
@@ -221,7 +222,7 @@ export default class SceneData {
             });
         }
 
-        this.addGeneratedPoints();
+        this.updatePoints();
     }
 
     addOutline(outline) {
@@ -241,47 +242,50 @@ export default class SceneData {
         this.studyPointSets.length = 0;
         console.log('# polyOffsets: ' + this.pointGenerators.length);
         this.pointGenerators.forEach((pointGenerator, i) => {
-            if (!pointGenerator.pointsAdded) {
-                let generatedPoints;
-                let height = 0;
-                if (pointGenerator.type === 'PolyOffset') {
-                    const {offset, spacing} = this.store.uiStore.pointOptions;
-                    height = this.store.uiStore.pointOptions.height;
-                    const points2D = pointGenerator.calculateOffsetPoints(offset, spacing);
+            let generatedPoints;
+            let height = 0;
+            if (pointGenerator.type === 'PolyOffset') {
+                const {offset, spacing} = this.store.uiStore.pointOptions;
+                height = this.store.uiStore.pointOptions.height;
+                const points2D = pointGenerator.calculateOffsetPoints(offset, spacing);
 
-                    if (points2D) {
-                        points2D.pop();//last point is a duplicate of the first
-                        generatedPoints = points2D.map((pt) => {
-                            return new Vector3(pt[0], pt[1], pointGenerator.zPos + height);
-                        });
-                    }
-
+                if (points2D) {
+                    points2D.pop();//last point is a duplicate of the first
+                    generatedPoints = points2D.map((pt) => {
+                        return new Vector3(pt[0], pt[1], pointGenerator.zPos + height);
+                    });
                 }
-                if (pointGenerator.type === 'MeshPoints') {
-                    height = this.store.uiStore.surfaceOptions.height;
-                    const {density} = this.store.uiStore.surfaceOptions;
-                    generatedPoints = pointGenerator.calculateRandomOnSurface(density, new Vector3(0, 0, height));
-                }
-
-                if (!generatedPoints) return;
-                const {pointCloud, points} = this.threeApp.addPoints(generatedPoints);
-                this.studyPointSets.push({points: points, options: pointGenerator.options});
-                pointCloud.userData.studyPoints = points;
-                pointCloud.userData.options = pointGenerator.options;
-                this.addOptionObject(pointCloud);
-                this.studyPointClouds.push(pointCloud);
-                pointGenerator.pointsAdded = true;
             }
+            if (pointGenerator.type === 'MeshPoints') {
+                height = this.store.uiStore.surfaceOptions.height;
+                const {density} = this.store.uiStore.surfaceOptions;
+                generatedPoints = pointGenerator.calculateRandomOnSurface(density, new Vector3(0, 0, height));
+            }
+
+            if (!generatedPoints) return;
+            const {pointCloud, points} = this.threeApp.addPoints(generatedPoints);
+            pointCloud.name = i + '_' + pointGenerator.type + '_' + points.length;
+            this.studyPointSets.push({points: points, options: pointGenerator.options, type: pointGenerator.type});
+            pointCloud.userData.studyPoints = points;
+            pointCloud.userData.options = pointGenerator.options;
+            this.addOptionObject(pointCloud);
+            this.studyPointClouds.push(pointCloud);
+
         });
+
+        console.log('GENERATED POINTS');
+        let cnt = 0;
+        this.studyPointSets.forEach((pointSet, i) => {
+            console.log(pointSet.type + ': ' + pointSet.points.length);
+            cnt += pointSet.points.length;
+        });
+        console.log(cnt + ' POINTS GENERATED');
 
         this.updateActiveStudyPoints(this.store.optionsStore.selectedOptions);
     }
 
     updatePoints() {
         this.clearPoints();
-        this.pointGenerators.forEach((pointGenerator, i) => {
-            pointGenerator.pointsAdded = false;
-        });
         this.addGeneratedPoints();
     }
 
@@ -289,7 +293,6 @@ export default class SceneData {
         this.clearPoints();
 
         this.pointGenerators.length = 0;
-        this.meshPoints.length = 0;
 
         this.threeApp.removeObjects(this.studyPointPaths);
         this.studyPointPaths.length = 0;
@@ -364,6 +367,7 @@ export default class SceneData {
     }
 
     updateActiveStudyPoints(selectedOptions) {
+        const {uiStore} = this.store;
         const activeStudyPoints = [];
         this.studyPointSets.forEach((studyPoints, i) => {
             if (SceneData.optionsMatch(studyPoints.options, selectedOptions)) {
@@ -372,10 +376,10 @@ export default class SceneData {
         });
         this.dataHandler.setActiveStudyPoints(activeStudyPoints);
 
-        if (this.lastPickedPoint) {
-            const index = this.dataHandler.findNearestPoint(this.lastPickedPoint);
+        if (uiStore.lastPickedPoint) {
+            const index = this.dataHandler.findNearestPoint(uiStore.lastPickedPoint);
             if (index >= 0) {
-                this.store.uiStore.setCurrentStudyPoint(index);
+                uiStore.setCurrentStudyPoint(index);
             }
         }
     }
@@ -428,6 +432,8 @@ export default class SceneData {
             let metaData;
             // let metaData = scene.userData.metaData; //HACK (see note above)
             const objectsBySasType = {};
+            let cnt = 0;
+
             scene.children.forEach((child, i) => {
                 if (child.userData.metaData) {
                     metaData = child.userData.metaData;//HACK (see note above)
@@ -447,6 +453,8 @@ export default class SceneData {
                 }
 
                 if (child.userData.studyPoints) {
+                    console.log(child.uuid + '  ' + child.name + ' LOADED POINTS ' + child.userData.options.join('|') + ' : ' + child.userData.studyPoints.length);
+                    cnt += child.userData.studyPoints.length;
                     this.studyPointSets.push({
                         points: child.userData.studyPoints.map((p) => new Vector3(p.x, p.y, p.z)),
                         options: child.userData.options
@@ -455,6 +463,7 @@ export default class SceneData {
                     this.studyPointClouds.push(child);
                     this.threeApp.pointClouds.push(child);
                 }
+
 
                 if (child.userData.sasType) {
                     Object.keys(child.userData.sasType).forEach((type) => {
@@ -466,6 +475,9 @@ export default class SceneData {
                 }
                 this.threeApp.scene.add(scene);
             });
+
+            console.log('TOTAL POINTS ' + cnt);
+
             if (metaData) {
                 optionsStore.setMeta(metaData.optionsStore);
                 targetStore.setMeta(metaData.targetStore, objectsBySasType);

@@ -24,9 +24,16 @@ export default class ViewsDataHandler extends ADataHandler {
         return this.store.uiStore.studyPoints.current;
     }
     setStudyPosData(sensor) {
+        if (this.store.uiStore.mode !== 'analyze') return;//prevent modifying points when in 'review mode' - though this removes the fun chart watching...
         const index = this.store.uiStore.studyPoints.current;
         this.store.readingsStore.setReading(index, sensor);
         this.store.targetStore.setCurrentValues(sensor);
+    }
+
+    getStudyPoint(index) {
+        if (this.activeStudyPoints.length > index && this.activeStudyPoints[index]) {
+            return this.activeStudyPoints[index];
+        }
     }
 
     nextStudyPos() {
