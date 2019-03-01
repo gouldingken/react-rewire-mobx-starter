@@ -3,7 +3,7 @@ import {observer} from "mobx-react";
 import CollapsiblePane from "./CollapsiblePane";
 import PageStepper from "./PageStepper";
 import TargetInfo from "./TargetInfo";
-import {Checkbox} from "sasaki-core";
+import {Checkbox, TextInput} from "sasaki-core";
 import {RangeInput} from "sasaki-core";
 import {If} from "sasaki-core";
 import TargetBars from "./TargetBars";
@@ -41,6 +41,19 @@ export default class SidePanel extends React.Component {
                         {/*onClick={event => sketchup.getActiveView()}>Get View*/}
                         {/*</button>*/}
                     </CollapsiblePane>
+                    <CollapsiblePane store={store} title={'Option'} panelId={'option'} initCollapsed={true}>
+                        <If true={store.optionsStore.selectedOptions.length > 1}>
+                            Multiple Options Selected
+                        </If>
+                        <If true={store.optionsStore.selectedOptions.length === 1}>
+                            <TextInput text={store.optionsStore.getOption(store.optionsStore.selectedOptions[0]).name} onChange={(text)=> {
+                                store.optionsStore.updateOption(store.optionsStore.selectedOptions[0], {name: text});
+                            }}/>
+                            <button className={'action-btn'}
+                                    onClick={event => store.sceneData.deleteActiveOption()}>Delete Option
+                            </button>
+                        </If>
+                    </CollapsiblePane>
                     <CollapsiblePane store={store} title={'Study Points'} panelId={'points'}>
                         <div className={'label'}>Current Point</div>
                         <PageStepper store={store}/>
@@ -49,7 +62,7 @@ export default class SidePanel extends React.Component {
                         </button>
                         <If true={store.uiStore.mode === 'analyze'}>
                             <CollapsiblePane backgroundColor={'#666666'} store={store} title={'Outlines'}
-                                             panelId={'points-outlines'}>
+                                             panelId={'points-outlines'} initCollapsed={true}>
                                 <button className={'action-btn'}
                                         onClick={event => sketchup.getSelectedPaths()}>Import Paths
                                 </button>
@@ -78,7 +91,7 @@ export default class SidePanel extends React.Component {
                                 />
                             </CollapsiblePane>
                             <CollapsiblePane backgroundColor={'#666666'} store={store} title={'Surface'}
-                                             panelId={'points-surface'}>
+                                             panelId={'points-surface'} initCollapsed={true}>
                                 <button className={'action-btn'}
                                         onClick={event => sketchup.getSelectedMesh({mode: 'mesh-points'})}>Import Surfaces
                                 </button>
@@ -173,6 +186,9 @@ export default class SidePanel extends React.Component {
                         <div>
                             <button className={'action-btn'}
                                     onClick={event => dataHandler.saveScene()}>Save
+                            </button>
+                            <button className={'action-btn'}
+                                    onClick={event => dataHandler.loadScene('./data/viewPoints.gltf')}>Load
                             </button>
                         </div>
                     </CollapsiblePane>

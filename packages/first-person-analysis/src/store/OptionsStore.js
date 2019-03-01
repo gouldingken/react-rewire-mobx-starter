@@ -22,7 +22,11 @@ export default class OptionsStore {
     };
 
     addOption() {
-        const num = this.options.length + 1;
+        let num = this.options.length + 1;
+        const usedKeys = this.options.map((o) => o.key);
+        while(usedKeys.indexOf(`option-${num}`) >= 0) {
+            num++;
+        }
         const newOption = {name: `Option ${num}`, key: `option-${num}`, chartColor: OptionsStore.nextColor()};
         this.options.push(newOption);
     }
@@ -31,8 +35,24 @@ export default class OptionsStore {
         return this.options.find((o) => o.key === key);
     }
 
+    updateOption(key, obj) {
+        const option = this.getOption(key);
+        if (!option) return;
+        Object.keys(obj).forEach((k) => {
+            option[k] = obj[k];
+        });
+    }
+
     get selectedOptions() {
         return this.options.filter((option, i) => option.selected).map((option) => option.key);
+    }
+
+
+    ensureASelection() {
+        const sel = this.selectedOptions;
+        if (sel.length === 0) {
+            this.options[0].selected = true;
+        }
     }
 
     selectOption(key, additive) {
@@ -47,6 +67,10 @@ export default class OptionsStore {
         });
     }
 
+    setOptions(options) {
+        this.options = options;
+    }
+
     static nextColor() {
         OptionsStore.chartColorIndex++;
         if (OptionsStore.chartColorIndex >= OptionsStore.chartColors.length) {
@@ -54,6 +78,29 @@ export default class OptionsStore {
         }
         return OptionsStore.chartColors[OptionsStore.chartColorIndex];
     }
+
+    deleteOption(key) {
+        let index = -1;
+        this.options.forEach((option, i) => {
+            if (option.key === key) {
+                index = i;
+            }
+        });
+        if (index >= 0) {
+            this.options.splice(index, 1);
+        }
+        this.ensureASelection();
+    }
+
+
+    getMeta() {
+        return {options: this.options};
+    }
+
+    setMeta(meta) {
+        this.options = meta.options;
+    }
+
 }
 
 
@@ -62,4 +109,8 @@ decorate(OptionsStore, {
     selectedOptions: computed,
     addOption: action,
     selectOption: action,
+    deleteOption: action,
+    setOptions: action,
+    updateOption: action,
+    setMeta: action,
 });

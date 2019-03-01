@@ -48,6 +48,22 @@ export default class ReadingsStore {
         if (!this.activeReadingSet) return 0;
         return this.activeReadingSet.readingsCount;
     }
+
+    getMeta() {
+        const readingSets = {};
+        Object.keys(this.readingSets).forEach((k) => {
+            readingSets[k] = this.readingSets[k].getMeta();
+        });
+        return {readingSets: readingSets};
+    }
+
+    setMeta(meta) {
+        this.readingSets = {};
+        Object.keys(meta.readingSets).forEach((k) => {
+            this.readingSets[k] = new ReadingsSet(k, this.targetStore);
+            this.readingSets[k].setMeta(meta.readingSets[k]);
+        });
+    }
 }
 
 class ReadingsSet {
@@ -124,9 +140,9 @@ class ReadingsSet {
                 summary.sums.unobstructed[channelId] += val.o / ReadingsStore.sunAreaOfFullSphere;
 
                 if (!summary.sorted.available[channelId]) summary.sorted.available[channelId] = [];
-                summary.sorted.available[channelId].push({v:val.f / ReadingsStore.sunAreaOfFullSphere, i:+k});
+                summary.sorted.available[channelId].push({v: val.f / ReadingsStore.sunAreaOfFullSphere, i: +k});
                 if (!summary.sorted.unobstructed[channelId]) summary.sorted.unobstructed[channelId] = [];
-                summary.sorted.unobstructed[channelId].push({v:val.o / ReadingsStore.sunAreaOfFullSphere, i:+k});
+                summary.sorted.unobstructed[channelId].push({v: val.o / ReadingsStore.sunAreaOfFullSphere, i: +k});
 
             });
         });
@@ -141,6 +157,14 @@ class ReadingsSet {
         return summary;
     }
 
+    getMeta() {
+        return {readings: this.readings};
+    }
+
+    setMeta(meta) {
+        this.readings = meta.readings;
+        this.readingsCount = Object.keys(this.readings).length;
+    }
 }
 
 
@@ -149,10 +173,12 @@ decorate(ReadingsStore, {
     readingsCount: computed,
     setReading: action,
     reset: action,
+    setMeta: action,
 });
 decorate(ReadingsSet, {
     readings: observable,
     readingsCount: observable,
     setReading: action,
     reset: action,
+    setMeta: action,
 });

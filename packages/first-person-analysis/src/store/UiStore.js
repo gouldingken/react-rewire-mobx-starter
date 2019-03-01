@@ -32,9 +32,9 @@ export default class UiStore {
         this.getPanelState(panelId).collapsed = !this.getPanelState(panelId).collapsed;
     }
 
-    getPanelState(panelId) {
+    getPanelState(panelId, initCollapsed = false) {
         if (!this.panelStates[panelId]) {
-            this.panelStates[panelId] = {collapsed: false};
+            this.panelStates[panelId] = {collapsed: initCollapsed};
         }
         return this.panelStates[panelId];
     }
@@ -93,6 +93,23 @@ export default class UiStore {
         this.valueRampMultiplier = val;
     }
 
+    getMeta() {
+        return {
+            selectedReviewTarget: this.selectedReviewTarget,
+            valueRampMultiplier: this.valueRampMultiplier,
+            pointOptions: this.pointOptions,
+            surfaceOptions: this.surfaceOptions,
+            blockersVisible: this.blockersVisible,
+        };
+    }
+
+    setMeta(meta) {
+        this.selectedReviewTarget = meta.selectedReviewTarget;
+        this.valueRampMultiplier = meta.valueRampMultiplier;
+        this.pointOptions = meta.pointOptions;
+        this.surfaceOptions = meta.surfaceOptions;
+        this.blockersVisible = meta.blockersVisible;
+    }
 }
 
 

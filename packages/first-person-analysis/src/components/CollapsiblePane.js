@@ -8,8 +8,8 @@ export default class CollapsiblePane extends React.Component {
     }
 
     render() {
-        const {title, store, panelId, backgroundColor} = this.props;
-        const collapsed = store.uiStore.getPanelState(panelId).collapsed;
+        const {title, store, panelId, backgroundColor, initCollapsed} = this.props;
+        const collapsed = store.uiStore.getPanelState(panelId, initCollapsed).collapsed;
         const style = {};
         if (backgroundColor) {
             style.background = backgroundColor;

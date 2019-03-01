@@ -5,7 +5,7 @@ import ViewsDataHandler from "./ViewsDataHandler";
 import * as chroma from 'chroma-js';
 import {Vector3} from "three-full";
 import MeshPoints from "./geometry/MeshPoints";
-import {FileExporter} from "colorizer-three";
+import {FilePersist} from "colorizer-three";
 
 /**
  * Creates a new instance of SceneData.
@@ -35,8 +35,12 @@ export default class SceneData {
             this.setupWatchers();
         });
 
-        this.dataHandler.on('SaveScene', ()=> {
+        this.dataHandler.on('SaveScene', () => {
             this.saveFile();
+        });
+
+        this.dataHandler.on('LoadScene', (file) => {
+            this.loadFile(file);
         });
     };
 
@@ -92,11 +96,15 @@ export default class SceneData {
     }
 
     setViewTargets(objectsToAdd, targetId) {
+        const {targetStore} = this.store;
+        targetStore.deleteTargetObjects(targetId, (objects) => {
+            this.threeApp.removeObjects(objects);
+        });
         const threeObjects = this.threeApp.addObjects(objectsToAdd);
         threeObjects.forEach((obj, i) => {
             this.controlledObjects.push(obj);
         });
-        this.store.targetStore.setTargetObjects(targetId, threeObjects);
+        targetStore.setTargetObjects(targetId, threeObjects);
     }
 
     getRamp(selectedReviewTarget, valueRampMultiplier) {
@@ -323,12 +331,25 @@ export default class SceneData {
         const objectsAdded = this.threeApp.addObjects(objectsToAdd);
         objectsAdded.forEach((mesh, i) => {
             mesh.userData.options = activeOptions;
+            mesh.userData.isViewBlocker = true;
             this.addOptionObject(mesh);
             this.viewBlockers.push(mesh);
             this.threeApp.viewDataReader.addObstructionMesh(mesh);
         });
 
     }
+
+    deleteActiveOption() {
+        const {optionsStore} = this.store;
+        const activeOptions = optionsStore.selectedOptions;
+        if (activeOptions.length !== 1) return;
+        const activeOptionKey = optionsStore.selectedOptions[0];
+        const activeOption = optionsStore.getOption(activeOptionKey);
+        if (window.confirm(`Are you sure you want to delete ${activeOption.name}?`)) {
+            optionsStore.deleteOption(activeOptionKey);
+        }
+    }
+
 
     setVisibility() {
         this.controlledObjects.forEach((o, i) => {
@@ -384,7 +405,62 @@ export default class SceneData {
     }
 
     saveFile() {
-        FileExporter.saveScene(this.threeApp.scene, 'viewPoints.gltf')
+        const {targetStore, uiStore, optionsStore, readingsStore} = this.store;
+        const scene = this.threeApp.scene;
+        const metaData = {
+            optionsStore: optionsStore.getMeta(),
+            targetStore: targetStore.getMeta(),
+            uiStore: uiStore.getMeta(),
+            readingsStore: readingsStore.getMeta(),
+        };
+        //HACK the version of three-full doesn't support userData on scene (it's been fixed in a newer version of ThreeJS)
+        //for now we store metaData on an object!
+        //Update is pending: https://github.com/Itee/three-full/issues/21
+        // scene.userData.metaData = metaData;
+        this.threeApp.cubeCamPos.userData.metaData = metaData;
+        FilePersist.saveScene(scene, 'viewPoints.gltf')
+    }
+
+    loadFile(filePath) {
+        FilePersist.loadScene(filePath, (scene) => {
+            const {targetStore, uiStore, optionsStore, readingsStore} = this.store;
+            let metaData;
+            // let metaData = scene.userData.metaData; //HACK (see note above)
+            const objectsBySasType = {};
+            scene.children.forEach((child, i) => {
+                if (child.userData.metaData) {
+                    metaData = child.userData.metaData;//HACK (see note above)
+                }
+                if (child.userData.options) {
+                    this.controlledObjects.push(child);
+                    this.optionsObjects.push(child);
+                }
+
+                if (child.userData.isViewBlocker) {
+                    this.viewBlockers.push(child);
+                }
+
+                if (child.userData.isViewTarget) {
+                    this.controlledObjects.push(child);
+                }
+
+                if (child.userData.sasType) {
+                    Object.keys(child.userData.sasType).forEach((type) => {
+                        if (child.userData.sasType[type]) {
+                            if (!objectsBySasType[type]) objectsBySasType[type] = [];
+                            objectsBySasType[type].push(child);
+                        }
+                    });
+                }
+                this.threeApp.scene.add(scene);
+            });
+            if (metaData) {
+                optionsStore.setMeta(metaData.optionsStore);
+                targetStore.setMeta(metaData.targetStore, objectsBySasType);
+                uiStore.setMeta(metaData.uiStore);
+                readingsStore.setMeta(metaData.readingsStore);
+            }
+        })
     }
 
 }

@@ -518,6 +518,8 @@ export default class ThreeApp extends Emitter {
     }
 
     onDocumentMouseDown(event) {
+        if (event.target !== this.renderer.domElement) return;
+
         event.preventDefault();
 
         this.mouse.downEvent = true;

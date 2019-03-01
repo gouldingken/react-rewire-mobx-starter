@@ -23,6 +23,8 @@
 
   .CollapsiblePane {
     .header {
+      border-top: 1px solid $md-dk-grey;
+      cursor: pointer;
       background: $dk-grey;
       color: $wash;
       text-align: center;
