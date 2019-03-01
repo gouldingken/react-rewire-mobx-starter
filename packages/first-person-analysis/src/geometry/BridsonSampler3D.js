@@ -1,6 +1,6 @@
 /**
  * Creates a new instance of BridsonSampler3D. Based on https://github.com/beaugunderson/poisson-disc-sampler/blob/master/poisson-disc-sampler.js
- * This version uses a 3D distance check to allow even distribution across a mesh
+ * This version uses a 3D distance check to allow even distribution across a mesh (TODO)
  * Next point is generated at a random position on the mesh surface (rather than the 2D plane)
  * @class
  * @returns An instance of BridsonSampler3D.

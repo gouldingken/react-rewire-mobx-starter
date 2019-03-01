@@ -18,7 +18,7 @@ export default class SidePanel extends React.Component {
     }
 
     render() {
-        const {store} = this.props;
+        const {store, dataHandler} = this.props;
         const {sketchup} = window;
 
         return (
@@ -172,11 +172,7 @@ export default class SidePanel extends React.Component {
                         </div>
                         <div>
                             <button className={'action-btn'}
-                                    onClick={event => sketchup.saveTextToFile({
-                                        title: 'Save analysis points',
-                                        ext: 'json',
-                                        data: JSON.stringify(store.readingsStore.readings)
-                                    })}>Save
+                                    onClick={event => dataHandler.saveScene()}>Save
                             </button>
                         </div>
                     </CollapsiblePane>

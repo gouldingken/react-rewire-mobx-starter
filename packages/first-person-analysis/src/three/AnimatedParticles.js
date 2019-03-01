@@ -89,6 +89,8 @@ export default class AnimatedParticles {
         }
 
         this.particles = new Points(this.geometry, this.activeMaterial);
+        // this.particles.name = 'animated-particles';//for debug
+        // this.geometry.name = 'animated-particles';//for debug
         // this.particles.rotateX(-Math.PI / 2);
         this.particles.frustumCulled = false;//prevent hiding
         if (this.showAxisHelper) {

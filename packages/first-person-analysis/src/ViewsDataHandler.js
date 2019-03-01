@@ -64,4 +64,8 @@ export default class ViewsDataHandler extends ADataHandler {
     initialize(threeApp) {
         this.emit('ThreeAppReady', threeApp);
     }
+
+    saveScene() {
+        this.emit('SaveScene');
+    }
 }

@@ -8,7 +8,7 @@
 import {ThreeApp} from "colorizer-three";
 import ViewDataReader from "./projections/ViewDataReader";
 import CubemapReprojector from "./projections/CubemapReprojector";
-import {BoxGeometry, Matrix4, Mesh, Vector3} from "three-full";
+import {BoxGeometry, GLTFExporter, Matrix4, Mesh, Vector3} from "three-full";
 import AnimatedParticles from "./AnimatedParticles";
 import ViewsDataHandler from "../ViewsDataHandler";
 
@@ -191,6 +191,8 @@ export default class ThreeAppFirstPerson extends ThreeApp {
 
     addPoints(points) {
         const pointCloud = super.addPoints(points);
+        pointCloud.name = 'ThreeAppFirstPerson pointCloud';//for debug
+        //for some reason this is throwing an exception in the GLTFExporter because the Geometry is lacking getAttribute
         const axis = new Vector3(1, 0, 0);
         const angle = -Math.PI / 2;
         const v3Arr = [];

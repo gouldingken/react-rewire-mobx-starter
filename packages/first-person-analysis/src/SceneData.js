@@ -5,6 +5,7 @@ import ViewsDataHandler from "./ViewsDataHandler";
 import * as chroma from 'chroma-js';
 import {Vector3} from "three-full";
 import MeshPoints from "./geometry/MeshPoints";
+import {FileExporter} from "colorizer-three";
 
 /**
  * Creates a new instance of SceneData.
@@ -32,6 +33,10 @@ export default class SceneData {
             this.threeApp = threeApp;
             this.controlledObjects.push(this.threeApp.animatedPointCloud.particles);
             this.setupWatchers();
+        });
+
+        this.dataHandler.on('SaveScene', ()=> {
+            this.saveFile();
         });
     };
 
@@ -376,6 +381,10 @@ export default class SceneData {
             }
         });
         return match;
+    }
+
+    saveFile() {
+        FileExporter.saveScene(this.threeApp.scene, 'viewPoints.gltf')
     }
 
 }

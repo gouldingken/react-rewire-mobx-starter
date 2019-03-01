@@ -21,7 +21,15 @@ import {
     DirectionalLightHelper,
     CameraHelper,
     PCFSoftShadowMap,
-    MeshPhongMaterial, LineBasicMaterial, Color, PointsMaterial, Points, Geometry, OrbitControls, OBJLoader
+    MeshPhongMaterial,
+    LineBasicMaterial,
+    Color,
+    PointsMaterial,
+    Points,
+    Geometry,
+    OrbitControls,
+    OBJLoader,
+    BufferGeometry, BufferAttribute
 } from 'three-full';
 import {_Math as ThreeMath} from 'three-full';
 import ShapeExtrude from "./ShapeExtrude";
@@ -311,15 +319,21 @@ export default class ThreeApp extends Emitter {
     }
 
     addPoints(points) {
-        //This will add a starfield to the background of a scene
-        const pointGeometry = new Geometry();
+
+        const pointsArray = new Float32Array( points.length * 3 );
+
         points.forEach((pt, i) => {
-            pointGeometry.vertices.push(pt);
+            pointsArray[ 3 * i ] = pt.x;
+            pointsArray[ 3 * i + 1 ] = pt.y;
+            pointsArray[ 3 * i + 2 ] = pt.z;
         });
+
+        const bufferGeometry = new BufferGeometry();
+        bufferGeometry.addAttribute( 'position', new BufferAttribute( pointsArray, 3 ) );
 
         const pointsMaterial = new PointsMaterial({color: 0x330099});
 
-        var pointCloud = new Points(pointGeometry, pointsMaterial);
+        const pointCloud = new Points(bufferGeometry, pointsMaterial);
         pointCloud.rotateX(-Math.PI / 2);
         this.scene.add(pointCloud);
         return pointCloud;
