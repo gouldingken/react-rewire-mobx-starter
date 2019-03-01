@@ -192,7 +192,6 @@ export default class ThreeAppFirstPerson extends ThreeApp {
     addPoints(points) {
         const pointCloud = super.addPoints(points);
         pointCloud.name = 'ThreeAppFirstPerson pointCloud';//for debug
-        //for some reason this is throwing an exception in the GLTFExporter because the Geometry is lacking getAttribute
         const axis = new Vector3(1, 0, 0);
         const angle = -Math.PI / 2;
         const v3Arr = [];

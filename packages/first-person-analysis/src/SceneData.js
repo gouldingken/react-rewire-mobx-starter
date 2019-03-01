@@ -266,6 +266,7 @@ export default class SceneData {
                 if (!generatedPoints) return;
                 const {pointCloud, points} = this.threeApp.addPoints(generatedPoints);
                 this.studyPointSets.push({points: points, options: pointGenerator.options});
+                pointCloud.userData.studyPoints = points;
                 pointCloud.userData.options = pointGenerator.options;
                 this.addOptionObject(pointCloud);
                 this.studyPointClouds.push(pointCloud);
@@ -438,10 +439,21 @@ export default class SceneData {
 
                 if (child.userData.isViewBlocker) {
                     this.viewBlockers.push(child);
+                    this.threeApp.viewDataReader.addObstructionMesh(child);
                 }
 
                 if (child.userData.isViewTarget) {
                     this.controlledObjects.push(child);
+                }
+
+                if (child.userData.studyPoints) {
+                    this.studyPointSets.push({
+                        points: child.userData.studyPoints.map((p) => new Vector3(p.x, p.y, p.z)),
+                        options: child.userData.options
+                    });
+                    this.addOptionObject(child);
+                    this.studyPointClouds.push(child);
+                    this.threeApp.pointClouds.push(child);
                 }
 
                 if (child.userData.sasType) {
