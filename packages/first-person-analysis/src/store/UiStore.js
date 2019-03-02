@@ -26,6 +26,8 @@ export default class UiStore {
     pointOptions = {spacing: 25, offset: 1, height: 5};
     surfaceOptions = {density: 50, height: 5};
 
+    selectionPoints2D = [];
+
     constructor() {
     };
 
@@ -99,6 +101,10 @@ export default class UiStore {
         this.valueRampMultiplier = val;
     }
 
+    setSelectionPoints2D(val) {
+        this.selectionPoints2D = val;
+    }
+
     getMeta() {
         return {
             selectedReviewTarget: this.selectedReviewTarget,
@@ -130,6 +136,7 @@ decorate(UiStore, {
     targetChartMax: observable,
     pointOptions: observable,
     surfaceOptions: observable,
+    selectionPoints2D: observable,
     setCurrentStudyPoint: action,
     selectNearestStudyPoint: action,
     setStudyPointCount: action,
@@ -143,4 +150,5 @@ decorate(UiStore, {
     setSelectedReviewTarget: action,
     setValueRampMultiplier: action,
     setLastPickedPoint: action,
+    setSelectionPoints2D: action,
 });

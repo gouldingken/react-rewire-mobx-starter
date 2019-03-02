@@ -8,6 +8,7 @@ import OptionsTabs from "./components/OptionsTabs";
 import {If} from "sasaki-core";
 import ComparePane from "./components/ComparePane";
 import {WebGL} from "colorizer-three";
+import ThreeOverlay from "./components/ThreeOverlay";
 
 class App extends Component {
     render() {
@@ -21,6 +22,9 @@ class App extends Component {
             <div className="App">
                 <ThreeContainer dataHandler={dataHandler} useTestCube={true} ThreeAppClass={ThreeAppFirstPerson}
                                 visible={store.uiStore.mode !== 'compare'}/>
+                <If true={store.uiStore.mode !== 'compare'}>
+                    <ThreeOverlay store={store}/>
+                </If>
                 <If true={store.uiStore.mode === 'compare'}>
                     <ComparePane store={store}/>
                 </If>

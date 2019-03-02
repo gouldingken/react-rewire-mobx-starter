@@ -1,0 +1,6 @@
+@import "../core";
+
+.ThreeOverlay {
+  @include main-pane;
+  pointer-events: none;
+}

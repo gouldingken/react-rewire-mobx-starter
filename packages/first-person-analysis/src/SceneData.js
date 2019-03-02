@@ -51,8 +51,12 @@ export default class SceneData {
             uiStore.setLastPickedPoint(point);
             const index = this.dataHandler.findNearestPoint(point);
             if (index >= 0) {
+                //TODO support multiple selection if CTRL key
                 uiStore.setCurrentStudyPoint(index);
             }
+        });
+        this.threeApp.on('selection-positions', (points2D) => {
+            uiStore.setSelectionPoints2D(points2D);
         });
 
         autorun(() => {
@@ -434,7 +438,11 @@ export default class SceneData {
             const objectsBySasType = {};
             let cnt = 0;
 
+            const objectsToRemove = [];
             scene.children.forEach((child, i) => {
+                if (child.userData.dontPersist) {
+                    objectsToRemove.push(child);
+                }
                 if (child.userData.metaData) {
                     metaData = child.userData.metaData;//HACK (see note above)
                 }
@@ -484,6 +492,8 @@ export default class SceneData {
                 uiStore.setMeta(metaData.uiStore);
                 readingsStore.setMeta(metaData.readingsStore);
             }
+
+            this.threeApp.removeObjects(objectsToRemove);
         })
     }
 

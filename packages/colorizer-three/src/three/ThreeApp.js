@@ -183,6 +183,7 @@ export default class ThreeApp extends Emitter {
             const geometry = new BoxGeometry(1, 1, 1, 2, 2, 2);
             this.cube = new Mesh(geometry, material);
             this.cube.position.y = 0;
+            this.cube.userData.dontPersist = true;
             this.scene.add(this.cube);
         }
 
@@ -320,16 +321,16 @@ export default class ThreeApp extends Emitter {
 
     addPoints(points) {
 
-        const pointsArray = new Float32Array( points.length * 3 );
+        const pointsArray = new Float32Array(points.length * 3);
 
         points.forEach((pt, i) => {
-            pointsArray[ 3 * i ] = pt.x;
-            pointsArray[ 3 * i + 1 ] = pt.y;
-            pointsArray[ 3 * i + 2 ] = pt.z;
+            pointsArray[3 * i] = pt.x;
+            pointsArray[3 * i + 1] = pt.y;
+            pointsArray[3 * i + 2] = pt.z;
         });
 
         const bufferGeometry = new BufferGeometry();
-        bufferGeometry.addAttribute( 'position', new BufferAttribute( pointsArray, 3 ) );
+        bufferGeometry.addAttribute('position', new BufferAttribute(pointsArray, 3));
 
         const pointsMaterial = new PointsMaterial({color: 0x330099});
 
@@ -514,6 +515,23 @@ export default class ThreeApp extends Emitter {
         const mPane = this.mousePane;
         this.mouse.x = ((event.offsetX - mPane.x) / mPane.width) * 2 - 1;
         this.mouse.y = -((event.offsetY - mPane.y) / mPane.height) * 2 + 1;
+
+    }
+
+    toScreenPosition(position) {
+        const mPane = this.mousePane;
+
+        const vector = position.clone();
+
+        // map to normalized device coordinate (NDC) space
+        vector.project(this.camera);
+
+        // map to 2D screen space
+        return {
+            x: mPane.x + Math.round((vector.x + 1) * mPane.width / 2),
+            y: mPane.y + Math.round((-vector.y + 1) * mPane.height / 2)
+        };
+
 
     }
 

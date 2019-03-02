@@ -1,7 +1,8 @@
 import React from 'react';
 import {observer} from "mobx-react";
+import CanvasComponent from "./CanvasComponent";
 
-export default class LineChart extends React.Component {
+export default class LineChart extends CanvasComponent {
     static defaultProps = {
         width: 400,
         height: 300,
@@ -92,23 +93,9 @@ export default class LineChart extends React.Component {
         this.ctx.stroke();
 
         circles.forEach((circle, i) => {
-            this.ctx.beginPath();
-            this.ctx.arc(circle.cx, circle.cy, circle.r, 0, 2 * Math.PI);
-            this.ctx.fillStyle = "white";
-            this.ctx.fill();
-            this.ctx.stroke();
+            this.drawCircle(circle, color, '#ffffff');
         });
 
-        this.ctx.restore();
-    }
-
-    drawText(text, pos) {
-        this.ctx.save();
-        this.ctx.font = "12px Open Sans";
-        this.ctx.fillStyle = "#b5b5b5";
-        this.ctx.textAlign = "right";
-        // this.applySettingsToContext(settings, ctx);
-        this.ctx.fillText(text, pos.x, pos.y);
         this.ctx.restore();
     }
 

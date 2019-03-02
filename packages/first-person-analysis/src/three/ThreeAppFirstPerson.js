@@ -27,6 +27,7 @@ export default class ThreeAppFirstPerson extends ThreeApp {
         const material = this.getColoredMaterial('#00ff00', 1);
         const camPosGeom = new BoxGeometry(10, 10, 10, 1, 1, 1);
         this.cubeCamPos = new Mesh(camPosGeom, material);
+        this.cubeCamPos.userData.dontPersist = true;
         this.scene.add(this.cubeCamPos);
 
         this.reprojector = new CubemapReprojector(this.renderer, 512, channels, true, true);
@@ -66,7 +67,7 @@ export default class ThreeAppFirstPerson extends ThreeApp {
                 if (hitPoint) return;
                 if (hit.point) {
                     hitPoint = hit.point;
-                    console.log(`POINT NUM ${hit.index} dist: ${hit.distance}`);
+                    // console.log(`POINT NUM ${hit.index} dist: ${hit.distance}`);
 
                     return false;
                 }
@@ -90,6 +91,7 @@ export default class ThreeAppFirstPerson extends ThreeApp {
     updateScene() {
         this.studyPos = this.nextStudyPos();
         this.cubeCamPos.position.copy(this.getStudyPos());
+        this.emit('selection-positions', [this.toScreenPosition( this.cubeCamPos.position)]);
         this.readData();
 
         if (this.animatedPointCloud) {
