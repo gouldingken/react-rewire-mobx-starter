@@ -12,7 +12,7 @@
     "react-scripts": "2.1.1",
     "sasaki-core": "0.1.0",
     "speckle-direct": "0.1.0",
-    "three-full": "^11.3.2"
+    "three-full": "^16.0.0"
   },
   "scripts": {
     "start": "react-app-rewired start",

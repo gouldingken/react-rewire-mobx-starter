@@ -9449,10 +9449,10 @@ text-table@0.2.0, text-table@^0.2.0:
   resolved "https://registry.yarnpkg.com/text-table/-/text-table-0.2.0.tgz#7f5ee823ae805207c00af2df4a84ec3fcfa570b4"
   integrity sha1-f17oI66AUgfACvLfSoTsP8+lcLQ=
 
-three-full@^11.3.2:
-  version "11.3.2"
-  resolved "https://registry.yarnpkg.com/three-full/-/three-full-11.3.2.tgz#9484fe246caf70875ab9941d962b4af944b28b5f"
-  integrity sha512-0qv9kLe2bp1ksV3mgjyzWtIBO//U19+RzoyAuSGkSKKYF0M3zxAwWU5L6rRhVj6L/GGlbUb4EHMa8QhcW8/Rtw==
+three-full@^16.0.0:
+  version "16.0.0"
+  resolved "https://registry.yarnpkg.com/three-full/-/three-full-16.0.0.tgz#aef769f02c67f36476cf0506beff76dc0ae77a65"
+  integrity sha512-D3/hSEZ6DvmxdeaAMEwHbREOoGn3RNwgqDoFKD9P70nwE5Nj3gxreVa2cFYtzFBCyne/qnrW7zr9EL61WPx48A==
 
 throat@^4.0.0:
   version "4.1.0"
