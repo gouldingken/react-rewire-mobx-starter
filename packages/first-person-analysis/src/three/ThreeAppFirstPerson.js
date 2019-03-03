@@ -73,7 +73,7 @@ export default class ThreeAppFirstPerson extends ThreeApp {
                 }
             });
             if (hitPoint) {
-                this.emit('point-hit', hitPoint);
+                this.emit('point-hit', hitPoint, this.mouse.downEvent.event);
             }
         }
     }

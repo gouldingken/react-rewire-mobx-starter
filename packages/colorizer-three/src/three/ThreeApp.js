@@ -29,7 +29,7 @@ import {
     Geometry,
     OrbitControls,
     OBJLoader,
-    BufferGeometry, BufferAttribute
+    BufferGeometry, BufferAttribute, PlaneHelper, ArrowHelper, Vector3
 } from 'three-full';
 import {_Math as ThreeMath} from 'three-full';
 import ShapeExtrude from "./ShapeExtrude";
@@ -518,6 +518,10 @@ export default class ThreeApp extends Emitter {
 
     }
 
+    toScreenPositions(positions) {
+        return positions.map((p) => this.toScreenPosition(p));
+    }
+
     toScreenPosition(position) {
         const mPane = this.mousePane;
 
@@ -540,7 +544,7 @@ export default class ThreeApp extends Emitter {
 
         event.preventDefault();
 
-        this.mouse.downEvent = true;
+        this.mouse.downEvent = {event:event};
 
     }
 
@@ -744,6 +748,31 @@ export default class ThreeApp extends Emitter {
         };
 
         this.materialObjects.push(materialObj);
+
+    }
+
+    debugPlane(plane, color) {
+        if (this.planeHelper) {
+            this.scene.remove(this.planeHelper)
+        }
+        this.planeHelper = new PlaneHelper(plane, 100, color);
+        this.scene.add(this.planeHelper);
+    }
+
+    debugPoints(points, color) {
+        if (this.debugPointsArr) {
+            this.debugPointsArr.forEach((pointArrow, i) => {
+                this.scene.remove(pointArrow);
+            });
+        }
+        if (!this.debugPointsArr) {
+            this.debugPointsArr = [];
+        }
+        points.forEach((pt, i) => {
+            const arrowHelper = new ArrowHelper(new Vector3(0, 1, 0), pt, 10, color);
+            this.scene.add(arrowHelper);
+            this.debugPointsArr.push(arrowHelper);
+        });
 
     }
 }

@@ -15,7 +15,7 @@ export default class ThreeOverlay extends CanvasComponent {
 
         autorun(() => {
             // console.log('AUTORUN '+JSON.stringify(targetStore.viewTargets))
-            this.redrawCanvas(uiStore.selectionPoints2D);//hack to trigger change...
+            this.redrawCanvas(uiStore.selectionPoints['2d']);//hack to trigger change...
         });
     }
 

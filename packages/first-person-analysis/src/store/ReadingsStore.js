@@ -121,6 +121,10 @@ class ReadingsSet {
     }
 
     setReading(index, data) {
+        if (!data.position) {
+            console.warn('Could not set reading - no specified position');
+            return;
+        }
         let reading = this.getReading(index);
         //this updates every frame so compare and update only if a value changes
         if (!this.compare(reading.values, data.values)) {

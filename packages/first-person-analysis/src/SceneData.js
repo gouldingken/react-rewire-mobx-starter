@@ -6,6 +6,7 @@ import * as chroma from 'chroma-js';
 import {Vector3} from "three-full";
 import MeshPoints from "./geometry/MeshPoints";
 import {FilePersist} from "colorizer-three";
+import PlanarSelection from "./geometry/PlanarSelection";
 
 /**
  * Creates a new instance of SceneData.
@@ -27,6 +28,7 @@ export default class SceneData {
         this.studyPointPaths = [];
         this.optionsObjects = [];
         this.controlledObjects = [];
+
         // this.lastPickedPoint = null;
 
         this.dataHandler.on('ThreeAppReady', (threeApp) => {
@@ -47,16 +49,41 @@ export default class SceneData {
     setupWatchers() {
         const {targetStore, uiStore, optionsStore, readingsStore} = this.store;
 
-        this.threeApp.on('point-hit', (point) => {
-            uiStore.setLastPickedPoint(point);
+        this.threeApp.on('point-hit', (point, e) => {
             const index = this.dataHandler.findNearestPoint(point);
+
+            if (e.shiftKey) {
+                //TODO should use 'shift' click or different mode
+                if (uiStore.lastPickedPoint) {
+                    const index1 = this.dataHandler.findNearestPoint(uiStore.lastPickedPoint);
+                    const index2 = this.dataHandler.findNearestPoint(point);
+
+                    if (index1 >= 0 && index2 >= 0) {
+                        let corner1 = this.dataHandler.activeStudyPoints[index1];
+                        let corner2 = this.dataHandler.activeStudyPoints[index2];
+                        const planarSelection = new PlanarSelection(corner1, corner2);
+                        const boundsTolerance = Math.min(uiStore.pointOptions.height, uiStore.pointOptions.spacing / 2) - 0.5;
+                        planarSelection.findPlanarPointsBetween(this.dataHandler.activeStudyPoints, 1, boundsTolerance);
+                        uiStore.setSelectionPoints('3d', planarSelection.matchingPoints);
+                        // this.threeApp.debugPlane(planarSelection.plane, '#ff0000');
+                        // this.threeApp.debugPoints([corner1, corner2, planarSelection.corner3], '#ff0000');
+                    }
+                }
+            } else {
+                uiStore.setSelectionPoints('3d', [this.dataHandler.activeStudyPoints[index]]);
+            }
+
+
+            uiStore.setLastPickedPoint(point);
             if (index >= 0) {
                 //TODO support multiple selection if CTRL key
                 uiStore.setCurrentStudyPoint(index);
             }
         });
         this.threeApp.on('selection-positions', (points2D) => {
-            uiStore.setSelectionPoints2D(points2D);
+            uiStore.setSelectionPoints('2d', this.threeApp.toScreenPositions(uiStore.selectionPoints['3d']));
+
+            //TEMP uiStore.setSelectionPoints2D(points2D);
         });
 
         autorun(() => {
