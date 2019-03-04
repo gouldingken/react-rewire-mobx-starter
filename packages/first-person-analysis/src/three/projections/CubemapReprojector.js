@@ -56,6 +56,15 @@ export default class CubemapReprojector {
             type: UnsignedByteType
         });
 
+        this.graphicsOutput = new WebGLRenderTarget(size.Width, size.Height, {
+            minFilter: LinearFilter,
+            magFilter: LinearFilter,
+            wrapS: ClampToEdgeWrapping,
+            wrapT: ClampToEdgeWrapping,
+            format: RGBAFormat,
+            type: UnsignedByteType
+        });
+
         if (cylinderMode) {
             this.lambertCircle = new ShaderPass(new LambertCylinderShaderPass());
         } else {
@@ -85,8 +94,11 @@ export default class CubemapReprojector {
     createEffectComposer(posterize, size) {
         if (posterize) {//can either use masking or a posterizer with the bgColor
             this.composer = new EffectComposer(this.renderer, this.output);
-
             this.composer.addPass(this.lambertCircle);
+
+            //graphic composer simply reprojects the image, but doesn't posterize or reduce
+            this.graphicComposer = new EffectComposer(this.renderer, this.graphicsOutput);
+            this.graphicComposer.addPass(this.lambertCircle);
             let bgColor = this.bgColor;
             if (typeof bgColor === 'string') {
                 bgColor = {channel1: new Color(bgColor)};
@@ -169,12 +181,21 @@ export default class CubemapReprojector {
     }
 
     display(position, scene) {
-        this.lambertCircle.renderToScreen = true;
+        this.renderLambert(position, scene, true);
+    }
+
+    renderLambert(position, scene, toScreen) {
+        this.lambertCircle.renderToScreen = toScreen;
         this.cubeCamera.position.copy(position);
         this.cubeCamera.update(this.renderer, scene);//TODO was updateCubeMap but this is deprecated?
 
         this.lambertCircle.uniforms['map'].value = this.cubeCamera.renderTarget.texture;
-        this.composer.render();
+        if (toScreen) {
+            this.composer.render();
+        } else {
+            //When not rendering to screen, this.graphicsOutput can be used to access the graphics
+            this.graphicComposer.render();
+        }
     }
 
     calculateAreas(positions, scene) {

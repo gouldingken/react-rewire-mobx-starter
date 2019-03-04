@@ -11,6 +11,7 @@ import CubemapReprojector from "./projections/CubemapReprojector";
 import {BoxGeometry, GLTFExporter, Matrix4, Mesh, Vector3} from "three-full";
 import AnimatedParticles from "./AnimatedParticles";
 import ViewsDataHandler from "../ViewsDataHandler";
+import AverageFrames from "./effects/AverageFrames";
 
 export default class ThreeAppFirstPerson extends ThreeApp {
 
@@ -33,12 +34,18 @@ export default class ThreeAppFirstPerson extends ThreeApp {
         this.reprojector = new CubemapReprojector(this.renderer, 512, channels, true, true);
         this.viewDataReader = new ViewDataReader(this.scene, this.reprojector);
 
+        this.averageFrames = new AverageFrames(this.renderer, this.reprojector.width, this.reprojector.height);
 
         this.animatedPointCloud = new AnimatedParticles(ViewsDataHandler.ANIMATED_POINTS_COUNT);
         let animatePointCloudObject = this.animatedPointCloud.getObject();
         this.addToScene(animatePointCloudObject);
 
         this.dataHandler.initialize(this);
+
+        this.compositeViewPositions = {
+            index: 0,
+            points: []
+        };
 
         this.enableMouseInteraction(4);
     };
@@ -91,13 +98,15 @@ export default class ThreeAppFirstPerson extends ThreeApp {
     updateScene() {
         this.studyPos = this.nextStudyPos();
         this.cubeCamPos.position.copy(this.getStudyPos());
-        this.emit('selection-positions', [this.toScreenPosition( this.cubeCamPos.position)]);
-        this.readData();
+        if (this.viewDataReader.enabled) {
+            this.readData();
+        }
 
         if (this.animatedPointCloud) {
             let animationSpeed = 0.1;
             this.animatedPointCloud.step(animationSpeed);
         }
+        this.emit('scene-update');
     }
 
     nextStudyPos() {
@@ -142,6 +151,13 @@ export default class ThreeAppFirstPerson extends ThreeApp {
         const topPaneHeight = this.size.width / this.reprojector.aspectRatio;
         const split = 1 - topPaneHeight / this.size.height;
 
+        let cameraPos = this.getStudyPos();
+        if (this.compositeViewPositions) {
+            if (this.compositeViewPositions.points.length > this.compositeViewPositions.index) {
+                cameraPos = this.compositeViewPositions.points[this.compositeViewPositions.index];
+            }
+        }
+
         // this.renderer.render(this.scene, this.camera);
         const camera = this.camera;
         const renderer = this.renderer;
@@ -169,7 +185,20 @@ export default class ThreeAppFirstPerson extends ThreeApp {
                 height: (1 - split),
                 render: (width, height) => {
                     this.showExtras(false);
-                    this.reprojector.display(this.getStudyPos(), scene);
+
+                    if (this.compositeViewPositions.points.length > 0) {
+                        if (this.compositeViewPositions.index === 0) {
+                            this.averageFrames.clear();
+                        }
+                        this.reprojector.renderLambert(cameraPos, scene, false);
+                        this.averageFrames.render(this.reprojector.graphicsOutput, this.compositeViewPositions.points.length);
+                        if (this.compositeViewPositions.points.length > this.compositeViewPositions.index) {
+                            this.compositeViewPositions.index++;
+                        }
+                    } else {
+                        this.averageFrames.clear();
+                        this.reprojector.display(cameraPos, scene);
+                    }
                 }
             }
         ];
@@ -189,6 +218,9 @@ export default class ThreeAppFirstPerson extends ThreeApp {
             renderer.setScissorTest(true);
             view.render(width, height);
         });
+
+
+
     }
 
     addPoints(points) {
@@ -202,7 +234,7 @@ export default class ThreeAppFirstPerson extends ThreeApp {
             v3Arr.push(v);
         });
         this.pointClouds.push(pointCloud);
-        return {pointCloud:pointCloud, points:v3Arr};
+        return {pointCloud: pointCloud, points: v3Arr};
     }
 
     // removePoints(points) {

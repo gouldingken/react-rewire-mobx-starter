@@ -67,9 +67,14 @@ export default class SceneData {
                         uiStore.setSelectionPoints('3d', planarSelection.matchingPoints);
                         // this.threeApp.debugPlane(planarSelection.plane, '#ff0000');
                         // this.threeApp.debugPoints([corner1, corner2, planarSelection.corner3], '#ff0000');
+
+                        this.threeApp.compositeViewPositions = {points: planarSelection.matchingPoints, index: 0};
                     }
                 }
+                // this.threeApp.viewDataReader.enabled = false;//don't read points in this mode (or support multiple points to enable this...)
             } else {
+                this.threeApp.compositeViewPositions = {points: [], index: 0};
+                this.threeApp.viewDataReader.enabled = true;
                 uiStore.setSelectionPoints('3d', [this.dataHandler.activeStudyPoints[index]]);
             }
 
@@ -80,10 +85,8 @@ export default class SceneData {
                 uiStore.setCurrentStudyPoint(index);
             }
         });
-        this.threeApp.on('selection-positions', (points2D) => {
+        this.threeApp.on('scene-update', () => {
             uiStore.setSelectionPoints('2d', this.threeApp.toScreenPositions(uiStore.selectionPoints['3d']));
-
-            //TEMP uiStore.setSelectionPoints2D(points2D);
         });
 
         autorun(() => {
@@ -395,6 +398,7 @@ export default class SceneData {
                 o.visible = !o.userData.excluded;//some objects visibility will be overriden in ThreeApp
             }
         });
+        this.threeApp.compositeViewPositions.index = 0;//need to rerender
     }
 
     updateActiveStudyPoints(selectedOptions) {
@@ -421,6 +425,7 @@ export default class SceneData {
         this.optionsObjects.forEach((o, i) => {
             o.userData.hiddenByOption = !SceneData.optionsMatch(o.userData.options, selectedOptions);
         });
+
         this.setVisibility();
     }
 

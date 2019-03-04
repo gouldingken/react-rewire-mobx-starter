@@ -9,6 +9,7 @@ export default class ViewDataReader {
 
     constructor(scene, reprojector) {
         this.scene = scene;
+        this.enabled = true;
         this.reprojector = reprojector;
         this.cylinderMode = true;
         this.obstructionMeshes = [];
@@ -26,7 +27,8 @@ export default class ViewDataReader {
     showObstructionMeshes(visible) {
         if (!this.obstructionMeshes) return;
         this.obstructionMeshes.forEach(function (mesh, i) {
-            mesh.visible = visible && !mesh.userData.excluded;;
+            mesh.visible = visible && !mesh.userData.excluded;
+            ;
         });
 
     }
@@ -57,17 +59,20 @@ export default class ViewDataReader {
 
         const channels = ['r', 'g', 'b'];
         for (let i = 0; i < readingList.length; i++) {
-            const baseVals = this.reportCounts(pixelSets.base[i]);
-            const obstructedVals = this.reportCounts(pixelSets.obstructed[i]);
-            const sensor = readingList[i];
-            sensor.values = {};
-            channels.forEach(function (c, j) {
-                const v1 = baseVals[c];
-                const v2 = obstructedVals[c];
-                sensor.values['c' + (j + 1)] = {o: v2, f: v1};
-            });
+            if (pixelSets.base.length > 0 && pixelSets.obstructed.length > 0) {
+                const baseVals = this.reportCounts(pixelSets.base[i]);
+                const obstructedVals = this.reportCounts(pixelSets.obstructed[i]);
+                const sensor = readingList[i];
+                sensor.values = {};
+                channels.forEach(function (c, j) {
+                    const v1 = baseVals[c];
+                    const v2 = obstructedVals[c];
+                    sensor.values['c' + (j + 1)] = {o: v2, f: v1};
+                });
 
-            sensor.maxPixel = obstructedVals.maxPixel;
+                sensor.maxPixel = obstructedVals.maxPixel;
+            }
+
         }
     }
 
