@@ -46,44 +46,49 @@ export default class SceneData {
         });
     };
 
+    selectPoints(point, multipleMode) {
+        const {uiStore} = this.store;
+
+        const index = this.dataHandler.findNearestPoint(point);
+
+        if (multipleMode) {
+            //TODO should use 'shift' click or different mode
+            if (uiStore.lastPickedPoint) {
+                const index1 = this.dataHandler.findNearestPoint(uiStore.lastPickedPoint);
+                const index2 = this.dataHandler.findNearestPoint(point);
+
+                if (index1 >= 0 && index2 >= 0) {
+                    let corner1 = this.dataHandler.activeStudyPoints[index1];
+                    let corner2 = this.dataHandler.activeStudyPoints[index2];
+                    const planarSelection = new PlanarSelection(corner1, corner2);
+                    const boundsTolerance = Math.min(uiStore.pointOptions.height, uiStore.pointOptions.spacing / 2) - 0.5;
+                    planarSelection.findPlanarPointsBetween(this.dataHandler.activeStudyPoints, 1, boundsTolerance);
+                    uiStore.setSelectionPoints('3d', planarSelection.matchingPoints);
+                    // this.threeApp.debugPlane(planarSelection.plane, '#ff0000');
+                    // this.threeApp.debugPoints([corner1, corner2, planarSelection.corner3], '#ff0000');
+
+                    this.threeApp.compositeViewPositions = {points: planarSelection.matchingPoints, index: 0};
+                }
+            }
+            // this.threeApp.viewDataReader.enabled = false;//don't read points in this mode (or support multiple points to enable this...)
+        } else {
+            this.threeApp.compositeViewPositions = {points: [], index: 0};
+            this.threeApp.viewDataReader.enabled = true;
+            uiStore.setSelectionPoints('3d', [this.dataHandler.activeStudyPoints[index]]);
+        }
+
+        uiStore.setLastPickedPoint(point);
+        if (index >= 0) {
+            //TODO support multiple selection if CTRL key
+            uiStore.setCurrentStudyPoint(index);
+        }
+    }
+
     setupWatchers() {
         const {targetStore, uiStore, optionsStore, readingsStore} = this.store;
 
         this.threeApp.on('point-hit', (point, e) => {
-            const index = this.dataHandler.findNearestPoint(point);
-
-            if (e.shiftKey) {
-                //TODO should use 'shift' click or different mode
-                if (uiStore.lastPickedPoint) {
-                    const index1 = this.dataHandler.findNearestPoint(uiStore.lastPickedPoint);
-                    const index2 = this.dataHandler.findNearestPoint(point);
-
-                    if (index1 >= 0 && index2 >= 0) {
-                        let corner1 = this.dataHandler.activeStudyPoints[index1];
-                        let corner2 = this.dataHandler.activeStudyPoints[index2];
-                        const planarSelection = new PlanarSelection(corner1, corner2);
-                        const boundsTolerance = Math.min(uiStore.pointOptions.height, uiStore.pointOptions.spacing / 2) - 0.5;
-                        planarSelection.findPlanarPointsBetween(this.dataHandler.activeStudyPoints, 1, boundsTolerance);
-                        uiStore.setSelectionPoints('3d', planarSelection.matchingPoints);
-                        // this.threeApp.debugPlane(planarSelection.plane, '#ff0000');
-                        // this.threeApp.debugPoints([corner1, corner2, planarSelection.corner3], '#ff0000');
-
-                        this.threeApp.compositeViewPositions = {points: planarSelection.matchingPoints, index: 0};
-                    }
-                }
-                // this.threeApp.viewDataReader.enabled = false;//don't read points in this mode (or support multiple points to enable this...)
-            } else {
-                this.threeApp.compositeViewPositions = {points: [], index: 0};
-                this.threeApp.viewDataReader.enabled = true;
-                uiStore.setSelectionPoints('3d', [this.dataHandler.activeStudyPoints[index]]);
-            }
-
-
-            uiStore.setLastPickedPoint(point);
-            if (index >= 0) {
-                //TODO support multiple selection if CTRL key
-                uiStore.setCurrentStudyPoint(index);
-            }
+            this.selectPoints(point, e.shiftKey);
         });
         this.threeApp.on('scene-update', () => {
             uiStore.setSelectionPoints('2d', this.threeApp.toScreenPositions(uiStore.selectionPoints['3d']));
@@ -118,6 +123,19 @@ export default class SceneData {
             this.updateStudyPoint(uiStore.studyPoints.current, uiStore.selectedReviewTarget, uiStore.valueRampMultiplier);
         });
 
+        autorun(() => {
+            this.updateMaterials(uiStore.selectionPoints['3d']);
+        });
+    }
+
+    updateMaterials(selectionPoints3D) {
+        const flat = selectionPoints3D.length > 1;
+        const flatMat = this.threeApp.getColoredMaterial('#21212c', 1, {basicMaterial: true});
+        this.viewBlockers.forEach((obj, i) => {
+            obj.material = (flat) ? flatMat : this.threeApp.getColoredMaterial(obj.userData.meta.color);
+
+
+        });
     }
 
 
