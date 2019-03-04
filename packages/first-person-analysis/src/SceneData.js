@@ -116,7 +116,7 @@ export default class SceneData {
 
         autorun(() => {
             // console.log('AUTORUN '+JSON.stringify(targetStore.viewTargets))
-            this.setReadings(uiStore.mode, readingsStore.readingSets, uiStore.selectedReviewTarget, optionsStore.selectedOptions, uiStore.valueRampMultiplier);
+            this.setReadings(uiStore.mode, readingsStore.readingSets, uiStore.selectedReviewTarget, optionsStore.selectedOptions, uiStore.valueRampMultiplier, uiStore.pointCloudOptions.pointSize);
         });
 
         autorun(() => {
@@ -124,12 +124,12 @@ export default class SceneData {
         });
 
         autorun(() => {
-            this.updateMaterials(uiStore.selectionPoints['3d']);
+            this.updateMaterials(uiStore.selectionPoints['3d'], uiStore.reviewDarkBlockers);
         });
     }
 
-    updateMaterials(selectionPoints3D) {
-        const flat = selectionPoints3D.length > 1;
+    updateMaterials(selectionPoints3D, reviewDarkBlockers) {
+        const flat = selectionPoints3D.length > 1 || reviewDarkBlockers;
         const flatMat = this.threeApp.getColoredMaterial('#21212c', 1, {basicMaterial: true});
         this.viewBlockers.forEach((obj, i) => {
             obj.material = (flat) ? flatMat : this.threeApp.getColoredMaterial(obj.userData.meta.color);
@@ -176,7 +176,7 @@ export default class SceneData {
         };
     }
 
-    setReadings(mode, readingSets, selectedReviewTarget, selectedOptions, valueRampMultiplier) {
+    setReadings(mode, readingSets, selectedReviewTarget, selectedOptions, valueRampMultiplier, pointSize) {
         if (mode !== 'review') return;//optimization since we can't see the point cloud
         const pointProperties = [];
         const {targetStore, uiStore, optionsStore, readingsStore} = this.store;
@@ -193,6 +193,7 @@ export default class SceneData {
             let val = 0;
             Object.keys(readingSet.readings).forEach((readingId) => {
                 const reading = readingSet.readings[readingId];
+                if (!reading.position) return;
                 Object.keys(reading.values).forEach((c) => {
                     const channelId = targetStore.getIdForChannel(c);
                     if (channelId === selectedReviewTarget) {
@@ -205,7 +206,7 @@ export default class SceneData {
                     'z': reading.position.z,
                     'a': 1,
                     'color': ramp(val),
-                    'size': 5,
+                    'size': pointSize,
                 });
             });
 
@@ -216,7 +217,7 @@ export default class SceneData {
                 'y': 0,
                 'z': 0,
                 'a': 0,
-                'color': '#00000',
+                'color': '#000000',
                 'size': 1,
             });
         }
@@ -225,6 +226,7 @@ export default class SceneData {
     }
 
     setMode(mode, selectedReviewTarget) {
+
         if (mode === 'review') {
             this.threeApp.renderer.setClearColor('#444444');
             this.threeApp.animatedPointCloud.particles.userData.hiddenByMode = false;
@@ -472,18 +474,14 @@ export default class SceneData {
             uiStore: uiStore.getMeta(),
             readingsStore: readingsStore.getMeta(),
         };
-        //HACK the version of three-full doesn't support userData on scene (it's been fixed in a newer version of ThreeJS)
-        //for now we store metaData on an object!
-        //Update is pending: https://github.com/Itee/three-full/issues/21
-        // scene.userData.metaData = metaData;
-        this.threeApp.cubeCamPos.userData.metaData = metaData;
+        scene.userData.metaData = metaData;
         FilePersist.saveScene(scene, 'viewPoints.gltf')
     }
 
     loadFile(filePath) {
         FilePersist.loadScene(filePath, (scene) => {
             const {targetStore, uiStore, optionsStore, readingsStore} = this.store;
-            let metaData;
+            let metaData = scene.userData.metaData;
             // let metaData = scene.userData.metaData; //HACK (see note above)
             const objectsBySasType = {};
             let cnt = 0;
@@ -492,9 +490,6 @@ export default class SceneData {
             scene.children.forEach((child, i) => {
                 if (child.userData.dontPersist) {
                     objectsToRemove.push(child);
-                }
-                if (child.userData.metaData) {
-                    metaData = child.userData.metaData;//HACK (see note above)
                 }
                 if (child.userData.options) {
                     this.controlledObjects.push(child);

@@ -135,14 +135,25 @@ export default class SidePanel extends React.Component {
                         <CollapsiblePane store={store} title={'Charts'} panelId={'charts'}>
                             <ReviewChart dataHandler={dataHandler} store={store} width={270}/>
                         </CollapsiblePane>
-                        <CollapsiblePane store={store} title={'Color Ramp'} panelId={'color-ramp'}>
-                            <div className={'slider-label'}>Intensity: {store.uiStore.valueRampMultiplier}</div>
+                        <CollapsiblePane store={store} title={'Point Cloud Display'} panelId={'point-cloud-display'}>
+                            <div className={'slider-label'}>Color Intensity: {store.uiStore.valueRampMultiplier}</div>
                             <Slider min={0.1} max={4} step={0.1} value={store.uiStore.valueRampMultiplier}
                                     onChange={(v) => {
                                         const nearest = Math.round(v * 10) / 10;//prevent floating point weirdness
                                         store.uiStore.setValueRampMultiplier(nearest);
                                     }}
                             />
+                            <div className={'slider-label'}>Point Size: {store.uiStore.pointCloudOptions.pointSize}</div>
+
+                            <Slider min={1} max={20} step={0.5} value={store.uiStore.pointCloudOptions.pointSize}
+                                    onChange={(v) => {
+                                        const nearest = Math.round(v * 2) / 2;//prevent floating point weirdness
+                                        store.uiStore.setPointCloudOptions({pointSize: nearest});
+                                    }}
+                            />
+
+                            <Checkbox label={'Lights Out'} isChecked={store.uiStore.reviewDarkBlockers}
+                                      onChange={(checked) => store.uiStore.setReviewDarkBlockers(checked)}/>
                         </CollapsiblePane>
                     </If>
                     <CollapsiblePane store={store} title={'View Blockers'} panelId={'blockers'}>
@@ -175,7 +186,10 @@ export default class SidePanel extends React.Component {
                                                  progress={store.readingsStore.readingsCount}/>
                                     <div style={{marginTop: 8}}>
                                         <button className={'action-btn'}
-                                                onClick={event => store.uiStore.setIsPlaying(true)}>Run
+                                                onClick={event => {
+                                                    store.uiStore.setCurrentStudyPoint(0);
+                                                    store.uiStore.setIsPlaying(true);
+                                                }}>Run
                                         </button>
                                         <button className={'action-btn'}
                                                 onClick={event => store.uiStore.setIsPlaying(false)}>Pause

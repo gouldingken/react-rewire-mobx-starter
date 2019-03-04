@@ -63,6 +63,13 @@ export default class ThreeAppFirstPerson extends ThreeApp {
         return this.pointClouds;
     }
 
+    get clippingPlanes() {
+        return {
+            near: 1,
+            far: 5000,
+        };
+    }
+
     setStudyCubeColor(color) {
         this.cubeCamPos.material = this.getColoredMaterial(color, 1);
     }

@@ -20,6 +20,8 @@ export default class UiStore {
 
     isPlaying = false;
     blockersVisible = true;
+    reviewDarkBlockers = false;
+    pointCloudOptions = {pointSize: 5};
 
     // targetChartMultiplier =  1 / ReadingsStore.sunAreaOfFullSphere;
     targetChartMax = 5000;
@@ -76,6 +78,10 @@ export default class UiStore {
         this.blockersVisible = val;
     }
 
+    setReviewDarkBlockers(val) {
+        this.reviewDarkBlockers = val;
+    }
+
     setTargetChartMax(val) {
         this.targetChartMax = val;
     }
@@ -83,6 +89,12 @@ export default class UiStore {
     setPointOptions(updates) {
         Object.keys(updates).forEach((k) => {
             this.pointOptions[k] = updates[k];
+        });
+    }
+
+    setPointCloudOptions(updates) {
+        Object.keys(updates).forEach((k) => {
+            this.pointCloudOptions[k] = updates[k];
         });
     }
 
@@ -113,6 +125,7 @@ export default class UiStore {
             selectedReviewTarget: this.selectedReviewTarget,
             valueRampMultiplier: this.valueRampMultiplier,
             pointOptions: this.pointOptions,
+            pointCloudOptions: this.pointCloudOptions,
             surfaceOptions: this.surfaceOptions,
             blockersVisible: this.blockersVisible,
         };
@@ -122,6 +135,7 @@ export default class UiStore {
         this.selectedReviewTarget = meta.selectedReviewTarget;
         this.valueRampMultiplier = meta.valueRampMultiplier;
         this.pointOptions = meta.pointOptions;
+        this.pointCloudOptions = meta.pointCloudOptions;
         this.surfaceOptions = meta.surfaceOptions;
         this.blockersVisible = meta.blockersVisible;
     }
@@ -138,8 +152,10 @@ decorate(UiStore, {
     blockersVisible: observable,
     targetChartMax: observable,
     pointOptions: observable,
+    pointCloudOptions: observable,
     surfaceOptions: observable,
     selectionPoints: observable,
+    reviewDarkBlockers: observable,
     setCurrentStudyPoint: action,
     selectNearestStudyPoint: action,
     setStudyPointCount: action,
@@ -148,10 +164,12 @@ decorate(UiStore, {
     setBlockersVisible: action,
     setTargetChartMax: action,
     setPointOptions: action,
+    setPointCloudOptions: action,
     setSurfaceOptions: action,
     setMode: action,
     setSelectedReviewTarget: action,
     setValueRampMultiplier: action,
     setLastPickedPoint: action,
     setSelectionPoints: action,
+    setReviewDarkBlockers: action,
 });

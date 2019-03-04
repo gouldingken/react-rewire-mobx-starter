@@ -10,6 +10,7 @@ import SceneData from "./SceneData";
 import MainStore from "./store/MainStore";
 import MockCommands from "./mocks/MockCommands";
 import ViewsDataHandler from "./ViewsDataHandler";
+import DeepLinking from "./DeepLinking";
 
 const store = new MainStore();
 const dataHandler = new ViewsDataHandler(store);
@@ -18,7 +19,9 @@ store.sceneData = new SceneData(store, dataHandler);
 
 window.Interop = new Interop(store.sceneData);
 
-new MockCommands(store, window.Interop, dataHandler);
+new DeepLinking(store);
+
+// new MockCommands(store, window.Interop, dataHandler);
 
 //load 'C:\Users\kgoulding\Documents\Development\Ruby\SpeckleRuby\speckle_ruby_sketchup_direct\ui\speckle_view.rb'
 //SpeckleView.new.show_web_dialog

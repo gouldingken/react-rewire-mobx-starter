@@ -66,8 +66,8 @@ export default class ThreeApp extends Emitter {
         this.camera = new PerspectiveCamera(
             75,
             width / height,
-            0.01,
-            10000
+            this.clippingPlanes.near,
+            this.clippingPlanes.far
         );
         this.camera.position.x = 10;
         this.camera.position.z = 10;
@@ -774,5 +774,12 @@ export default class ThreeApp extends Emitter {
             this.debugPointsArr.push(arrowHelper);
         });
 
+    }
+
+    get clippingPlanes() {
+        return {
+            near: 0.01,
+            far: 10000,
+        };
     }
 }
