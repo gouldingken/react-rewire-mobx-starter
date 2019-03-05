@@ -38,7 +38,7 @@ export default class LineChart extends CanvasComponent {
 
         this.drawYLines(size);
         data.forEach((series, i) => {
-            this.drawSeries(series.data, size, series.color, series.id === selectedSeriesId, series.selectedX);
+            this.drawSeries(series.data, size, series.color, series.id === selectedSeriesId, series.selectedXs);
         });
     }
 
@@ -66,7 +66,7 @@ export default class LineChart extends CanvasComponent {
         };
     }
 
-    drawSeries(data, size, color, highlight, selectedX) {
+    drawSeries(data, size, color, highlight, selectedXs) {
         const plot = this.plotter(size);
         this.ctx.save();
         this.ctx.beginPath();
@@ -79,7 +79,7 @@ export default class LineChart extends CanvasComponent {
             } else {
                 this.ctx.lineTo(pos.x, pos.y);
             }
-            if (datum[0] === selectedX) {
+            if (selectedXs.indexOf(datum[0]) >= 0) {
                 circles.push({cx: pos.x, cy: pos.y, r: (highlight) ? 4 : 2});
             }
         });

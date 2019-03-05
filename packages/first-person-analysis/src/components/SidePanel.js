@@ -235,13 +235,18 @@ class ReviewChart extends React.Component {
             selectedOption = store.optionsStore.selectedOptions[0];
         }
         let selectedMetaData = [];
-        let structuredChartData = ComparePane.structureChartData(optionData, store.uiStore.studyPoints.current);
+        let structuredChartData = ComparePane.structureChartData(optionData, store.uiStore.selectionPoints.indices);
+        let selectedIndices = [];
         let selectedIndex = -1;
         structuredChartData.forEach((series, i) => {
             if (selectedOption !== series.id) return;
             selectedMetaData = series.metaData;
-            selectedIndex = series.selectedX;
+            selectedIndices = series.selectedXs;
         });
+
+        if (selectedIndices.length === 1) {
+            selectedIndex = selectedIndices[0];
+        }
 
 
         const shift = (e, amt) => {

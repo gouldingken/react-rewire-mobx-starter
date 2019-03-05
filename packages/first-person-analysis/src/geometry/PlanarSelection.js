@@ -41,7 +41,7 @@ export default class PlanarSelection {
             Math.max(corner1.z, corner2.z),
         );
 
-        this.matchingPoints =  points.filter((pt)=> {
+        this.matchingPoints = points.filter((pt)=> {
             if (pt.x < min.x - boundsTolerance || pt.x > max.x + boundsTolerance) return false;
             if (pt.y < min.y - boundsTolerance || pt.y > max.y + boundsTolerance) return false;
             if (pt.z < min.z - boundsTolerance || pt.z > max.z + boundsTolerance) return false;

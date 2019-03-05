@@ -20,16 +20,16 @@ export default class ComparePane extends React.Component {
         });
     }
 
-    static structureChartData(optionData, selectedIndex) {
+    static structureChartData(optionData, selectedIndices) {
         const chartData = [];
         optionData.forEach((optionDatum, i) => {
             if (!optionDatum.unobstructedPoints) return;
             const chartXYs = [];
             const metaData = [];
-            let selectedX = -1;
+            const selectedXs = [];
             optionDatum.unobstructedPoints.forEach((p, i) => {
-                if (selectedIndex != null && p.i === selectedIndex) {
-                    selectedX = i;
+                if (selectedIndices != null && selectedIndices.indexOf(p.i) >= 0) {
+                    selectedXs.push(i);
                 }
                 metaData.push({idx: p.i});
                 chartXYs.push([i, p.v]);
@@ -41,7 +41,7 @@ export default class ComparePane extends React.Component {
                 color: option.chartColor,
                 data: chartXYs,
                 metaData: metaData,
-                selectedX: selectedX
+                selectedXs: selectedXs
             });
         });
         return chartData;

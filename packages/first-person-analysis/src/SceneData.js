@@ -48,22 +48,27 @@ export default class SceneData {
 
     selectPoints(point, multipleMode) {
         const {uiStore} = this.store;
+        const {dataHandler} = this;
 
-        const index = this.dataHandler.findNearestPoint(point);
+        const index = dataHandler.findNearestPoint(point);
 
         if (multipleMode) {
             //TODO should use 'shift' click or different mode
             if (uiStore.lastPickedPoint) {
-                const index1 = this.dataHandler.findNearestPoint(uiStore.lastPickedPoint);
-                const index2 = this.dataHandler.findNearestPoint(point);
+                const index1 = dataHandler.findNearestPoint(uiStore.lastPickedPoint);
+                const index2 = dataHandler.findNearestPoint(point);
 
                 if (index1 >= 0 && index2 >= 0) {
-                    let corner1 = this.dataHandler.activeStudyPoints[index1];
-                    let corner2 = this.dataHandler.activeStudyPoints[index2];
+                    let corner1 = dataHandler.activeStudyPoints[index1];
+                    let corner2 = dataHandler.activeStudyPoints[index2];
                     const planarSelection = new PlanarSelection(corner1, corner2);
                     const boundsTolerance = Math.min(uiStore.pointOptions.height, uiStore.pointOptions.spacing / 2) - 0.5;
-                    planarSelection.findPlanarPointsBetween(this.dataHandler.activeStudyPoints, 1, boundsTolerance);
+                    planarSelection.findPlanarPointsBetween(dataHandler.activeStudyPoints, 1, boundsTolerance);
                     uiStore.setSelectionPoints('3d', planarSelection.matchingPoints);
+                    uiStore.setSelectionPoints('indices', planarSelection.matchingPoints.map((pt)=> {
+                        return dataHandler.activeStudyPoints.indexOf(pt);
+                    }));
+
                     // this.threeApp.debugPlane(planarSelection.plane, '#ff0000');
                     // this.threeApp.debugPoints([corner1, corner2, planarSelection.corner3], '#ff0000');
 
@@ -74,7 +79,8 @@ export default class SceneData {
         } else {
             this.threeApp.compositeViewPositions = {points: [], index: 0};
             this.threeApp.viewDataReader.enabled = true;
-            uiStore.setSelectionPoints('3d', [this.dataHandler.activeStudyPoints[index]]);
+            uiStore.setSelectionPoints('3d', [dataHandler.activeStudyPoints[index]]);
+            uiStore.setSelectionPoints('indices', [index]);
         }
 
         uiStore.setLastPickedPoint(point);
@@ -418,7 +424,13 @@ export default class SceneData {
                 o.visible = !o.userData.excluded;//some objects visibility will be overriden in ThreeApp
             }
         });
-        this.threeApp.compositeViewPositions.index = 0;//need to rerender
+        this.rerenderCompositeViews();
+    }
+
+    rerenderCompositeViews() {
+        if (!this.threeApp || !this.threeApp.compositeViewPositions) return;
+        this.threeApp.compositeViewPositions.index = 0;
+
     }
 
     updateActiveStudyPoints(selectedOptions) {
@@ -488,24 +500,32 @@ export default class SceneData {
 
             const objectsToRemove = [];
             scene.children.forEach((child, i) => {
+                // console.log('CHILD', child);
+                // // this.threeApp.scene.add(child);
+                // objectsToRemove.push(child);
+
                 if (child.userData.dontPersist) {
                     objectsToRemove.push(child);
                 }
                 if (child.userData.options) {
+                    // this.threeApp.scene.add(child);
                     this.controlledObjects.push(child);
                     this.optionsObjects.push(child);
                 }
 
                 if (child.userData.isViewBlocker) {
+                    // this.threeApp.scene.add(child);
                     this.viewBlockers.push(child);
                     this.threeApp.viewDataReader.addObstructionMesh(child);
                 }
 
                 if (child.userData.isViewTarget) {
+                    // this.threeApp.scene.add(child);
                     this.controlledObjects.push(child);
                 }
 
                 if (child.userData.studyPoints) {
+                    // this.threeApp.scene.add(child);
                     console.log(child.uuid + '  ' + child.name + ' LOADED POINTS ' + child.userData.options.join('|') + ' : ' + child.userData.studyPoints.length);
                     cnt += child.userData.studyPoints.length;
                     this.studyPointSets.push({
@@ -519,6 +539,7 @@ export default class SceneData {
 
 
                 if (child.userData.sasType) {
+                    // this.threeApp.scene.add(child);
                     Object.keys(child.userData.sasType).forEach((type) => {
                         if (child.userData.sasType[type]) {
                             if (!objectsBySasType[type]) objectsBySasType[type] = [];
@@ -526,8 +547,25 @@ export default class SceneData {
                         }
                     });
                 }
-                this.threeApp.scene.add(scene);
+
+                // console.log('CHILD', child);
+                if (child.type === 'Points') {
+                    // console.log('...remove points');
+                    if (!child.userData.studyPoints) {
+                        objectsToRemove.push(child);
+                    }
+                    // objectsToRemove.push(child);
+
+                }
+
             });
+
+            objectsToRemove.forEach((obj, i) => {
+                scene.remove(obj);
+            });
+
+
+            this.threeApp.scene.add(scene);
 
             console.log('TOTAL POINTS ' + cnt);
 
@@ -538,7 +576,8 @@ export default class SceneData {
                 readingsStore.setMeta(metaData.readingsStore);
             }
 
-            this.threeApp.removeObjects(objectsToRemove);
+
+            // this.threeApp.removeObjects(objectsToRemove); TEMP
         })
     }
 

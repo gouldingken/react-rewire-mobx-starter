@@ -19,7 +19,7 @@ store.sceneData = new SceneData(store, dataHandler);
 
 window.Interop = new Interop(store.sceneData);
 
-new DeepLinking(store);
+// new DeepLinking(store);
 
 // new MockCommands(store, window.Interop, dataHandler);
 

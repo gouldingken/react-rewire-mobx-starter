@@ -29,6 +29,7 @@ export default class UiStore {
     surfaceOptions = {density: 50, height: 5};
 
     selectionPoints = {
+        'indices': [],
         '2d': [],
         '3d': [],
     };
@@ -122,6 +123,7 @@ export default class UiStore {
 
     getMeta() {
         return {
+            mode: this.mode,
             selectedReviewTarget: this.selectedReviewTarget,
             valueRampMultiplier: this.valueRampMultiplier,
             pointOptions: this.pointOptions,
@@ -132,6 +134,7 @@ export default class UiStore {
     }
 
     setMeta(meta) {
+        this.mode = meta.mode;
         this.selectedReviewTarget = meta.selectedReviewTarget;
         this.valueRampMultiplier = meta.valueRampMultiplier;
         this.pointOptions = meta.pointOptions;
