@@ -17,11 +17,12 @@ export default class UiStore {
     panelStates = {};
     studyPoints = {current: 0, count: 0};
     lastPickedPoint = null;
+    viewAngleDeg = 270;
 
     isPlaying = false;
     blockersVisible = true;
     reviewDarkBlockers = false;
-    pointCloudOptions = {pointSize: 5};
+    pointCloudOptions = {pointSize: 5, colorByDifference:false};
 
     // targetChartMultiplier =  1 / ReadingsStore.sunAreaOfFullSphere;
     targetChartMax = 5000;
@@ -109,6 +110,10 @@ export default class UiStore {
         this.mode = val;
     }
 
+    setViewAngleDeg(val) {
+        this.viewAngleDeg = val;
+    }
+
     setSelectedReviewTarget(val) {
         this.selectedReviewTarget = val;
     }
@@ -130,6 +135,7 @@ export default class UiStore {
             pointCloudOptions: this.pointCloudOptions,
             surfaceOptions: this.surfaceOptions,
             blockersVisible: this.blockersVisible,
+            reviewDarkBlockers: this.reviewDarkBlockers,
         };
     }
 
@@ -141,6 +147,7 @@ export default class UiStore {
         this.pointCloudOptions = meta.pointCloudOptions;
         this.surfaceOptions = meta.surfaceOptions;
         this.blockersVisible = meta.blockersVisible;
+        this.reviewDarkBlockers = meta.reviewDarkBlockers;
     }
 }
 
@@ -159,6 +166,7 @@ decorate(UiStore, {
     surfaceOptions: observable,
     selectionPoints: observable,
     reviewDarkBlockers: observable,
+    viewAngleDeg: observable,
     setCurrentStudyPoint: action,
     selectNearestStudyPoint: action,
     setStudyPointCount: action,
@@ -175,4 +183,5 @@ decorate(UiStore, {
     setLastPickedPoint: action,
     setSelectionPoints: action,
     setReviewDarkBlockers: action,
+    setViewAngleDeg: action,
 });

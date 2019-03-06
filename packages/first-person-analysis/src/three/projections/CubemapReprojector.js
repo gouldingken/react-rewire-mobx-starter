@@ -38,7 +38,7 @@ export default class CubemapReprojector {
         this.bgColor = (typeof bgColor === 'string') ? new Color(bgColor) : bgColor;
 
         this.cubeCamera = new CubeCamera(.1, 100000, 256);
-        this.cubeCamera.rotation.y = -Math.PI / 2;//rotate so that N is up
+        this.cubeCamera.rotation.y = -Math.PI / 2;
 
         this.numberOfReductions = 4;
 

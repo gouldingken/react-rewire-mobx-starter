@@ -92,6 +92,10 @@ export default class ThreeAppFirstPerson extends ThreeApp {
         }
     }
 
+    setViewAngle(deg) {
+        this.reprojector.cubeCamera.rotation.y = deg * Math.PI / 180;
+    }
+
     updatePoints(pointProperties) {
         this.animatedPointCloud.setProperties(pointProperties);
     }
@@ -227,7 +231,6 @@ export default class ThreeAppFirstPerson extends ThreeApp {
         });
 
 
-
     }
 
     addPoints(points) {
@@ -242,6 +245,16 @@ export default class ThreeAppFirstPerson extends ThreeApp {
         });
         this.pointClouds.push(pointCloud);
         return {pointCloud: pointCloud, points: v3Arr};
+    }
+
+    getMeta() {
+        return {
+            camera: this.saveCameraPos()
+        };
+    }
+    setMeta(meta) {
+        if (!meta || !meta.camera) return;
+        this.restoreCameraPos(meta.camera)
     }
 
     // removePoints(points) {

@@ -80,7 +80,7 @@ export default class LineChart extends CanvasComponent {
                 this.ctx.lineTo(pos.x, pos.y);
             }
             if (selectedXs.indexOf(datum[0]) >= 0) {
-                circles.push({cx: pos.x, cy: pos.y, r: (highlight) ? 4 : 2});
+                circles.push({cx: pos.x, cy: pos.y, r: (highlight) ? 4 : 3.5});
             }
         });
         if (this.endLineTick && pos) {

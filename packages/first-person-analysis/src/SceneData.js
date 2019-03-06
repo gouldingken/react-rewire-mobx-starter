@@ -53,7 +53,6 @@ export default class SceneData {
         const index = dataHandler.findNearestPoint(point);
 
         if (multipleMode) {
-            //TODO should use 'shift' click or different mode
             if (uiStore.lastPickedPoint) {
                 const index1 = dataHandler.findNearestPoint(uiStore.lastPickedPoint);
                 const index2 = dataHandler.findNearestPoint(point);
@@ -65,7 +64,7 @@ export default class SceneData {
                     const boundsTolerance = Math.min(uiStore.pointOptions.height, uiStore.pointOptions.spacing / 2) - 0.5;
                     planarSelection.findPlanarPointsBetween(dataHandler.activeStudyPoints, 1, boundsTolerance);
                     uiStore.setSelectionPoints('3d', planarSelection.matchingPoints);
-                    uiStore.setSelectionPoints('indices', planarSelection.matchingPoints.map((pt)=> {
+                    uiStore.setSelectionPoints('indices', planarSelection.matchingPoints.map((pt) => {
                         return dataHandler.activeStudyPoints.indexOf(pt);
                     }));
 
@@ -85,7 +84,6 @@ export default class SceneData {
 
         uiStore.setLastPickedPoint(point);
         if (index >= 0) {
-            //TODO support multiple selection if CTRL key
             uiStore.setCurrentStudyPoint(index);
         }
     }
@@ -126,11 +124,16 @@ export default class SceneData {
         });
 
         autorun(() => {
-            this.updateStudyPoint(uiStore.studyPoints.current, uiStore.selectedReviewTarget, uiStore.valueRampMultiplier);
+            this.updateStudyPoint(uiStore.studyPoints.current, readingsStore.readingSets, uiStore.selectedReviewTarget, optionsStore.selectedOptions, uiStore.valueRampMultiplier);
         });
 
         autorun(() => {
             this.updateMaterials(uiStore.selectionPoints['3d'], uiStore.reviewDarkBlockers);
+        });
+
+
+        autorun(() => {
+            this.threeApp.setViewAngle(uiStore.viewAngleDeg);
         });
     }
 
@@ -145,32 +148,61 @@ export default class SceneData {
     }
 
 
-    updateStudyPoint(index, selectedReviewTarget, valueRampMultiplier) {
+    updateStudyPoint(index, readingSets, selectedReviewTarget, selectedOptions, valueRampMultiplier) {
         const {targetStore, uiStore, optionsStore, readingsStore} = this.store;
-        targetStore.setCurrentValues(readingsStore.getReading(index));
-        const viewTarget = targetStore.viewTargets[selectedReviewTarget];
+        let reading = readingsStore.getReading(index);
+        targetStore.setCurrentValues(reading);
+
         const ramp = this.getRamp(selectedReviewTarget, valueRampMultiplier);
-        this.threeApp.setStudyCubeColor(ramp(viewTarget.currentPoint.unobstructed));
+        const viewTarget = targetStore.viewTargets[selectedReviewTarget];
+
+        let studyColor;
+        if (uiStore.pointCloudOptions.colorByDifference) {
+            if (selectedOptions.length !== 1) return;
+
+            const selectedOption = selectedOptions[0];
+            const comparisonsByPosition = this.getComparisonPoints(readingSets, selectedOption, targetStore, selectedReviewTarget);
+
+            const comparisonVal = comparisonsByPosition[SceneData.positionToKey(reading.position)] / ReadingsStore.sunAreaOfFullSphere;
+            studyColor = ramp(viewTarget.currentPoint.unobstructed / comparisonVal);
+        } else {
+            studyColor = ramp(viewTarget.currentPoint.unobstructed);
+        }
+
+        if (studyColor) {
+            this.threeApp.setStudyCubeColor(studyColor);
+        }
         // console.log(this.threeApp.getStudyPos());
     }
 
     setViewTargets(objectsToAdd, targetId) {
-        const {targetStore} = this.store;
+        const {targetStore, optionsStore} = this.store;
+        const activeOptions = optionsStore.selectedOptions;
+
         targetStore.deleteTargetObjects(targetId, (objects) => {
             this.threeApp.removeObjects(objects);
         });
         const threeObjects = this.threeApp.addObjects(objectsToAdd);
         threeObjects.forEach((obj, i) => {
-            this.controlledObjects.push(obj);
+            obj.userData.options = activeOptions;
+            this.addOptionObject(obj);
         });
         targetStore.setTargetObjects(targetId, threeObjects);
     }
 
     getRamp(selectedReviewTarget, valueRampMultiplier) {
-        const {targetStore} = this.store;
+        const {targetStore, uiStore} = this.store;
         const rampColor = targetStore.viewTargets[selectedReviewTarget].color;
 
-        const positiveScale = chroma.scale([
+        if (uiStore.pointCloudOptions.colorByDifference) {
+            return this.getDivergingRamp(valueRampMultiplier);
+        } else {
+            return this.getColoredRamp(rampColor, valueRampMultiplier);
+        }
+    }
+
+    getColoredRamp(rampColor, valueRampMultiplier) {
+        const colorScale = chroma.scale([
             '#333333',
             chroma(rampColor).darken(1.5).hex(),
             rampColor,
@@ -178,9 +210,46 @@ export default class SceneData {
         ]).mode('lch');
 
         return (v) => {
-            return positiveScale((v / 2000) * valueRampMultiplier).hex();
+            return colorScale((v / 2000) * valueRampMultiplier).hex();
         };
     }
+
+    getDivergingRamp(valueRampMultiplier) {
+        const equalValue = '#494980';
+        const negativeScale = chroma.scale([
+            equalValue,
+            '#a365ff',
+            '#ff76b1',
+        ]).mode('lch');
+
+        const positiveScale = chroma.scale([
+            equalValue,
+            '#689525',
+            '#e4ff76',
+        ]).mode('lch');
+
+
+        return (v) => {
+            if (v === 0) {
+                return '#333333';
+            }
+            if (v === 1) {
+                return equalValue;
+            }
+
+            if (v > 1) {
+                return positiveScale((v - 1) * valueRampMultiplier).hex()
+            } else {
+                return negativeScale((1 / v - 1) * valueRampMultiplier).hex()
+            }
+        };
+
+    }
+
+    static positionToKey(p) {
+        return p.x + '_' + p.y + '_' + p.z;
+    }
+
 
     setReadings(mode, readingSets, selectedReviewTarget, selectedOptions, valueRampMultiplier, pointSize) {
         if (mode !== 'review') return;//optimization since we can't see the point cloud
@@ -193,6 +262,12 @@ export default class SceneData {
 
         const ramp = this.getRamp(selectedReviewTarget, valueRampMultiplier);
 
+        let comparisonsByPosition = {};
+
+        if (uiStore.pointCloudOptions.colorByDifference) {
+            comparisonsByPosition = this.getComparisonPoints(readingSets, selectedOption, targetStore, selectedReviewTarget);
+        }
+
         Object.keys(readingSets).forEach((k) => {
             if (k !== selectedOption) return;
             const readingSet = readingSets[k];
@@ -200,12 +275,20 @@ export default class SceneData {
             Object.keys(readingSet.readings).forEach((readingId) => {
                 const reading = readingSet.readings[readingId];
                 if (!reading.position) return;
-                Object.keys(reading.values).forEach((c) => {
-                    const channelId = targetStore.getIdForChannel(c);
-                    if (channelId === selectedReviewTarget) {
-                        val = reading.values[c].o / ReadingsStore.sunAreaOfFullSphere;
-                    }
-                });
+                let divisor = ReadingsStore.sunAreaOfFullSphere;
+                if (uiStore.pointCloudOptions.colorByDifference) {
+                    divisor = comparisonsByPosition[SceneData.positionToKey(reading.position)];
+                }
+                if (divisor) {
+                    Object.keys(reading.values).forEach((c) => {
+                        const channelId = targetStore.getIdForChannel(c);
+                        if (channelId === selectedReviewTarget) {
+                            val = reading.values[c].o / divisor;
+                        }
+                    });
+                } else {
+                    val = 0;
+                }
                 pointProperties.push({
                     'x': reading.position.x,
                     'y': reading.position.y,
@@ -215,8 +298,9 @@ export default class SceneData {
                     'size': pointSize,
                 });
             });
-
         });
+
+
         while (pointProperties.length < ViewsDataHandler.ANIMATED_POINTS_COUNT) {
             pointProperties.push({
                 'x': 0,
@@ -229,6 +313,25 @@ export default class SceneData {
         }
 
         this.threeApp.updatePoints(pointProperties);
+    }
+
+    getComparisonPoints(readingSets, selectedOption, targetStore, selectedReviewTarget) {
+        const comparisonsByPosition = {};
+        Object.keys(readingSets).forEach((k) => {
+            if (k === selectedOption) return;//TODO provide better logic for which non-selected option is used for comparison...
+            const readingSet = readingSets[k];
+            Object.keys(readingSet.readings).forEach((readingId) => {
+                const reading = readingSet.readings[readingId];
+                if (!reading.position) return;
+                Object.keys(reading.values).forEach((c) => {
+                    const channelId = targetStore.getIdForChannel(c);
+                    if (channelId === selectedReviewTarget) {
+                        comparisonsByPosition[SceneData.positionToKey(reading.position)] = reading.values[c].o;
+                    }
+                });
+            });
+        });
+        return comparisonsByPosition;
     }
 
     setMode(mode, selectedReviewTarget) {
@@ -485,6 +588,7 @@ export default class SceneData {
             targetStore: targetStore.getMeta(),
             uiStore: uiStore.getMeta(),
             readingsStore: readingsStore.getMeta(),
+            threeApp: this.threeApp.getMeta(),
         };
         scene.userData.metaData = metaData;
         FilePersist.saveScene(scene, 'viewPoints.gltf')
@@ -498,19 +602,22 @@ export default class SceneData {
             const objectsBySasType = {};
             let cnt = 0;
 
-            const objectsToRemove = [];
+            const objectsToAdd = [];
             scene.children.forEach((child, i) => {
-                // console.log('CHILD', child);
-                // // this.threeApp.scene.add(child);
-                // objectsToRemove.push(child);
-
                 if (child.userData.dontPersist) {
-                    objectsToRemove.push(child);
+                    return;
                 }
+                if (child.type === 'Points') {
+                    if (!child.userData.studyPoints) {
+                        return;
+                    }
+                }
+
+                objectsToAdd.push(child);
+
                 if (child.userData.options) {
                     // this.threeApp.scene.add(child);
-                    this.controlledObjects.push(child);
-                    this.optionsObjects.push(child);
+                    this.addOptionObject(child);
                 }
 
                 if (child.userData.isViewBlocker) {
@@ -549,31 +656,25 @@ export default class SceneData {
                 }
 
                 // console.log('CHILD', child);
-                if (child.type === 'Points') {
-                    // console.log('...remove points');
-                    if (!child.userData.studyPoints) {
-                        objectsToRemove.push(child);
-                    }
-                    // objectsToRemove.push(child);
 
-                }
 
             });
 
-            objectsToRemove.forEach((obj, i) => {
-                scene.remove(obj);
+            objectsToAdd.forEach((obj, i) => {
+                this.threeApp.scene.add(obj);
             });
 
 
-            this.threeApp.scene.add(scene);
+            // this.threeApp.scene.add(scene);
 
-            console.log('TOTAL POINTS ' + cnt);
+            // console.log('TOTAL POINTS ' + cnt);
 
             if (metaData) {
                 optionsStore.setMeta(metaData.optionsStore);
                 targetStore.setMeta(metaData.targetStore, objectsBySasType);
                 uiStore.setMeta(metaData.uiStore);
                 readingsStore.setMeta(metaData.readingsStore);
+                this.threeApp.setMeta(metaData.threeApp)
             }
 
 

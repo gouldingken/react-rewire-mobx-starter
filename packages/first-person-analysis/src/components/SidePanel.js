@@ -61,6 +61,13 @@ export default class SidePanel extends React.Component {
                         <button className={'action-btn'}
                                 onClick={event => store.sceneData.centerView()}>Center View
                         </button>
+                        <div className={'slider-label'}>View Angle: {store.uiStore.viewAngleDeg}</div>
+
+                        <Slider min={0} max={360} step={1} value={store.uiStore.viewAngleDeg}
+                                onChange={(v) => {
+                                    store.uiStore.setViewAngleDeg(v);
+                                }}
+                        />
                         <If true={store.uiStore.mode === 'analyze'}>
                             <CollapsiblePane backgroundColor={'#666666'} store={store} title={'Outlines'}
                                              panelId={'points-outlines'} initCollapsed={true}>
@@ -143,7 +150,8 @@ export default class SidePanel extends React.Component {
                                         store.uiStore.setValueRampMultiplier(nearest);
                                     }}
                             />
-                            <div className={'slider-label'}>Point Size: {store.uiStore.pointCloudOptions.pointSize}</div>
+                            <div className={'slider-label'}>Point
+                                Size: {store.uiStore.pointCloudOptions.pointSize}</div>
 
                             <Slider min={1} max={20} step={0.5} value={store.uiStore.pointCloudOptions.pointSize}
                                     onChange={(v) => {
@@ -154,6 +162,9 @@ export default class SidePanel extends React.Component {
 
                             <Checkbox label={'Lights Out'} isChecked={store.uiStore.reviewDarkBlockers}
                                       onChange={(checked) => store.uiStore.setReviewDarkBlockers(checked)}/>
+                            <Checkbox label={'Color By Difference'}
+                                      isChecked={store.uiStore.pointCloudOptions.colorByDifference}
+                                      onChange={(checked) => store.uiStore.setPointCloudOptions({colorByDifference: checked})}/>
                         </CollapsiblePane>
                     </If>
                     <CollapsiblePane store={store} title={'View Blockers'} panelId={'blockers'}>

@@ -436,6 +436,7 @@ export default class ThreeApp extends Emitter {
         camToSave.controlCenter = this.controls.center.clone();
 
         console.log(JSON.stringify(camToSave));
+        return camToSave;
     }
 
     restoreCameraPos(savedState) {
