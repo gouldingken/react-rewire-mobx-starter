@@ -23,6 +23,18 @@ export default class ViewsDataHandler extends ADataHandler {
         }
         return this.store.uiStore.studyPoints.current;
     }
+
+    setCurrentStudyPoint(index, setLastPicked) {
+        const {uiStore} = this.store;
+        let studyPoint = this.getStudyPoint(index);
+        if (setLastPicked) {
+            uiStore.setLastPickedPoint(studyPoint);//treat like a user click so it persists
+        }
+        uiStore.setCurrentStudyPoint(index);
+        uiStore.setSelectionPoints('3d', [studyPoint]);
+        uiStore.setSelectionPoints('indices', [index]);
+    }
+
     setStudyPosData(sensor) {
         if (this.store.uiStore.mode !== 'analyze') return;//prevent modifying points when in 'review mode' - though this removes the fun chart watching...
         const index = this.store.uiStore.studyPoints.current;

@@ -1,5 +1,6 @@
 import {action, computed, decorate, observable} from "mobx";
 import ReadingsStore from "./ReadingsStore";
+import SceneData from "../SceneData";
 
 /**
  * Creates a new instance of TargetStore.
@@ -36,10 +37,19 @@ export default class TargetStore {
         return max;
     }
 
-    deleteTargetObjects(targetId, deleter) {
+    deleteTargetObjects(targetId, options, deleter) {
         const viewTarget = this.getViewTarget(targetId);
         if (viewTarget && viewTarget.threeObjects) {
-            deleter(viewTarget.threeObjects);
+            //remove the current objects from the active options lists
+            //delete any objects that match the active options and no other options
+            const objectsToDelete = [];
+            viewTarget.threeObjects.forEach((obj, i) => {
+                SceneData.removeOptions(obj, options);
+                if (obj.userData.options.length === 0) {
+                    objectsToDelete.push(obj);
+                }
+            });
+            deleter(objectsToDelete);
         }
     }
 

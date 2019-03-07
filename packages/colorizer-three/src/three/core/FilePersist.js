@@ -13,16 +13,22 @@ export default class FilePersist {
     constructor() {
     };
 
-    static saveScene(scene, filename) {
+    static saveScene(scene, filename, saveCallback) {
         const gltfExporter = new GLTFExporter();
+
+        if (!saveCallback) {
+            saveCallback = (output) => {
+                FilePersist.saveString(output, filename);
+            };
+        }
 
         const options = {
             onlyVisible: false,
         };
         gltfExporter.parse(scene, function (result) {
             const output = JSON.stringify(result, null, 2);
-            // console.log(output);
-            FilePersist.saveString(output, filename);
+            saveCallback(output);
+
         }, options);
     }
 

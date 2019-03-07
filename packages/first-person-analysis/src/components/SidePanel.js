@@ -53,6 +53,9 @@ export default class SidePanel extends React.Component {
                             <button className={'action-btn'}
                                     onClick={event => store.sceneData.deleteActiveOption()}>Delete Option
                             </button>
+                            <button className={'action-btn'}
+                                    onClick={event => store.sceneData.duplicateActiveOption()}>Duplicate Option
+                            </button>
                         </If>
                     </CollapsiblePane>
                     <CollapsiblePane store={store} title={'Study Points'} panelId={'points'}>
@@ -198,6 +201,7 @@ export default class SidePanel extends React.Component {
                                     <div style={{marginTop: 8}}>
                                         <button className={'action-btn'}
                                                 onClick={event => {
+                                                    store.readingsStore.reset();
                                                     store.uiStore.setCurrentStudyPoint(0);
                                                     store.uiStore.setIsPlaying(true);
                                                 }}>Run
@@ -272,8 +276,9 @@ class ReviewChart extends React.Component {
             selectedIndex += n;
             selectedIndex = Math.max(0, Math.min(selectedIndex, selectedMetaData.length - 1));
             let pointPos = selectedMetaData[selectedIndex].idx;
-            store.uiStore.setLastPickedPoint(dataHandler.getStudyPoint(pointPos));//treat like a user click so it persists
-            store.uiStore.setCurrentStudyPoint(pointPos);
+
+            dataHandler.setCurrentStudyPoint(pointPos, true);
+
         };
 
         return (

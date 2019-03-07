@@ -78,14 +78,9 @@ export default class SceneData {
         } else {
             this.threeApp.compositeViewPositions = {points: [], index: 0};
             this.threeApp.viewDataReader.enabled = true;
-            uiStore.setSelectionPoints('3d', [dataHandler.activeStudyPoints[index]]);
-            uiStore.setSelectionPoints('indices', [index]);
         }
 
-        uiStore.setLastPickedPoint(point);
-        if (index >= 0) {
-            uiStore.setCurrentStudyPoint(index);
-        }
+        this.dataHandler.setCurrentStudyPoint(index, true);
     }
 
     setupWatchers() {
@@ -106,6 +101,11 @@ export default class SceneData {
         autorun(() => {
             // console.log('AUTORUN '+JSON.stringify(targetStore.viewTargets))
             this.threeApp.viewDataReader.setObstructionVisibility(uiStore.blockersVisible);
+        });
+
+        autorun(() => {
+            //watch 'options' array for deletion events and remove any references to that option
+            this.cleanUpOptions(optionsStore.options);
         });
 
         autorun(() => {
@@ -142,11 +142,8 @@ export default class SceneData {
         const flatMat = this.threeApp.getColoredMaterial('#21212c', 1, {basicMaterial: true});
         this.viewBlockers.forEach((obj, i) => {
             obj.material = (flat) ? flatMat : this.threeApp.getColoredMaterial(obj.userData.meta.color);
-
-
         });
     }
-
 
     updateStudyPoint(index, readingSets, selectedReviewTarget, selectedOptions, valueRampMultiplier) {
         const {targetStore, uiStore, optionsStore, readingsStore} = this.store;
@@ -179,7 +176,7 @@ export default class SceneData {
         const {targetStore, optionsStore} = this.store;
         const activeOptions = optionsStore.selectedOptions;
 
-        targetStore.deleteTargetObjects(targetId, (objects) => {
+        targetStore.deleteTargetObjects(targetId, activeOptions, (objects) => {
             this.threeApp.removeObjects(objects);
         });
         const threeObjects = this.threeApp.addObjects(objectsToAdd);
@@ -506,6 +503,33 @@ export default class SceneData {
 
     }
 
+    withAllOptionsObjects(handler) {
+        this.optionsObjects.forEach((obj, i) => {
+            handler(obj.userData);
+        });
+        this.pointGenerators.forEach((pointGenerator, i) => {
+            handler(pointGenerator);
+        });
+        this.studyPointSets.forEach((pointSet, i) => {
+            handler(pointSet);
+        });
+    }
+
+    duplicateActiveOption() {
+        const {optionsStore} = this.store;
+        const activeOptions = optionsStore.selectedOptions;
+        if (activeOptions.length !== 1) return;
+        const activeOptionKey = optionsStore.selectedOptions[0];
+        const newOption = optionsStore.addOption();
+        //assign the duplicate option's key for any objects that are currently associated with the duplicated options
+        this.withAllOptionsObjects((opOb) => {
+            if (opOb.options.indexOf(activeOptionKey) >= 0) {
+                opOb.options.push(newOption.key);
+            }
+        });
+        optionsStore.selectOption(newOption.key);
+    }
+
     deleteActiveOption() {
         const {optionsStore} = this.store;
         const activeOptions = optionsStore.selectedOptions;
@@ -513,7 +537,7 @@ export default class SceneData {
         const activeOptionKey = optionsStore.selectedOptions[0];
         const activeOption = optionsStore.getOption(activeOptionKey);
         if (window.confirm(`Are you sure you want to delete ${activeOption.name}?`)) {
-            optionsStore.deleteOption(activeOptionKey);
+            optionsStore.deleteOption(activeOptionKey);//change to options list will trigger autorun watcher
         }
     }
 
@@ -569,6 +593,22 @@ export default class SceneData {
         this.controlledObjects.push(obj);
     }
 
+    static removeOptions(obj, selectedOptions) {
+        if (!selectedOptions || !obj.userData.options) return false;
+        obj.userData.options = obj.userData.options.filter((o) => {
+            return selectedOptions.indexOf(o) < 0;
+        });
+    }
+
+    cleanUpOptions(options) {
+        const allValidOptionIds = options.map((o) => o.key);
+        this.withAllOptionsObjects((opOb) => {
+            opOb.options = opOb.options.filter((o) => {
+                return allValidOptionIds.indexOf(o) >= 0;
+            });
+        });
+    }
+
     static optionsMatch(options, selectedOptions) {
         if (!options) return false;
         let match = false;
@@ -581,6 +621,7 @@ export default class SceneData {
     }
 
     saveFile() {
+        const {sketchup} = window;
         const {targetStore, uiStore, optionsStore, readingsStore} = this.store;
         const scene = this.threeApp.scene;
         const metaData = {
@@ -591,7 +632,13 @@ export default class SceneData {
             threeApp: this.threeApp.getMeta(),
         };
         scene.userData.metaData = metaData;
-        FilePersist.saveScene(scene, 'viewPoints.gltf')
+        let saveFn = null;
+        if (sketchup) {
+            saveFn = (data) => {
+                sketchup.saveTextToFile({title: 'Save scene', data: data, ext: 'gltf'});
+            }
+        }
+        FilePersist.saveScene(scene, 'viewPoints.gltf', saveFn)
     }
 
     loadFile(filePath) {
@@ -681,5 +728,4 @@ export default class SceneData {
             // this.threeApp.removeObjects(objectsToRemove); TEMP
         })
     }
-
 }

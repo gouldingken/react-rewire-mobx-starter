@@ -29,6 +29,7 @@ export default class OptionsStore {
         }
         const newOption = {name: `Option ${num}`, key: `option-${num}`, chartColor: OptionsStore.nextColor()};
         this.options.push(newOption);
+        return newOption;
     }
 
     getOption(key) {
