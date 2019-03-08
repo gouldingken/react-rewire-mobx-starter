@@ -19,6 +19,18 @@ module.exports = function (grunt) {
                 src: '**',
                 dest: './nw'
             },
+            deployRubyDev: {
+                expand: true,
+                cwd: '../build',
+                src: '**',
+                dest: 'C:\\Users\\kgoulding\\Documents\\Development\\Ruby\\SpeckleRuby\\speckle_ruby_sketchup_direct\\ui\\dialog'
+            },
+            deployRuby: {
+                expand: true,
+                cwd: '../build',
+                src: '**',
+                dest: 'L:\\UD@Sasaki\\Technology\\SCubed\\Plugins\\sas_view_points\\speckle_ruby_sketchup_direct\\ui\\dialog'
+            },
             deploy: {
                 expand: true,
                 cwd: 'webkitbuilds/first-person-analysis-nw/win64',

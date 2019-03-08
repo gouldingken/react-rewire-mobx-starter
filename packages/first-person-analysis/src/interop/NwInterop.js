@@ -30,22 +30,29 @@ export default class NwInterop extends BasicInterop {
         input.addEventListener('change', ({target}) => {
             // target.files[0].path
             callback(target.value);
-            input.parentNode.removeChild(input);
+            if (input.parentNode) {
+                input.parentNode.removeChild(input);
+            }
         });
         input.click();
     };
 
     saveTextToFile(options) {
-        const fs = require('fs');
-        const filePath = 'C:\\Temp\\nw-react.json';
-        fs.writeFile(filePath, options.data, function (err) {
-            if (err) {
-                window.alert('Not Saved ' + err);
-                // throw err;
-            } else {
-                console.log('Saved ' + filePath);
-            }
+        const fs = window.require('fs');
+        this.chooseFile('.gltf', 'scene.gltf', (filepath) => {
+            fs.writeFile(filepath, options.data, function (err) {
+                if (err) {
+                    window.alert('Not Saved ' + err);
+                    // throw err;
+                } else {
+                    console.log('Saved ' + filepath);
+                    if (options.onSave) {
+                        options.onSave(filepath);
+                    }
+                }
+            });
         });
+
     }
 
     getLoadFileData(options) {
@@ -55,10 +62,14 @@ export default class NwInterop extends BasicInterop {
                 console.log(e);
             }
         }
-        const fs = require('fs');
+        const fs = window.require('fs');
         this.chooseFile('.gltf', false, (filepath) => {
-            fs.readFile(filepath, 'utf-8', (data) => {
-                options.onLoad(data);
+            fs.readFile(filepath, 'utf-8', (err, data) => {
+                if (err) {
+                    options.onError(err);
+                } else {
+                    options.onLoad(data);
+                }
             });
         });
     }

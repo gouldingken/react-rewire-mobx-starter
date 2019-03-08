@@ -190,9 +190,8 @@ export default class SidePanel extends React.Component {
                             <If true={store.optionsStore.selectedOptions.length === 1}>
                                 <div>{store.optionsStore.getOption(store.optionsStore.selectedOptions[0]).name}</div>
                                 <div>
-                                    {store.readingsStore.readingsCount} result{(store.readingsStore.readingsCount !== 1) ? 's' : ''} generated
-                                    out
-                                    of {store.uiStore.studyPoints.count}
+                                    {Math.min(store.uiStore.studyPoints.count, store.readingsStore.readingsCount)} result{(store.readingsStore.readingsCount !== 1) ? 's' : ''} generated
+                                    out of {store.uiStore.studyPoints.count}
                                 </div>
                                 <If true={store.uiStore.mode === 'analyze'}>
                                     <ProgressBar color={'#666666'} fullWidth={200}
@@ -223,9 +222,11 @@ export default class SidePanel extends React.Component {
                                     onClick={event => dataHandler.saveScene()}>Save
                             </button>
                             <button className={'action-btn'}
-                                    onClick={event => interop.getLoadFileData({onLoad:(data)=> {
-                                        dataHandler.loadScene(data);
-                                    }})}>Load
+                                    onClick={event => interop.getLoadFileData({
+                                        onLoad: (data) => {
+                                            dataHandler.loadScene(data);
+                                        }
+                                    })}>Load
                             </button>
                         </div>
                     </CollapsiblePane>

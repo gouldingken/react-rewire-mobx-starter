@@ -10,6 +10,7 @@
 
 # production
 /build
+/app/webkitbuilds
 /app/nw
 
 # misc
