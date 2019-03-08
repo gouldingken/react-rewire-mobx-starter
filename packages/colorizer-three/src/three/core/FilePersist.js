@@ -13,12 +13,12 @@ export default class FilePersist {
     constructor() {
     };
 
-    static saveScene(scene, filename, saveCallback) {
+    static saveScene(scene, saveCallback) {
         const gltfExporter = new GLTFExporter();
 
         if (!saveCallback) {
             saveCallback = (output) => {
-                FilePersist.saveString(output, filename);
+                FilePersist.saveString(output, 'scene.gltf');
             };
         }
 
@@ -46,6 +46,15 @@ export default class FilePersist {
         save(new Blob([text], {type: 'text/plain'}), filename);
     }
 
+    static loadSceneData(dataStr, callback) {
+        //Note that this does not support textures etc that may be referenced within the gltf file
+
+        const loader = new GLTFLoader();
+        loader.parse(dataStr, '', (gltf) => {
+            callback(gltf.scene);
+        }, (error) => console.log(error))
+    }
+
     static loadScene(gltfFile, callback) {
         // Instantiate a loader
         const loader = new GLTFLoader();
@@ -57,8 +66,8 @@ export default class FilePersist {
         // Load a glTF resource
         loader.load(gltfFile,
             // called when the resource is loaded
-            function ( gltf ) {
-                callback( gltf.scene );
+            function (gltf) {
+                callback(gltf.scene);
                 // gltf.animations; // Array<THREE.AnimationClip>
                 // gltf.scene; // THREE.Scene
                 // gltf.scenes; // Array<THREE.Scene>
@@ -67,15 +76,15 @@ export default class FilePersist {
 
             },
             // called while loading is progressing
-            function ( xhr ) {
+            function (xhr) {
 
-                console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+                console.log((xhr.loaded / xhr.total * 100) + '% loaded');
 
             },
             // called when loading has errors
-            function ( error ) {
+            function (error) {
 
-                console.log( 'An error happened' );
+                console.log('An error happened');
 
             }
         );

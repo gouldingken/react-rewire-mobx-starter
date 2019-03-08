@@ -41,8 +41,8 @@ export default class SceneData {
             this.saveFile();
         });
 
-        this.dataHandler.on('LoadScene', (file) => {
-            this.loadFile(file);
+        this.dataHandler.on('LoadScene', (data) => {
+            this.loadFile(data);
         });
     };
 
@@ -621,7 +621,6 @@ export default class SceneData {
     }
 
     saveFile() {
-        const {sketchup} = window;
         const {targetStore, uiStore, optionsStore, readingsStore} = this.store;
         const scene = this.threeApp.scene;
         const metaData = {
@@ -632,20 +631,19 @@ export default class SceneData {
             threeApp: this.threeApp.getMeta(),
         };
         scene.userData.metaData = metaData;
-        let saveFn = null;
-        if (sketchup) {
-            saveFn = (data) => {
-                sketchup.saveTextToFile({title: 'Save scene', data: data, ext: 'gltf'});
-            }
-        }
-        FilePersist.saveScene(scene, 'viewPoints.gltf', saveFn)
+
+        const interop = this.store.getInterop();
+        FilePersist.saveScene(scene, (data) => {
+            interop.saveTextToFile({title: 'Save scene', data: data, ext: 'gltf'});
+        });
     }
 
-    loadFile(filePath) {
-        FilePersist.loadScene(filePath, (scene) => {
+    loadFile(data) {
+        //Note that this does not support textures etc that may be referenced within the gltf file
+
+        FilePersist.loadSceneData(data, (scene) => {
             const {targetStore, uiStore, optionsStore, readingsStore} = this.store;
             let metaData = scene.userData.metaData;
-            // let metaData = scene.userData.metaData; //HACK (see note above)
             const objectsBySasType = {};
             let cnt = 0;
 
@@ -663,23 +661,19 @@ export default class SceneData {
                 objectsToAdd.push(child);
 
                 if (child.userData.options) {
-                    // this.threeApp.scene.add(child);
                     this.addOptionObject(child);
                 }
 
                 if (child.userData.isViewBlocker) {
-                    // this.threeApp.scene.add(child);
                     this.viewBlockers.push(child);
                     this.threeApp.viewDataReader.addObstructionMesh(child);
                 }
 
                 if (child.userData.isViewTarget) {
-                    // this.threeApp.scene.add(child);
                     this.controlledObjects.push(child);
                 }
 
                 if (child.userData.studyPoints) {
-                    // this.threeApp.scene.add(child);
                     console.log(child.uuid + '  ' + child.name + ' LOADED POINTS ' + child.userData.options.join('|') + ' : ' + child.userData.studyPoints.length);
                     cnt += child.userData.studyPoints.length;
                     this.studyPointSets.push({
@@ -693,7 +687,6 @@ export default class SceneData {
 
 
                 if (child.userData.sasType) {
-                    // this.threeApp.scene.add(child);
                     Object.keys(child.userData.sasType).forEach((type) => {
                         if (child.userData.sasType[type]) {
                             if (!objectsBySasType[type]) objectsBySasType[type] = [];
@@ -702,20 +695,11 @@ export default class SceneData {
                     });
                 }
 
-                // console.log('CHILD', child);
-
-
             });
 
             objectsToAdd.forEach((obj, i) => {
                 this.threeApp.scene.add(obj);
             });
-
-
-            // this.threeApp.scene.add(scene);
-
-            // console.log('TOTAL POINTS ' + cnt);
-
             if (metaData) {
                 optionsStore.setMeta(metaData.optionsStore);
                 targetStore.setMeta(metaData.targetStore, objectsBySasType);
@@ -724,8 +708,6 @@ export default class SceneData {
                 this.threeApp.setMeta(metaData.threeApp)
             }
 
-
-            // this.threeApp.removeObjects(objectsToRemove); TEMP
         })
     }
 }

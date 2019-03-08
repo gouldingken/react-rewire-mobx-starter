@@ -1,0 +1,13 @@
+{
+  "name": "first-person-analysis-grunt",
+  "version": "1.0.0",
+  "description": "",
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "grunt": "~0.4.4",
+    "grunt-contrib-compress": "~0.8.0",
+    "grunt-contrib-copy": "^1.0.0",
+    "grunt-nw-builder": "^3.1.0"
+  }
+}

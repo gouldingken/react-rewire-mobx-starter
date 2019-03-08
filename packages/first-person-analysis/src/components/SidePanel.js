@@ -19,7 +19,7 @@ export default class SidePanel extends React.Component {
 
     render() {
         const {store, dataHandler} = this.props;
-        const {sketchup} = window;
+        const interop = store.getInterop();
 
         return (
             <div className="SidePanel">
@@ -38,7 +38,7 @@ export default class SidePanel extends React.Component {
                                           onClick={() => store.uiStore.setMode('compare')}/>Compare</label>
                         </div>
                         {/*<button className={'action-btn'}*/}
-                        {/*onClick={event => sketchup.getActiveView()}>Get View*/}
+                        {/*onClick={event => interop.getActiveView()}>Get View*/}
                         {/*</button>*/}
                     </CollapsiblePane>
                     <CollapsiblePane store={store} title={'Option'} panelId={'option'} initCollapsed={true}>
@@ -75,7 +75,7 @@ export default class SidePanel extends React.Component {
                             <CollapsiblePane backgroundColor={'#666666'} store={store} title={'Outlines'}
                                              panelId={'points-outlines'} initCollapsed={true}>
                                 <button className={'action-btn'}
-                                        onClick={event => sketchup.getSelectedPaths()}>Import Paths
+                                        onClick={event => interop.getSelectedPaths()}>Import Paths
                                 </button>
                                 <button className={'action-btn'}
                                         onClick={event => store.sceneData.clearStudyPoints()}>Clear Paths
@@ -104,7 +104,7 @@ export default class SidePanel extends React.Component {
                             <CollapsiblePane backgroundColor={'#666666'} store={store} title={'Surface'}
                                              panelId={'points-surface'} initCollapsed={true}>
                                 <button className={'action-btn'}
-                                        onClick={event => sketchup.getSelectedMesh({mode: 'mesh-points'})}>Import
+                                        onClick={event => interop.getSelectedMesh({mode: 'mesh-points'})}>Import
                                     Surfaces
                                 </button>
                                 <button className={'action-btn'}
@@ -173,7 +173,7 @@ export default class SidePanel extends React.Component {
                     <CollapsiblePane store={store} title={'View Blockers'} panelId={'blockers'}>
                         <If true={store.uiStore.mode === 'analyze'}>
                             <button className={'action-btn'}
-                                    onClick={event => sketchup.getSelectedMesh({mode: 'blocker'})}>Import
+                                    onClick={event => interop.getSelectedMesh({mode: 'blocker'})}>Import
                             </button>
                             <button className={'action-btn'}
                                     onClick={event => store.sceneData.clearViewBlockers()}>Clear
@@ -223,7 +223,9 @@ export default class SidePanel extends React.Component {
                                     onClick={event => dataHandler.saveScene()}>Save
                             </button>
                             <button className={'action-btn'}
-                                    onClick={event => dataHandler.loadScene('./data/viewPoints.gltf')}>Load
+                                    onClick={event => interop.getLoadFileData({onLoad:(data)=> {
+                                        dataHandler.loadScene(data);
+                                    }})}>Load
                             </button>
                         </div>
                     </CollapsiblePane>

@@ -12,7 +12,7 @@ export default class TargetInfo extends React.Component {
     render() {
         const {targetId, store} = this.props;
         const viewTarget = store.targetStore.getViewTarget(targetId);
-        const sketchup = window.sketchup;
+        const interop = store.getInterop();
 
         const fullW = 180;
         const available = viewTarget.currentPoint.available;
@@ -32,9 +32,9 @@ export default class TargetInfo extends React.Component {
                 <div className={'legend-color'} style={{background: viewTarget.color}} onClick={select}/>
                 <div className={'legend-title'} onClick={select}>{viewTarget.name}</div>
 
-                <If true={store.uiStore.mode === 'analyze'}>
+                <If true={store.uiStore.mode === 'analyze' && interop.getSelectedMesh}>
                     <button className={'set-btn'}
-                            onClick={event => sketchup.getSelectedMesh({mode: 'target', targetId: targetId})}>set
+                            onClick={event => interop.getSelectedMesh({mode: 'target', targetId: targetId})}>set
                     </button>
                 </If>
                 <TargetBars fullWidth={fullW} store={store} viewTarget={viewTarget} available={available}

@@ -88,7 +88,7 @@ export default class ViewsDataHandler extends ADataHandler {
         this.emit('SaveScene');
     }
 
-    loadScene(file) {
-        this.emit('LoadScene', file);
+    loadScene(data) {
+        this.emit('LoadScene', data);
     }
 }
