@@ -26,6 +26,10 @@ export default class SketchUpInterop extends BasicInterop {
         return window.sketchup.getActiveView();
     }
 
+    setWindowSize(size) {
+        window.sketchup.setWindowSize(size)
+    }
+
     getSelectedMesh(options) {
         return window.sketchup.getSelectedMesh(options);
     }

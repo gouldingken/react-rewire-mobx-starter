@@ -56,16 +56,14 @@ export default class SidePanel extends React.Component {
                         </If>
                     </CollapsiblePane>
                     <CollapsiblePane store={store} title={'Camera / View'} panelId={'points'}>
-                        <button className={'action-btn'}
-                                onClick={event => interop.getActiveView()}>Get View from Host
-                        </button>
+
+
+                        <Checkbox label={'Show Preview'} isChecked={store.uiStore.viewOptions.showPreview}
+                                  onChange={(checked) => store.uiStore.setViewOptions({showPreview: checked})}/>
 
                         <button className={'action-btn'}
                                 onClick={event => store.sceneData.centerView()}>Center View on Point
                         </button>
-
-                        <Checkbox label={'Show Preview'} isChecked={store.uiStore.showPreview}
-                                  onChange={(checked) => store.uiStore.setShowPreview(checked)}/>
 
                         <div className={'slider-label'}>View Angle: {store.uiStore.viewAngleDeg}</div>
 
@@ -74,6 +72,15 @@ export default class SidePanel extends React.Component {
                                     store.uiStore.setViewAngleDeg(v);
                                 }}
                         />
+
+                        <Checkbox label={'Match Aspect'} isChecked={store.uiStore.viewOptions.matchAspect}
+                                  onChange={(checked) => store.uiStore.setViewOptions({matchAspect: checked})}/>
+
+                        <button className={'action-btn'}
+                                onClick={event => interop.getActiveView()}>Get View from Host
+                        </button>
+
+
                     </CollapsiblePane>
                     <CollapsiblePane store={store} title={'Study Points'} panelId={'points'}>
                         <div className={'label'}>Current Point</div>

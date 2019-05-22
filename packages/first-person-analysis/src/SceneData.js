@@ -141,7 +141,7 @@ export default class SceneData {
         });
 
         autorun(() => {
-            this.threeApp.setPreviewVisible(uiStore.showPreview);
+            this.threeApp.setPreviewVisible(uiStore.viewOptions.showPreview);
         });
     }
 
@@ -497,7 +497,10 @@ export default class SceneData {
         }
         // camera.eye[1] *= -1;
         // camera.target[1] *= -1;
-        this.threeApp.setCameraPos(camera.eye, camera.target, camera.up, camera.fov, {testCube:false});
+        this.threeApp.setCameraPos(camera.eye, camera.target, camera.up, camera.fov, {testCube: false});
+        if (this.store.uiStore.viewOptions.matchAspect) {
+            this.store.getInterop().setWindowSize({width: 2000, height: 1400});
+        }
     }
 
     centerView() {

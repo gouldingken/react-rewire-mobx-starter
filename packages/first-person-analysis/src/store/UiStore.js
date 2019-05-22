@@ -18,7 +18,6 @@ export default class UiStore {
     studyPoints = {current: 0, count: 0};
     lastPickedPoint = null;
     viewAngleDeg = 270;
-    showPreview = true;
 
     isPlaying = false;
     blockersVisible = true;
@@ -30,6 +29,7 @@ export default class UiStore {
     pointOptions = {spacing: 25, offset: 1, height: 5};
     surfaceOptions = {density: 50, height: 5};
     analysisOptions = {viewsOnly: false};
+    viewOptions = {showPreview:true, matchAspect:false};
 
     selectionPoints = {
         'indices': [],
@@ -114,16 +114,18 @@ export default class UiStore {
         });
     }
 
+    setViewOptions(updates) {
+        Object.keys(updates).forEach((k) => {
+            this.viewOptions[k] = updates[k];
+        });
+    }
+
     setMode(val) {
         this.mode = val;
     }
 
     setViewAngleDeg(val) {
         this.viewAngleDeg = val;
-    }
-
-    setShowPreview(val) {
-        this.showPreview = val;
     }
 
     setSelectedReviewTarget(val) {
@@ -187,7 +189,7 @@ decorate(UiStore, {
     pointCloudOptions: observable,
     surfaceOptions: observable,
     analysisOptions: observable,
-    showPreview: observable,
+    viewOptions: observable,
     selectionPoints: observable,
     reviewDarkBlockers: observable,
     viewAngleDeg: observable,
@@ -209,5 +211,5 @@ decorate(UiStore, {
     setSelectionPoints: action,
     setReviewDarkBlockers: action,
     setViewAngleDeg: action,
-    setShowPreview: action,
+    setViewOptions: action,
 });

@@ -18,6 +18,10 @@ export default class BasicInterop {
         FilePersist.saveString(options.data, 'scene.gltf');
     }
 
+    setWindowSize() {
+        window.alert('Please open in 3D addin to set window size');
+    }
+
     getSelectedPaths() {
         window.alert('Please open in 3D addin to get paths');
     }
