@@ -19,7 +19,7 @@ export default class Interop {
         const objectsToAdd = [];
         response.resources.forEach((resource, i) => {
             if (command === 'view') {
-                this.sceneData.setCameraView(resource);
+                this.sceneData.setCameraView(resource, this.speckleData);
             }
             if (command === 'mesh') {
                 const mesh = this.speckleData.getMesh(resource);

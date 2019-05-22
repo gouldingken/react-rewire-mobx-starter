@@ -43,8 +43,9 @@ export default class Converter {
 
     static getMesh(obj, meshMaterial, generateUvs) {
         let geometry = new Geometry();
-        for (let i = 2; i < obj.vertices.length; i += 3)
+        for (let i = 2; i < obj.vertices.length; i += 3) {
             geometry.vertices.push(new Vector3(obj.vertices[i - 2], obj.vertices[i - 1], obj.vertices[i]))
+        }
 
         let k = 0;
         while (k < obj.faces.length) {

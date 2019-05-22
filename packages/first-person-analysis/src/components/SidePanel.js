@@ -37,9 +37,6 @@ export default class SidePanel extends React.Component {
                             <label><input type="radio" name="mode" checked={store.uiStore.mode === 'compare'}
                                           onClick={() => store.uiStore.setMode('compare')}/>Compare</label>
                         </div>
-                        {/*<button className={'action-btn'}*/}
-                        {/*onClick={event => interop.getActiveView()}>Get View*/}
-                        {/*</button>*/}
                     </CollapsiblePane>
                     <CollapsiblePane store={store} title={'Option'} panelId={'option'} initCollapsed={true}>
                         <If true={store.optionsStore.selectedOptions.length > 1}>
@@ -58,12 +55,18 @@ export default class SidePanel extends React.Component {
                             </button>
                         </If>
                     </CollapsiblePane>
-                    <CollapsiblePane store={store} title={'Study Points'} panelId={'points'}>
-                        <div className={'label'}>Current Point</div>
-                        <PageStepper store={store}/>
+                    <CollapsiblePane store={store} title={'Camera / View'} panelId={'points'}>
                         <button className={'action-btn'}
-                                onClick={event => store.sceneData.centerView()}>Center View
+                                onClick={event => interop.getActiveView()}>Get View from Host
                         </button>
+
+                        <button className={'action-btn'}
+                                onClick={event => store.sceneData.centerView()}>Center View on Point
+                        </button>
+
+                        <Checkbox label={'Show Preview'} isChecked={store.uiStore.showPreview}
+                                  onChange={(checked) => store.uiStore.setShowPreview(checked)}/>
+
                         <div className={'slider-label'}>View Angle: {store.uiStore.viewAngleDeg}</div>
 
                         <Slider min={0} max={360} step={1} value={store.uiStore.viewAngleDeg}
@@ -71,6 +74,11 @@ export default class SidePanel extends React.Component {
                                     store.uiStore.setViewAngleDeg(v);
                                 }}
                         />
+                    </CollapsiblePane>
+                    <CollapsiblePane store={store} title={'Study Points'} panelId={'points'}>
+                        <div className={'label'}>Current Point</div>
+                        <PageStepper store={store}/>
+
                         <If true={store.uiStore.mode === 'analyze'}>
                             <CollapsiblePane backgroundColor={'#666666'} store={store} title={'Outlines'}
                                              panelId={'points-outlines'} initCollapsed={true}>
@@ -213,6 +221,9 @@ export default class SidePanel extends React.Component {
                                             store.uiStore.setIsPlaying(false)
                                         }}>Reset
                                         </button>
+                                        <Checkbox label={'Views Only (Faster)'}
+                                                  isChecked={store.uiStore.analysisOptions.viewsOnly}
+                                                  onChange={(checked) => store.uiStore.setAnalysisOptions({viewsOnly: checked})}/>
                                     </div>
                                 </If>
                             </If>

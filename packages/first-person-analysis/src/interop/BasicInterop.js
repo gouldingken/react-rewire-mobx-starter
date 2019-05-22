@@ -26,6 +26,10 @@ export default class BasicInterop {
         window.alert('Please open in 3D addin to get mesh');
     }
 
+    getActiveView(options) {
+        window.alert('Please open in 3D addin to get view');
+    }
+
     getLoadFileData(options) {
         if (!options.onLoad) return;//no point loading
         if (!options.onError) {

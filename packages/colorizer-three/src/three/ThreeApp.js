@@ -305,7 +305,8 @@ export default class ThreeApp extends Emitter {
                     if (extrude.option) {
                         this.optionObjects.push({object: line, option: extrude.option});
                     }
-                    this.scene.add(line);
+                    //disabling because lines can be heavy...
+                    // this.scene.add(line);//TEMP
                     objectsAdded.push(line);
                 });
             }
@@ -443,19 +444,31 @@ export default class ThreeApp extends Emitter {
         this.camera.position.set(savedState.position.x, savedState.position.y, savedState.position.z);
         this.camera.rotation.set(savedState.rotation._x, savedState.rotation._y, savedState.rotation._z);
 
-        this.controls.center.set(savedState.controlCenter.x, savedState.controlCenter.y, savedState.controlCenter.z);
+        this.controls.target.set(savedState.controlCenter.x, savedState.controlCenter.y, savedState.controlCenter.z);
         this.controls.update();
     }
 
-    setCameraPos(position, target, up, fov) {
+    setCameraPos(position, target, up, fov, options) {
         this.camera.fov = fov;
-        this.camera.position.set(position[0], position[1], position[2]);
-        console.log(position);
+        // console.log(position);
         // console.log(this.camera);
         // this.camera.rotation.set(savedState.rotation._x, savedState.rotation._y, savedState.rotation._z);
 
-        this.controls.center.set(target[0], target[1], target[2]);
+
+        this.controls.target.set(target[0], target[1], target[2]);
+        this.camera.position.set(position[0], position[1], position[2]);
+
+        this.controls.enabled = true;
+        this.controls.maxDistance = 5000;//TODO calc
+        this.controls.minDistance = 0;
+
         this.controls.update();
+
+        if (options && options.testCube) {
+            this.cube.position.set(position[0], position[1], position[2]);
+            const scale = 50;
+            this.cube.scale.set(scale, scale, scale);
+        }
     }
 
     start() {

@@ -18,6 +18,7 @@ export default class UiStore {
     studyPoints = {current: 0, count: 0};
     lastPickedPoint = null;
     viewAngleDeg = 270;
+    showPreview = true;
 
     isPlaying = false;
     blockersVisible = true;
@@ -28,6 +29,7 @@ export default class UiStore {
     targetChartMax = 5000;
     pointOptions = {spacing: 25, offset: 1, height: 5};
     surfaceOptions = {density: 50, height: 5};
+    analysisOptions = {viewsOnly: false};
 
     selectionPoints = {
         'indices': [],
@@ -106,12 +108,22 @@ export default class UiStore {
         });
     }
 
+    setAnalysisOptions(updates) {
+        Object.keys(updates).forEach((k) => {
+            this.analysisOptions[k] = updates[k];
+        });
+    }
+
     setMode(val) {
         this.mode = val;
     }
 
     setViewAngleDeg(val) {
         this.viewAngleDeg = val;
+    }
+
+    setShowPreview(val) {
+        this.showPreview = val;
     }
 
     setSelectedReviewTarget(val) {
@@ -134,20 +146,30 @@ export default class UiStore {
             pointOptions: this.pointOptions,
             pointCloudOptions: this.pointCloudOptions,
             surfaceOptions: this.surfaceOptions,
+            analysisOptions: this.analysisOptions,
             blockersVisible: this.blockersVisible,
             reviewDarkBlockers: this.reviewDarkBlockers,
         };
     }
 
     setMeta(meta) {
+        this.insertDefaultsIfMissing(meta);
         this.mode = meta.mode;
         this.selectedReviewTarget = meta.selectedReviewTarget;
         this.valueRampMultiplier = meta.valueRampMultiplier;
         this.pointOptions = meta.pointOptions;
         this.pointCloudOptions = meta.pointCloudOptions;
         this.surfaceOptions = meta.surfaceOptions;
+        this.analysisOptions = meta.analysisOptions;
         this.blockersVisible = meta.blockersVisible;
         this.reviewDarkBlockers = meta.reviewDarkBlockers;
+    }
+
+    insertDefaultsIfMissing(meta) {
+        const defaultMeta = this.getMeta();
+        Object.keys(defaultMeta).forEach((k) => {
+            if (!meta[k]) meta[k] = defaultMeta[k];
+        });
     }
 }
 
@@ -164,6 +186,8 @@ decorate(UiStore, {
     pointOptions: observable,
     pointCloudOptions: observable,
     surfaceOptions: observable,
+    analysisOptions: observable,
+    showPreview: observable,
     selectionPoints: observable,
     reviewDarkBlockers: observable,
     viewAngleDeg: observable,
@@ -177,6 +201,7 @@ decorate(UiStore, {
     setPointOptions: action,
     setPointCloudOptions: action,
     setSurfaceOptions: action,
+    setAnalysisOptions: action,
     setMode: action,
     setSelectedReviewTarget: action,
     setValueRampMultiplier: action,
@@ -184,4 +209,5 @@ decorate(UiStore, {
     setSelectionPoints: action,
     setReviewDarkBlockers: action,
     setViewAngleDeg: action,
+    setShowPreview: action,
 });

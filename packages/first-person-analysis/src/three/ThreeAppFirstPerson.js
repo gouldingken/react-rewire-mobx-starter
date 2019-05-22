@@ -22,6 +22,7 @@ export default class ThreeAppFirstPerson extends ThreeApp {
             channel2: '#d16cff',
             channel3: '#50d0d3',
         };
+        this.viewOnlyMode = false;
         this.pointClouds = [];
         this.extras = [];
 
@@ -96,6 +97,10 @@ export default class ThreeAppFirstPerson extends ThreeApp {
         this.reprojector.cubeCamera.rotation.y = deg * Math.PI / 180;
     }
 
+    setPreviewVisible(previewVisible) {
+        this.previewVisible = previewVisible;
+    }
+
     updatePoints(pointProperties) {
         this.animatedPointCloud.setProperties(pointProperties);
     }
@@ -153,14 +158,36 @@ export default class ThreeAppFirstPerson extends ThreeApp {
         });
     }
 
+    get topPaneHeight() {
+        let topPaneHeight = this.size.width / this.reprojector.aspectRatio;
+
+        if (!this.previewVisible) {
+            topPaneHeight = 1;//render just 1 pixel!
+        } else {
+            topPaneHeight = Math.min(topPaneHeight, 256);
+        }
+        return topPaneHeight;
+    }
+
+
     get mousePane() {
-        const topPaneHeight = this.size.width / this.reprojector.aspectRatio;
+        const topPaneHeight = this.topPaneHeight;
         return {x: 0, y: topPaneHeight, width: this.size.width, height: this.size.height - topPaneHeight};
     }
 
     renderScene() {
-        const topPaneHeight = this.size.width / this.reprojector.aspectRatio;
-        const split = 1 - topPaneHeight / this.size.height;
+        const topPaneHeight = this.topPaneHeight;
+        const previewHeight = topPaneHeight / this.size.height;
+
+        let previewWidth = 1;
+
+        const topRatio = topPaneHeight / this.size.width;
+
+        if (topRatio < this.reprojector.aspectRatio) {
+            previewWidth = (topPaneHeight * this.reprojector.aspectRatio) / this.size.width;
+        }
+
+        const split = 1 - previewHeight;
 
         let cameraPos = this.getStudyPos();
         if (this.compositeViewPositions) {
@@ -180,6 +207,7 @@ export default class ThreeAppFirstPerson extends ThreeApp {
                 width: 1,
                 height: split,
                 render: (width, height) => {
+                    if (this.viewOnlyMode) return;
                     this.showExtras(true);
                     camera.aspect = width / height;
                     camera.updateProjectionMatrix();
@@ -192,8 +220,8 @@ export default class ThreeAppFirstPerson extends ThreeApp {
             {// lambert projection display
                 left: 0,
                 bottom: 0,
-                width: 1,
-                height: (1 - split),
+                width: previewWidth,
+                height: previewHeight,
                 render: (width, height) => {
                     this.showExtras(false);
 
@@ -252,6 +280,7 @@ export default class ThreeAppFirstPerson extends ThreeApp {
             camera: this.saveCameraPos()
         };
     }
+
     setMeta(meta) {
         if (!meta || !meta.camera) return;
         this.restoreCameraPos(meta.camera)

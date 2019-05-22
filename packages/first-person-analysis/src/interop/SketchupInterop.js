@@ -22,6 +22,10 @@ export default class SketchUpInterop extends BasicInterop {
         return window.sketchup.getSelectedPaths();
     }
 
+    getActiveView() {
+        return window.sketchup.getActiveView();
+    }
+
     getSelectedMesh(options) {
         return window.sketchup.getSelectedMesh(options);
     }

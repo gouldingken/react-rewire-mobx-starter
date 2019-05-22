@@ -133,7 +133,15 @@ export default class SceneData {
 
 
         autorun(() => {
+            this.threeApp.viewOnlyMode = uiStore.analysisOptions.viewsOnly;
+        });
+
+        autorun(() => {
             this.threeApp.setViewAngle(uiStore.viewAngleDeg);
+        });
+
+        autorun(() => {
+            this.threeApp.setPreviewVisible(uiStore.showPreview);
         });
     }
 
@@ -472,7 +480,7 @@ export default class SceneData {
         this.viewBlockers.length = 0;
     }
 
-    setCameraView(camera) {
+    setCameraView(camera, speckleData) {
         // const example = {
         //     "eye": [-2317.502253000506, 67889.3669697359, 12554.280586923],
         //     "target": [25676.671238304432, 31970.13494484759, -3213.8691468145475],
@@ -481,9 +489,16 @@ export default class SceneData {
         //     "type": "Camera",
         // };
         // console.log(JSON.stringify(camera));
-        this.threeApp.setCameraPos(camera.eye, camera.target, camera.up, camera.fov);
+        for (let i = 0; i < camera.eye.length; i++) {
+            camera.eye[i] *= speckleData.settings.scale;
+        }
+        for (let i = 0; i < camera.target.length; i++) {
+            camera.target[i] *= speckleData.settings.scale;
+        }
+        // camera.eye[1] *= -1;
+        // camera.target[1] *= -1;
+        this.threeApp.setCameraPos(camera.eye, camera.target, camera.up, camera.fov, {testCube:false});
     }
-
 
     centerView() {
         const studyPos = this.threeApp.getStudyPos();
