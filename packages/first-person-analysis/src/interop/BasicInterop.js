@@ -34,6 +34,10 @@ export default class BasicInterop {
         window.alert('Please open in 3D addin to get view');
     }
 
+    pageLoad() {
+
+    }
+
     getLoadFileData(options) {
         if (!options.onLoad) return;//no point loading
         if (!options.onError) {

@@ -28,6 +28,7 @@ export default class SceneData {
         this.studyPointPaths = [];
         this.optionsObjects = [];
         this.controlledObjects = [];
+        this.metaData = {};
 
         // this.lastPickedPoint = null;
 
@@ -35,6 +36,7 @@ export default class SceneData {
             this.threeApp = threeApp;
             this.controlledObjects.push(this.threeApp.animatedPointCloud.particles);
             this.setupWatchers();
+            this.store.getInterop().pageLoad();
         });
 
         this.dataHandler.on('SaveScene', () => {
@@ -45,6 +47,18 @@ export default class SceneData {
             this.loadFile(data);
         });
     };
+
+
+    setMetaData(variable, data) {
+        this.metaData[variable] = data;
+        if (variable === 'window-size') {
+            this.metaData['window-size-offset'] = {
+                width: data.width - window.innerWidth,
+                height: data.height - window.innerHeight,
+            };
+            console.log('window-size-offset', this.metaData['window-size-offset']);
+        }
+    }
 
     selectPoints(point, multipleMode) {
         const {uiStore} = this.store;
@@ -499,8 +513,16 @@ export default class SceneData {
         // camera.target[1] *= -1;
         this.threeApp.setCameraPos(camera.eye, camera.target, camera.up, camera.fov, {testCube: false});
         if (this.store.uiStore.viewOptions.matchAspect) {
-            this.store.getInterop().setWindowSize({width: 2000, height: 1400});
+            const mousePane = this.threeApp.mousePane;
+            let widthDiff = mousePane.height * camera.aspectRatio - mousePane.width;
+            this.setWindowSize(window.innerWidth + widthDiff, window.innerHeight);//
         }
+    }
+
+    setWindowSize(width, height) {
+        let offsets = this.metaData['window-size-offset'] || {width: 0, height: 0};
+
+        this.store.getInterop().setWindowSize({width: width + offsets.width, height: height + offsets.height});//
     }
 
     centerView() {

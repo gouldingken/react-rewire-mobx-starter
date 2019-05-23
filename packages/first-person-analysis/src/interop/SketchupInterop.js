@@ -26,6 +26,10 @@ export default class SketchUpInterop extends BasicInterop {
         return window.sketchup.getActiveView();
     }
 
+    pageLoad() {
+        return window.sketchup.pageLoad();
+    }
+
     setWindowSize(size) {
         window.sketchup.setWindowSize(size)
     }

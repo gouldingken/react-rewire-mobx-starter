@@ -592,7 +592,11 @@ export default class ThreeApp extends Emitter {
         const height = this.holder.offsetHeight;
 
         if (width !== this.size.width || height !== this.size.height) {
-            console.log('SIZE UPDATE');
+            console.log(`SIZE UPDATE ${width} ${height}`);
+
+            // console.log(`outer window size ${window.outerWidth} ${window.outerHeight}`);
+            // console.log(`inner window size ${window.innerWidth} ${window.innerHeight}`);
+
             this.updateRendererSize();
         }
 

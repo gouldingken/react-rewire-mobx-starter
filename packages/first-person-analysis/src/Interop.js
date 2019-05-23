@@ -15,6 +15,10 @@ export default class Interop {
         this.speckleData = new SpeckleData({scale: 0.1});
     };
 
+    SetData(variable, data) {
+        this.sceneData.setMetaData(variable, data);
+    }
+
     UpdateObjects(response, command, params) {
         const objectsToAdd = [];
         response.resources.forEach((resource, i) => {
