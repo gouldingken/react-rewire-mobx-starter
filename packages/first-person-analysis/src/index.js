@@ -21,7 +21,7 @@ window.Interop = new Interop(store.sceneData);
 
 // new DeepLinking(store);
 
-// new MockCommands(store, window.Interop, dataHandler);
+new MockCommands(store, window.Interop, dataHandler);
 
 //load 'C:\Users\kgoulding\Documents\Development\Ruby\SpeckleRuby\speckle_ruby_sketchup_direct\ui\speckle_view.rb'
 //SpeckleView.new.show_web_dialog

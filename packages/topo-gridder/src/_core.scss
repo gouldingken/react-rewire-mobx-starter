@@ -1,0 +1,19 @@
+@import "~@sasaki-dev/design-system/styles/core";
+
+$left-pane-width: 300px;
+
+.ss-button {
+  padding: 5px 2px;
+}
+
+@mixin ss-button-sm {
+  @include ss-button;
+  box-shadow: 0 0 3px $dk-grey;
+  background: #f7f7f7;
+  color: #333333;
+  top: 3px;
+  right: 4px;
+  font-size: 0.9rem;
+  padding: 5px 10px;
+  border-radius: 3px;
+}
