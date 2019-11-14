@@ -1,3 +1,11 @@
+import UiStore from "./UiStore";
+import TargetStore from "./TargetStore";
+import ReadingsStore from "./ReadingsStore";
+import OptionsStore from "./OptionsStore";
+import {NwInterop} from "speckle-direct";
+import {SketchupInterop} from "speckle-direct";
+import {BasicInterop} from "speckle-direct";
+
 /**
  * Creates a new instance of MainStore.
  * @class
@@ -5,14 +13,6 @@
  * @example
  * var instance = new MainStore();
  */
-import UiStore from "./UiStore";
-import TargetStore from "./TargetStore";
-import ReadingsStore from "./ReadingsStore";
-import OptionsStore from "./OptionsStore";
-import NwInterop from "../interop/NwInterop";
-import SketchupInterop from "../interop/SketchupInterop";
-import BasicInterop from "../interop/BasicInterop";
-
 export default class MainStore {
     sceneData;
     constructor() {

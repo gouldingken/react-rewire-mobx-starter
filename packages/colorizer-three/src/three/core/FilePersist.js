@@ -24,6 +24,7 @@ export default class FilePersist {
 
         const options = {
             onlyVisible: false,
+            embedImages: false,
         };
         gltfExporter.parse(scene, function (result) {
             const output = JSON.stringify(result, null, 2);
