@@ -28,7 +28,7 @@
   ],
   "devDependencies": {
     "customize-cra": "^0.2.5",
-    "node-sass": "^4.10.0",
+    "node-sass": "^4.13.1",
     "react-app-rewire-mobx": "^1.0.8",
     "react-app-rewire-output": "^1.0.0",
     "react-app-rewire-yarn-workspaces": "^1.0.3",
