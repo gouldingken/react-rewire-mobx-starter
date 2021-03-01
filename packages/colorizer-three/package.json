@@ -10,7 +10,7 @@
     "mobx": "^5.5.1",
     "mobx-react": "^5.3.4",
     "orbit-controls-es6": "^1.0.12",
-    "three": "^0.95.0"
+    "three": "^0.125.0"
   },
   "scripts": {
     "start": "react-scripts start",
