@@ -183,6 +183,9 @@ export default class SidePanel extends React.Component {
                             <Checkbox label={'Color By Difference'}
                                       isChecked={store.uiStore.pointCloudOptions.colorByDifference}
                                       onChange={(checked) => store.uiStore.setPointCloudOptions({colorByDifference: checked})}/>
+                            <Checkbox label={'Color By Classification'}
+                                      isChecked={store.uiStore.pointCloudOptions.colorByClassification}
+                                      onChange={(checked) => store.uiStore.setPointCloudOptions({colorByClassification: checked})}/>
                         </CollapsiblePane>
                     </If>
                     <CollapsiblePane store={store} title={'View Blockers'} panelId={'blockers'}>
@@ -245,6 +248,9 @@ export default class SidePanel extends React.Component {
                                             dataHandler.loadScene(data);
                                         }
                                     })}>Load
+                            </button>
+                            <button className={'action-btn'}
+                                    onClick={event => dataHandler.exportSceneData()}>Export CSV
                             </button>
                         </div>
                     </CollapsiblePane>

@@ -22,7 +22,7 @@ export default class UiStore {
     isPlaying = false;
     blockersVisible = true;
     reviewDarkBlockers = false;
-    pointCloudOptions = {pointSize: 5, colorByDifference:false};
+    pointCloudOptions = {pointSize: 5, colorByDifference:false, colorByClassification:false};
 
     // targetChartMultiplier =  1 / ReadingsStore.sunAreaOfFullSphere;
     targetChartMax = 5000;

@@ -65,6 +65,9 @@ export default class OptionsStore {
             } else {
                 option.selected = (option.key === key);
             }
+            if (option.selected && option.onSelect) {
+                option.onSelect();
+            }
         });
     }
 

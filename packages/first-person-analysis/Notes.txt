@@ -1,0 +1,26 @@
+Development workflow:
+Use nvm 8.12.0
+Comment out index.js 'new MockCommands...' line
+Run yarn build
+Run grunt copy:build
+Run FirstPerson NW
+
+
+-------------------------------------------------------------------
+
+
+
+Trying to product composited frame output for multiple points:
+
+Basic shader solution for additive composites here:
+C:\Users\kgoulding\Documents\Development\JavaScript\GitHub\three.js\examples-kg\overlay.html
+
+Idea is to render e.g. 48 frames where each frame's r,g,b values are divided by 48
+then added to the previous frame
+
+this might work, but there is a posterization effect that happens because the floats are rounded
+into RGB bytes at each pass so you lose fractions...
+
+one option might be to allow pngdb style addition and keep the channels separate using an indexed offset...
+
+

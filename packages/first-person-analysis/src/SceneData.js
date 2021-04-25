@@ -39,6 +39,10 @@ export default class SceneData {
             this.store.getInterop().pageLoad();
         });
 
+        this.dataHandler.on('ExportSceneData', () => {
+            this.exportCSV();
+        });
+
         this.dataHandler.on('SaveScene', () => {
             this.saveFile();
         });
@@ -215,9 +219,22 @@ export default class SceneData {
 
         if (uiStore.pointCloudOptions.colorByDifference) {
             return this.getDivergingRamp(valueRampMultiplier);
-        } else {
-            return this.getColoredRamp(rampColor, valueRampMultiplier);
         }
+        if (uiStore.pointCloudOptions.colorByClassification) {
+            return (sols) => {
+                if (sols === 0) {
+                    return '#9ca1b1';
+                } else if (sols < 300) {
+                    return '#beae9f';
+                } else if (sols < 1500) {
+                    return '#fbc80c';
+                } else if (sols < 4000) {
+                    return '#53b450';
+                }
+                return '#4170b7';
+            };
+        }
+        return this.getColoredRamp(rampColor, valueRampMultiplier);
     }
 
     getColoredRamp(rampColor, valueRampMultiplier) {
@@ -676,6 +693,44 @@ export default class SceneData {
         FilePersist.saveScene(scene, (data) => {
             interop.saveTextToFile({title: 'Save scene', data: data, ext: 'gltf'});
         });
+    }
+
+
+    static getOptionData(allReadings, targetId, optionsStore) {
+        return allReadings.map((data, i) => {
+            const option = optionsStore.getOption(data.option);
+            return {
+                option: option,
+                unobstructed: data.values.sums.unobstructed[targetId] / data.values.count,
+                available: data.values.sums.available[targetId] / data.values.count,
+                unobstructedPoints: data.values.sorted.unobstructed[targetId]
+            };
+        });
+    }
+
+    exportCSV() {
+        const {targetStore, uiStore, optionsStore, readingsStore} = this.store;
+        const csv = [];
+        csv.push(['Option', 'Target', 'X', 'Y', 'Z', 'sols']);
+        const allReadings = readingsStore.summarizeReadings();
+        Object.keys(targetStore.viewTargets).forEach((k) => {
+            const target = targetStore.viewTargets[k];
+            if (target.name === 'none') return;
+            allReadings.forEach((data, i) => {
+                const option = optionsStore.getOption(data.option);
+
+                const unobstructedPoints = data.values.sorted.unobstructed[target.id];
+                unobstructedPoints.forEach((p, i) => {
+                    csv.push([option.name, target.name, p.v]);//TODO p.x, p.y, p.z,
+                });
+            });
+        });
+        // optionsStore.options.forEach((option, i) => {
+        //
+        // });
+        const csvString = csv.map(row => row.join(',')).join('\r\n');
+
+        FilePersist.saveString(csvString, 'points.csv');//TODO
     }
 
     loadFile(data) {
