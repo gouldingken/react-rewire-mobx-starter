@@ -7,7 +7,7 @@ export default class DayClock extends Component {
 
         return (
             <div className="DayClock">
-                DayClock
+                {JSON.stringify(store.bitmaskData)}
             </div>
         );
     }

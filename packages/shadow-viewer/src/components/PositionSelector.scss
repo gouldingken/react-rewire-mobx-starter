@@ -1,0 +1,14 @@
+.PositionSelector {
+  position: relative;
+  .studyPoint {
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: 50%;
+    width: 10px;
+    height: 10px;
+    background: rgba(0,0,0,0.2);
+    border: 2px solid white;
+    pointer-events: none;
+  }
+}

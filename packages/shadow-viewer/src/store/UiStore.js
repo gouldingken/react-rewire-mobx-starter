@@ -9,16 +9,23 @@ import {action, autorun, decorate, observable} from "mobx";
  */
 export default class UiStore {
     selectedMinute = 0;
+    selectedPosition = {x: 0, y: 0};
     constructor() {
     };
 
     setSelectedMinute(val) {
         this.selectedMinute = val;
     }
+    setSelectedPosition(x,y) {
+        this.selectedPosition.x = x;
+        this.selectedPosition.y = y;
+    }
 }
 
 
 decorate(UiStore, {
     selectedMinute: observable,
+    selectedPosition: observable,
     setSelectedMinute: action,
+    setSelectedPosition: action,
 });
