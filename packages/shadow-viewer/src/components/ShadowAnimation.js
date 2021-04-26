@@ -191,6 +191,7 @@ export default class ShadowAnimation extends Component {
 
     render() {
         const {store, minute, minuteStep} = this.props;
+        const {width, height} = store.uiStore.canvasSize;
 
         const minNum = Math.floor(minute / minuteStep);
         if (this.counter !== minNum) {
@@ -201,7 +202,7 @@ export default class ShadowAnimation extends Component {
 
         return (
             <div className="ShadowAnimation">
-                <canvas width="871" height="500" ref={(e) => this.setupCanvas(e)}/>
+                <canvas width={width} height={height}  ref={(e) => this.setupCanvas(e)}/>
             </div>
         );
     }

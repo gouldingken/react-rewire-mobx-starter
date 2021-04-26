@@ -12,6 +12,7 @@ export default class BitMaskSet {
         this.images = [];
         this.imageList = [];
         this.miniCanvas = new OffscreenCanvas(1, 1);
+        this.imageSize = {};
     };
 
     async loadPng(i, src) {
@@ -19,6 +20,14 @@ export default class BitMaskSet {
             const image = new Image();
             image.onload = () => {
                 this.images[i] = image;
+                if (!this.imageSize.width) {
+                    this.imageSize.width = image.width;
+                    this.imageSize.height = image.height;
+                } else {
+                    if (this.imageSize.width !== image.width || this.imageSize.height !== image.height) {
+                        console.warn('Mismatched images', src, this.imageSize, image.width, image.height);
+                    }
+                }
                 resolve();
             }
             image.src = src;
@@ -32,7 +41,10 @@ export default class BitMaskSet {
         }
     }
 
-    getShadowsBitmask(x, y) {
+    getShadowsBitmask(xN, yN) {
+        let x = Math.floor(xN * this.imageSize.width);
+        let y = Math.floor(yN * this.imageSize.height);
+
         function byteString(n) {
             return ("000000000" + n.toString(2)).substr(-8)
         }

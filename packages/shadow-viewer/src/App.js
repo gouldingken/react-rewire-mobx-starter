@@ -17,24 +17,25 @@ class App extends Component {
 
         return (
             <div className="App">
-                Shadow Viewer
-                <PositionSelector store={store}>
-                    <ShadowComposite/>
-                </PositionSelector>
-                <PositionSelector store={store}>
-                    <ShadowAnimation minute={uiStore.selectedMinute}/>
-                </PositionSelector>
-                <button onClick={() => {
-                    uiStore.setSelectedMinute(uiStore.selectedMinute + 3)
-                }}>MIN +
-                </button>
-                <button onClick={() => {
-                    uiStore.setSelectedMinute(uiStore.selectedMinute - 3)
-                }}>MIN -
-                </button>
-                <span>{uiStore.selectedMinute}</span>
                 <div>
                     <DayClock store={store}/>
+                </div>
+                <PositionSelector store={store}>
+                    <ShadowComposite store={store}/>
+                </PositionSelector>
+                <PositionSelector store={store}>
+                    <ShadowAnimation minute={uiStore.selectedMinute} store={store}/>
+                </PositionSelector>
+                <div>
+                    <button onClick={() => {
+                        uiStore.setSelectedMinute(uiStore.selectedMinute + 3)
+                    }}>MIN +
+                    </button>
+                    <button onClick={() => {
+                        uiStore.setSelectedMinute(uiStore.selectedMinute - 3)
+                    }}>MIN -
+                    </button>
+                    <span>{uiStore.selectedMinute}</span>
                 </div>
             </div>
         );

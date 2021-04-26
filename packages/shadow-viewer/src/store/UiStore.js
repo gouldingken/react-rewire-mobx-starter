@@ -7,9 +7,12 @@ import {action, autorun, decorate, observable} from "mobx";
  * @example
  * var instance = new UiStore();
  */
+
+const width = 720;
 export default class UiStore {
     selectedMinute = 0;
     selectedPosition = {x: 0, y: 0};
+    canvasSize = {width: width, height: width * 1000/1942};
     constructor() {
     };
 

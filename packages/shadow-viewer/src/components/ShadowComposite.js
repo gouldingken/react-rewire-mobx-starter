@@ -58,18 +58,18 @@ export default class ShadowComposite extends Component {
                 }
 
                 vec4 colorDiff(float v) {
-                    if (v < 5.) return vec4(255./255., 255./255., 255./255., 1.);
-                    if (v < 10.) return vec4(255./255., 255./255., 224./255., 1.);
-                    if (v < 15.) return vec4(255./255., 224./255., 169./255., 1.);
-                    if (v < 20.) return vec4(255./255., 190./255., 132./255., 1.);
-                    if (v < 25.) return vec4(255./255., 0./255., 0./255., 1.);
-                    if (v < 30.) return vec4(230./255., 0./255., 4./255., 1.);
-                    if (v < 35.) return vec4(206./255., 0./255., 14./255., 1.);
-                    if (v < 40.) return vec4(184./255., 0./255., 25./255., 1.);
-                    if (v < 45.) return vec4(160./255., 0./255., 38./255., 1.);
-                    if (v < 50.) return vec4(136./255., 0./255., 53./255., 1.);
-                    if (v < 55.) return vec4(110./255., 0./255., 74./255., 1.);
-                    if (v < 60.) return vec4(78./255., 0./255., 99./255., 1.);
+                    if (v <= 5.) return vec4(255./255., 255./255., 255./255., 1.);
+                    if (v <= 10.) return vec4(255./255., 255./255., 224./255., 1.);
+                    if (v <= 15.) return vec4(255./255., 224./255., 169./255., 1.);
+                    if (v <= 20.) return vec4(255./255., 190./255., 132./255., 1.);
+                    if (v <= 25.) return vec4(255./255., 0./255., 0./255., 1.);
+                    if (v <= 30.) return vec4(230./255., 0./255., 4./255., 1.);
+                    if (v <= 35.) return vec4(206./255., 0./255., 14./255., 1.);
+                    if (v <= 40.) return vec4(184./255., 0./255., 25./255., 1.);
+                    if (v <= 45.) return vec4(160./255., 0./255., 38./255., 1.);
+                    if (v <= 50.) return vec4(136./255., 0./255., 53./255., 1.);
+                    if (v <= 55.) return vec4(110./255., 0./255., 74./255., 1.);
+                    if (v <= 60.) return vec4(78./255., 0./255., 99./255., 1.);
                     return vec4(0./255., 0./255., 128./255., 1.);
                 }
 
@@ -144,7 +144,7 @@ export default class ShadowComposite extends Component {
     };
 
     async loadImages() {
-        const optionToCompare = 'fake';
+        const optionToCompare = 'option 1';
         const study = 'skanska-2d';
 
         this.loadedTextures['gB'] = this.regl.texture(await loadFromSrc(`studies/${study}/data/comp/sums_context_${optionToCompare}_gB.png`));
@@ -158,9 +158,10 @@ export default class ShadowComposite extends Component {
     render() {
         const {store} = this.props;
 
+        const {width, height} = store.uiStore.canvasSize;
         return (
             <div className="ShadowComposite">
-                <canvas width="871" height="500" ref={(e) => this.setupCanvas(e)}/>
+                <canvas width={width} height={height} ref={(e) => this.setupCanvas(e)}/>
             </div>
         );
     }
