@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {observer} from "mobx-react";
+import CumulativeBar from "./CumulativeBar";
 
 function HourPie(props) {
     const {slices} = props;
@@ -90,12 +91,18 @@ export default class DayClock extends Component {
             byHour[hour].push(cond);
         }
 
+        let diffDisplay = Math.round(100 * diff) / 100;
         return (
             <div className="DayClock">
                 {Object.keys(byHour).map((k) => <HourPie key={k} slices={byHour[k]}/>)}
 
-                <div>{x}, {y}: {diff}</div>
-                {JSON.stringify(store.bitmaskData)}
+                <div>
+                    <CumulativeBar width={500} totalHours={diff}/>
+                    <div className={'new-hrs'}>{diffDisplay} hr{diffDisplay === 1 ? '' : 's'} of new shadow
+                    </div>
+                </div>
+                {/*<div>{x}, {y}: {diff}</div>*/}
+                {/*{JSON.stringify(store.bitmaskData)}*/}
             </div>
         );
     }
