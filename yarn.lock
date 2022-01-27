@@ -10132,15 +10132,15 @@ text-table@0.2.0, text-table@^0.2.0:
   resolved "https://registry.yarnpkg.com/text-table/-/text-table-0.2.0.tgz#7f5ee823ae805207c00af2df4a84ec3fcfa570b4"
   integrity sha1-f17oI66AUgfACvLfSoTsP8+lcLQ=
 
+three@^0.137.0:
+  version "0.137.0"
+  resolved "https://registry.yarnpkg.com/three/-/three-0.137.0.tgz#0ebd6ba66637a332c31f234bcdd35aeec071a6e3"
+  integrity sha512-rzSDhia6cU35UCy6y+zEEws6vSgytfHqFMSaBvUcySgzwvDO6vETyswtSNi/+aVqJw8WLMwyT1mlQQ1T/dxxOA==
+
 three@^0.83.0:
   version "0.83.0"
   resolved "https://registry.yarnpkg.com/three/-/three-0.83.0.tgz#3b7f94790af3e021dac1f44a2617569ca2032b0b"
   integrity sha1-O3+UeQrz4CHawfRKJhdWnKIDKws=
-
-three@^0.95.0:
-  version "0.95.0"
-  resolved "https://registry.yarnpkg.com/three/-/three-0.95.0.tgz#b60ea076ba17df9faba9e855b86ab3f541289abf"
-  integrity sha512-vy6jMYs7CDwn47CejYHNi+++OdQue7xGIBhbLfekQ/G6MDxKRm0QB0/xWScz46/JvQAvF6pJAS5Q907l0i5iQA==
 
 throat@^4.0.0:
   version "4.1.0"
